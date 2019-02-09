@@ -1,4 +1,4 @@
-# amber_react
+# amber_react_sidebar
 Amber web framework application recipe for a React SPA with Granite ORM.
 
 ## NOT READY YET - do not use
@@ -6,9 +6,12 @@ Amber web framework application recipe for a React SPA with Granite ORM.
 The amber backend serves both html and json.  Also includes a JWT authorisation
 pipe in src/pipes.  Create a new amber app with this template with these commands;
 
+The React SPA is only displayed when the user is logged in, otherwise the page is rendered by the Amber backend.
+
+The SPA Includes a sidebar component and a main display component. 
 
 ```
-amber new mynewapp -r damianham/amber_react
+amber new mynewapp -r damianham/amber_react_sidebar
 cd mynewapp
 amber g auth User
 amber g scaffold Category title:string user:reference
