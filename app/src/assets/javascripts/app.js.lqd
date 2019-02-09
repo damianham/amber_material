@@ -13,7 +13,6 @@ import routes from '../../modules/js/routes';
 class App extends React.Component {
   constructor(props, state) {
     super(props, state);
-    console.log('create app with ', props, state)
   }
 
   componentWillMount() {
@@ -42,42 +41,77 @@ class App extends React.Component {
 
   render() {
     return (
-        <div>
-          <div className="masthead">
-            <div className="container">
-              <nav className="nav">
-                <Link className="nav-item" to="/">Home</Link>
+      <div>
 
+        <nav className="navbar navbar-expand navbar-dark bg-primary">
+          <div className="container">
+            <Link to="/" className="navbar-brand">
+              <img src="/dist/images/logo.svg" height="30" alt="Amber logo" />
+            </Link>
+
+              <ul className="navbar-nav mr-auto">
+                <li key={'/'} className="nav-item">
+                  <Link to="/" className="nav-link">Home</Link>
+                </li>
                 { routes.filter(route => route.path !== '/' && route.type === 'index').map((route, index) => (
-                  <Link key={route.path} className="nav-item" to={route.path}>{route.name}</Link>
+                  <li key={route.path} className="nav-item">
+                    <Link className="nav-link" to={route.path}>{route.name}</Link>
+                  </li>
                 ))
                 }
 
-                { this.isAuthenticated() ? (
-                    <Link className='nav-item pull-right' to='/signout'>Sign Out</Link>
-                  ) : (
-                    <a className='nav-item pull-right' href='/signin'>Sign In</a>
-                  )
-                }
-                { this.isAuthenticated() ? (
-                    <Link className='nav-item pull-right' to='/profile'>{this.state.current_user.email}</Link>
-                  ) : (
-                    <a className='nav-item pull-right' href='/signup'>Sign Up</a>
-                  )
-                }
+              </ul>
 
-              </nav>
-            </div>
+              <ul className="navbar-nav">
+              { this.isAuthenticated() ? (
+                  <li className="nav-item">
+                    <Link className='nav-link' to='/signout'>Sign Out</Link>
+                  </li>
+                ) : (
+                  <li className="nav-item">
+                    <a className='nav-Link' href='/signin'>Sign In</a>
+                  </li>
+                )
+              }
+              { this.isAuthenticated() ? (
+                  <li className="nav-item">
+                    <Link className='nav-link' to='/profile'>{this.state.current_user.email}</Link>
+                  </li>
+                ) : (
+                  <li className="nav-item">
+                    <a className='nav-link' href='/signup'>Sign Up</a>
+                  </li>
+                )
+              }
+              </ul>
           </div>
+        </nav>
 
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-12 main">
-                <div className="row main-content-container">
-                  <div className="col-sm-2 sidebar" >
-                    <Sidebar />
-                    <ul className="sidebar-links">
-                    { routes.filter(route => route.path !== '/' && route.type === 'index').map((route, index) => (
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-12 main">
+              <div className="row main-content-container">
+                <div className="col-sm-2 sidebar" >
+                  <Sidebar />
+                  <ul className="sidebar-links">
+                  { routes.filter(route => route.path !== '/' && route.type === 'index').map((route, index) => (
+                   // You can render a <Route> in as many places
+                   // as you want in your app. It will render along
+                   // with any other <Route>s that also match the URL.
+                   // So, a sidebar or breadcrumbs or anything else
+                   // that requires you to render multiple things
+                   // in multiple places at the same URL is nothing
+                   // more than multiple <Route>s.
+                   <li key={route.path} >
+                     <Link to={route.path}>{route.name}</Link>
+                   </li>
+                   ))
+                  }
+
+                  </ul>
+
+                  <div className="sidebar-component">
+                    { routes.map((route, index) => (
                      // You can render a <Route> in as many places
                      // as you want in your app. It will render along
                      // with any other <Route>s that also match the URL.
@@ -85,53 +119,36 @@ class App extends React.Component {
                      // that requires you to render multiple things
                      // in multiple places at the same URL is nothing
                      // more than multiple <Route>s.
-                     <li key={route.path} >
-                       <Link to={route.path}>{route.name}</Link>
-                     </li>
+                     <Route
+                       key={index}
+                       path={route.path}
+                       exact={route.exact}
+                       component={route.sidebar}
+                     />
                      ))
                     }
-
-                    </ul>
-
-                    <div className="sidebar-component">
-                      { routes.map((route, index) => (
-                       // You can render a <Route> in as many places
-                       // as you want in your app. It will render along
-                       // with any other <Route>s that also match the URL.
-                       // So, a sidebar or breadcrumbs or anything else
-                       // that requires you to render multiple things
-                       // in multiple places at the same URL is nothing
-                       // more than multiple <Route>s.
-                       <Route
-                         key={index}
-                         path={route.path}
-                         exact={route.exact}
-                         component={route.sidebar}
-                       />
-                       ))
-                      }
-                    </div>
                   </div>
+                </div>
 
-                  <div className="col-sm-10 main-content">
-                    <Switch>
-                     {routes.map((route, index) => (
-                       // Render more <Route>s with the same paths as
-                       // above, but different components this time.
-                       <Route
-                         key={index}
-                         path={route.path}
-                         exact={route.exact}
-                         component={route.main}
-                       />
-                     ))}
-                    </Switch>
-                  </div>
+                <div className="col-sm-10 main-content">
+                  <Switch>
+                   {routes.map((route, index) => (
+                     // Render more <Route>s with the same paths as
+                     // above, but different components this time.
+                     <Route
+                       key={index}
+                       path={route.path}
+                       exact={route.exact}
+                       component={route.main}
+                     />
+                   ))}
+                  </Switch>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
     );
   }
 }

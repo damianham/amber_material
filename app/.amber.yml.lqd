@@ -21,6 +21,7 @@ watch:
       - ./src/**/*.ecr
       {%- if language == "slang" -%}
       - ./src/views/**/*.slang
+      - ./src/modules/**/*.slang
       {% endif -%}
     # exclude: # NOTE simplistic implementation: (1) enumerate all includes and excludes; (2) return (includes - excludes)
     #  - ./src/some_irrelevant_file.cr

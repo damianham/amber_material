@@ -105,7 +105,7 @@ class {{class_name}}Index extends React.Component {
 
   render() {
     return (
-      <{{class_name}}IndexList {{name | pluralize}}=this.state.sorted_list />
+      <{{class_name}}IndexList {{name | pluralize}}={this.state.sorted_list} />
     )
   }
 }

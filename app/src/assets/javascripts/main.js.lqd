@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import App from './app';
+
+import jQuery from "jquery";
+window.$ = window.jQuery = jQuery;
 
 import { HashRouter } from 'react-router-dom';
 
-ReactDOM.render(
-
+ReactDOM.render((
 	  <HashRouter>
 	    <App />
-	  </HashRouter>
+	  </HashRouter>),
   document.getElementById("{{name}}_app")
 );
-
-registerServiceWorker();
