@@ -1,0 +1,64 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
+
+import Resource from '../../../lib/js/resource';
+import ResourceStream from '../../../lib/js/resourceStream';
+import EventBus from '../../../lib/js/eventBus';
+
+
+class {{class_name}}Form extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = props.{{name}};
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.id]: event.target.value });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const {{name}} = this.state;
+    this.props.add{{class_name}}( {{name}} );
+    this.setState({ });
+  }
+
+  render() {
+    return (
+
+      <div>
+        <div className="row {{name}}-form-title-row form-title-row">
+          <div className="col-sm-11">
+            <h2 className="{{name}}-form-title form-title">{{display_name}}</h2>
+          </div>
+        </div>
+
+        <form onSubmit={this.handleSubmit}>
+        {% for field in visible_fields %}
+          <div className="form-group">
+            <label htmlFor="{{field.name}}">{{field.name | capitalize}}</label>
+            <input
+              type="text"
+              className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+              id="{{field.name}}"
+              value={ this.state.{{field.name}} }
+              onChange={this.handleChange}
+
+          </div>
+        {% endfor %}
+          <button type="submit" className="btn btn-success btn-lg">
+            SAVE
+          </button>
+        </form>
+      </div>
+    );
+  }
+}
+
+export default {{class_name}}Form;

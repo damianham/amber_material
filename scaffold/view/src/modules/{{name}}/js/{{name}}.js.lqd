@@ -1,0 +1,34 @@
+import Amber from 'amber';
+import React from 'react'; 
+import { Link } from 'react-router-dom';
+import Resource from '../../../lib/js/resource';
+import ResourceStream from '../../../lib/js/resourceStream';
+import EventBus from '../../../lib/js/eventBus';
+
+export * from "./{{name}}_edit";
+export * from "./{{name}}_index";
+export * from "./{{name}}_new";
+export * from "./{{name}}_view";
+
+export class {{class_name}}SidebarComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = props.{{name}};
+  }
+
+  render() {
+    return (
+      <div>
+        {{display_name}}
+      </div>
+    );
+  }
+}
+
+export class {{class_name}} extends Resource {
+  constructor(endpoint, attributes) {
+    super(endpoint, attributes);
+
+  }
+}

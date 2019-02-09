@@ -1,0 +1,28 @@
+import Amber from 'amber';
+import React from 'react'; 
+import { Link } from 'react-router-dom';
+import Resource from '../../../lib/js/resource';
+import ResourceStream from '../../../lib/js/resourceStream';
+import EventBus from '../../../lib/js/eventBus';
+
+export default class {{class_name}}View extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = props.{{name}};
+  }
+
+  render() {
+    return (
+      <div>
+      {% for field in visible_fields %}
+        <div className="row">
+          <div className="col-sm-2 {{name}}-view-header-column view-header-column">{{ field.name | capitalize }}</div>
+          <div className="col-sm-10 {{name}}-view-data-column view-data-column">{ this.state.{{field.name}} }</div>
+        </div>
+
+      {% endfor %}
+      </div>
+    );
+  }
+}

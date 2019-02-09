@@ -1,0 +1,4 @@
+<%- active = context.request.path == "/{{ name | pluralize }}" ? "active" : "" %>
+<li class="nav-item <%= active %>">
+ <a class="nav-link" href="/{{ name | pluralize }}">{{ display_name | pluralize }}</a>
+</li>

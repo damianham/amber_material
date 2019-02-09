@@ -1,0 +1,238 @@
+import Amber from 'amber';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
+
+import Resource from '../../../lib/js/resource';
+import ResourceStream from '../../../lib/js/resourceStream';
+import EventBus from '../../../lib/js/eventBus';
+
+class {{class_name}}Index extends React.Component {
+  constructor({{name | pluralize}}) {
+    super();
+
+    this.state = {
+      {{name | pluralize}}: {{name | pluralize}},
+      sorted_{{name | pluralize}}: [],
+      sort_column: 'id',
+      sort_direction: 'up'};
+  }
+
+  sort(event) {
+
+    if (event && typeof event === 'String') {
+      // we were given the column to sort on as a string
+      this.state.sort_column = event;
+    } else if (event && event.target) {
+      // the sort column to sort on is the result of a click or selection
+    }
+
+    let vm = this;
+
+    let sorted = Object.keys(this.state.{{name | pluralize}}).map(key => vm.state.{{name | pluralize}}[key]).sort((a,b) => {
+      let a_val = a[vm.state.sort_column];
+      let b_val = b[vm.state.sort_column];
+
+      if (a_val == b_val) {
+        return 0;
+      }
+      if (a_val < b_val) {
+        return vm.state.sort_direction === 'up' ? -1 : 1;
+      } else {
+        return vm.state.sort_direction === 'up' ? 1 : -1;
+      }
+    });
+
+    this.setState({sorted_{{name | pluralize}}: sorted});
+  }
+
+  componentWillMount() {
+
+    let vm = this;
+
+    // create a ResourceStream and subscribe to events
+    this.stream = new ResourceStream("{{name}}", "/{{name | pluralize}}");
+
+    this.stream.on('new:model', message => {
+      console.log('new {{name}}', message.data);
+      let {{name}} = JSON.parse(message.data);
+
+      vm.state.{{name | pluralize}}[{{name}}.id] = new {{class_name}}("/{{name | pluralize}}", {{name}} );
+      vm.sort();
+    });
+
+    this.stream.on('update:model', message => {
+      console.log('update {{name}}', message.data);
+      let {{name}} = JSON.parse(message.data);
+
+      Object.assign(vm.state.{{name | pluralize}}[{{name}}.id], {{name}});
+
+      EventBus.emit('update:model:'+{{name}}.id, {{name}});
+      vm.sort();
+    });
+
+    this.stream.on('delete:model', message => {
+      console.log('delete {{name}}', message.data);
+      let {{name}} = JSON.parse(message.data);
+
+      delete vm.state.{{name | pluralize}}[{{name}}.id];
+      vm.sort();
+    });
+
+    // fetch and sort the index
+    this.stream.all().then((data) => {
+      if (data) {
+        data.forEach((entry) => {
+          let {{name}} =  new {{class_name}}("/{{name | pluralize}}", entry);
+          vm.state.{{name | pluralize}}[""+{{name}}.id] = {{name}};
+        })
+        vm.sort();
+      }
+    });
+
+    EventBus.on("cmd:delete:{{name}}", (id) => {
+      console.log('index got delete {{name}}', id);
+      vm.delete(id);
+    })
+  }
+
+  // delete an instance of the model
+  delete(id) {
+    let vm = this;
+    delete vm.state.{{name | pluralize}}[""+id];
+    vm.sort();
+  }
+
+  render() {
+    return (
+      <{{class_name}}IndexList {{name | pluralize}}=this.state.sorted_list />
+    )
+  }
+}
+
+export default {{class_name}}Index;
+
+class {{class_name}}IndexList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { {{name | pluralize}}: props.{{name | pluralize}} };
+  }
+
+  render() {
+    return (
+      <div>
+        <div className="row {{name}}-index-title-row index-title-row">
+          <div className="col-sm-11">
+            <h2 className="{{name}}-index-title index-title">{{display_name | pluralize}}</h2>
+          </div>
+          <div className="col-sm-1">
+            <div className="{{name}}-index-new-button index-new-button btn btn-success btn-xs">
+              <Link to="/{{name | pluralize}}/new">New</Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="table-responsive {{name}}-index-table">
+          <table className="table table-striped">
+            <thead>
+              <tr className="{{name}}-index.table-head-row index-table-head-row">
+              {% for field in visible_fields %}
+                <th className="{{name}}-index-table-head index-table-head">{{field.name | capitalize }}</th>
+              {% endfor %}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              { this.state.{{name | pluralize}}.map((instance,index) => {
+                  return (
+                    <{{class_name}}IndexItem key={index} {{name}}={instance} />
+                  )
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+}
+
+class {{class_name}}IndexItem extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = props.{{name}};
+  }
+
+  read(event) {
+    event.preventDefault();
+    if (event.target.dataset && event.target.dataset.id) {
+      let id = event.target.dataset.id;
+      console.log("read {{name}}", id )
+      EventBus.emit('cmd:show:{{name}}', id);
+    }
+
+  }
+
+  edit(event) {
+    event.preventDefault();
+    if (event.target.dataset && event.target.dataset.id) {
+      let id = event.target.dataset.id;
+      console.log("edit {{name}}", id)
+      EventBus.emit('cmd:edit:{{name}}', id);
+    }
+  }
+
+  delete(event) {
+    event.preventDefault();
+    if (event.target.dataset && event.target.dataset.id) {
+      let id = event.target.dataset.id;
+      console.log("delete {{name}}", id)
+      if (window.confirm('Are you sure?')) {
+        EventBus.emit('cmd:delete:{{name}}',  id);
+      }
+    }
+  }
+
+  componentDidMount() {
+
+  }
+
+  render() {
+
+    return (
+      <tr className="{{name}}-index-table-row index-table-row">
+      {% for field in visible_fields %}
+        {% if field.type == "reference" %}
+        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{
+          <Link to={ "{{field.name | pluralize}}/" +this.state.{{field.name}} }>{ this.state.{{field.name}} }</Link>
+          }</td>
+        {% else %}
+        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ this.state.{{field.name}} }</td>
+        {% endif %}
+      {% endfor %}
+        <td className="col {{name}}-index-actions-column index-actions-column">
+        <div className="col btn btn-success btn-xs {{name}}-index-actions-read index-actions-read"
+          onClick={this.read} data-id={this.state.id}
+          >
+          read
+        </div>
+
+        <div className="col btn btn-success btn-xs {{name}}-index-actions-edit index-actions-edit"
+          onClick={this.edit} data-id={this.state.id}
+          >
+          edit
+        </div>
+
+        <div className="col btn btn-danger btn-xs {{name}}-index-actions-delete index-actions-delete"
+          onClick={this.delete} data-id={this.state.id}
+          >
+          delete
+        </div>
+        </td>
+      </tr>
+    );
+  }
+
+}
