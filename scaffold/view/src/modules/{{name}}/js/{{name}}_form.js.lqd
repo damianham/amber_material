@@ -13,17 +13,6 @@ class {{class_name}}Form extends React.Component {
     super(props);
 
     this.state = {};
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    this.props.delegate.handleChange(event)
-  }
-
-  handleSubmit(event) {
-    this.props.delegate.handleSubmit(event)
   }
 
   onLoaded(name, data) {
@@ -42,7 +31,7 @@ class {{class_name}}Form extends React.Component {
           </div>
         </div>
 
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.props.onSubmit}>
         {% for field in visible_fields %}
           <div className="form-group">
           <label htmlFor="{{field.name}}">{{field.name | capitalize}}</label>

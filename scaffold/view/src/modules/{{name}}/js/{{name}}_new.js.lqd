@@ -17,16 +17,19 @@ export class {{class_name}}New extends React.Component {
 {{"      "}}{{field.name}}: '',
     {% endfor -%}
     });
+
   }
 
-  handleChange(event) {
+  onChange(event) {
     this.setState({ [event.target.id]: event.target.value });
   }
 
-  handleSubmit(event) {
+  onSubmit(event) {
     event.preventDefault();
     let {{name}} = new {{class_name}}("/{{name | pluralize}}", this.state);
     {{name}}.save();
+
+    this.props.history.goBack()
   }
 
   componentWillMount() {
@@ -37,7 +40,9 @@ export class {{class_name}}New extends React.Component {
   render(props, state) {
     return (
       <div>
-        <{{class_name}}Form {{name}}={this.state} delegate={this} />
+        <{{class_name}}Form {{name}}={this.state}
+        onSubmit={this.onSubmit.bind(this)}
+        onChange={this.onChange.bind(this)}/>
       </div>
     );
   }

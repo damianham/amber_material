@@ -7,6 +7,8 @@ import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
 import {EventBus} from '../../../lib/js/eventBus';
 
+import { {{class_name}} } from './{{name}}'
+
 export class {{class_name}}Index extends React.Component {
   constructor({{name | pluralize}}) {
     super();
@@ -116,7 +118,6 @@ class {{class_name}}IndexList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { {{name | pluralize}}: props.{{name | pluralize}} };
   }
 
   render() {
@@ -144,8 +145,8 @@ class {{class_name}}IndexList extends React.Component {
               </tr>
             </thead>
             <tbody>
-              { this.state.{{name | pluralize}} &&
-                this.state.{{name | pluralize}}.map((instance,index) => {
+              { this.props.{{name | pluralize}} &&
+                this.props.{{name | pluralize}}.map((instance,index) => {
                   return (
                     <{{class_name}}IndexItem key={index} {{name}}={instance} />
                   )
