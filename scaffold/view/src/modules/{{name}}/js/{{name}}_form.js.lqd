@@ -3,10 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 
+import {titlesForResource} from '../../../lib/js/utils';
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
 import EventBus from '../../../lib/js/eventBus';
-
 
 class {{class_name}}Form extends React.Component {
   constructor(props) {
@@ -26,8 +26,12 @@ class {{class_name}}Form extends React.Component {
     this.props.delegate.handleSubmit(event)
   }
 
+  onLoaded(name, data) {
+    this[name] = data;
+    this.setState({optionsLoaded: Date.now() })
+  }
+
   render() {
-    this.state = this.props.{{name}} || {};
 
     return (
 
@@ -41,14 +45,48 @@ class {{class_name}}Form extends React.Component {
         <form onSubmit={this.handleSubmit}>
         {% for field in visible_fields %}
           <div className="form-group">
-            <label htmlFor="{{field.name}}">{{field.name | capitalize}}</label>
-            <input
-              type="text"
-              className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-              id="{{field.name}}"
-              value={ this.state.{{field.name}} }
-              onChange={this.handleChange}
-              />
+          <label htmlFor="{{field.name}}">{{field.name | capitalize}}</label>
+          {% if field.type == "text" -%}
+          <textarea
+            rows={10}
+            name="{{field.name}}"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{field.name}}"
+            value={ this.props.{{name}}.{{field.name}} }
+            onChange={this.props.onChange} />
+
+          {% elsif field.type == "boolean" -%}
+          <input type="checkbox"
+            name="{{field.name}}"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{field.name}}"
+            value={ this.props.{{name}}.{{field.name}} }
+            onChange={this.props.onChange}
+          />
+          {% elsif field.type == "reference" -%}
+          <select
+            name="{{field.name}}_id"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{field.name}}_id"
+            value={ this.props.{{name}}.{{field.name}}_id }
+            onChange={this.props.onChange}
+          >
+          { titlesForResource(this, "{{field.name | pluralize}}").map((opt) => {
+              return (
+                <option value={opt.value}>{opt.name}</option>
+              )
+            })
+          }
+          </select>
+          {% else -%}
+          <input
+            name="{{field.name}}"
+            type="text"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{field.name}}"
+            value={ this.props.{{name}}.{{field.name}} }
+            onChange={this.props.onChange} />
+          {% endif -%}
           </div>
         {% endfor %}
           <button type="submit" className="btn btn-success btn-lg">

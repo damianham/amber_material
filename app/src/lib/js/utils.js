@@ -1,6 +1,7 @@
 'use strict';
 
 import Auth from './auth';
+import Resource from './resource';
 
 export const bestTitleForClass = function(item) {
   return item.title || item.name || item.username || item.email || item.id
@@ -17,6 +18,21 @@ export const optionsForClass = function(store, klazz) {
   return store.getState()[klazz].map(item => {
     return {value: item.id, name: bestTitleForClass(item)}
   });
+}
+
+export const titlesForResource = function(delegate, endpoint) {
+  if (typeof delegate[endpoint] !== 'undefined') {
+    return delegate[endpoint].map(item => {
+      return {value: item.id, name: bestTitleForClass(item)}
+    });
+  }
+  let res = new Resource(endpoint)
+
+  res.all().then((data) => {
+    delegate.onLoaded(endpoint, data)
+  });
+
+  return [];
 }
 
 export const canEditItem = function(item) {
