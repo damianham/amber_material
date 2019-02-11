@@ -19,5 +19,8 @@
 
     <%- if Amber.settings.auto_reload? -%><script src="/js/client_reload.js"></script><%- end -%>
 
+    <script>
+      window.csrf_token="#{csrf_token}"
+    </script>
   </body>
 </html>

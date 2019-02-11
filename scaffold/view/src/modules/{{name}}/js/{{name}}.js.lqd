@@ -1,9 +1,9 @@
 import Amber from 'amber';
-import React from 'react'; 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
-import EventBus from '../../../lib/js/eventBus';
+import {EventBus} from '../../../lib/js/eventBus';
 
 export * from "./{{name}}_edit";
 export * from "./{{name}}_index";

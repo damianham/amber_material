@@ -1,26 +1,43 @@
 import Amber from 'amber';
-import React from 'react'; 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
-import EventBus from '../../../lib/js/eventBus';
+import {EventBus} from '../../../lib/js/eventBus';
+
+import { {{class_name}} } from './{{name}}';
+import {{class_name}}Form from './{{name}}_form'
 
 export class {{class_name}}New extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = props.{{name}};
+    this.state = new {{class_name}}("/{{name | pluralize}}",{
+    {% for field in visible_fields -%}
+{{"      "}}{{field.name}}: '',
+    {% endfor -%}
+    });
+  }
+
+  handleChange(event) {
+    this.setState({ [event.target.id]: event.target.value });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    let {{name}} = new {{class_name}}("/{{name | pluralize}}", this.state);
+    {{name}}.save();
   }
 
   componentWillMount() {
-    let instance = new {{class_name}}("/{{name | pluralize}}",{})
-    this.setState({ {{name}}: instance })
+    this.setState(
+    )
   }
 
   render(props, state) {
     return (
       <div>
-        <{{class_name}}Form {{name}}={this.state.{{name}}} />
+        <{{class_name}}Form {{name}}={this.state} delegate={this} />
       </div>
     );
   }

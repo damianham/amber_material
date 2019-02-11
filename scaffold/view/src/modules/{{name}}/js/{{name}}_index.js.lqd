@@ -5,14 +5,14 @@ import PropTypes from "prop-types";
 
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
-import EventBus from '../../../lib/js/eventBus';
+import {EventBus} from '../../../lib/js/eventBus';
 
-class {{class_name}}Index extends React.Component {
+export class {{class_name}}Index extends React.Component {
   constructor({{name | pluralize}}) {
     super();
 
     this.state = {
-      {{name | pluralize}}: {{name | pluralize}},
+      {{name | pluralize}}: {},
       sorted_{{name | pluralize}}: [],
       sort_column: 'id',
       sort_direction: 'up'};
@@ -105,7 +105,7 @@ class {{class_name}}Index extends React.Component {
 
   render() {
     return (
-      <{{class_name}}IndexList {{name | pluralize}}={this.state.sorted_list} />
+      <{{class_name}}IndexList {{name | pluralize}}={this.state.sorted_{{name | pluralize}}} />
     )
   }
 }
@@ -144,7 +144,8 @@ class {{class_name}}IndexList extends React.Component {
               </tr>
             </thead>
             <tbody>
-              { this.state.{{name | pluralize}}.map((instance,index) => {
+              { this.state.{{name | pluralize}} &&
+                this.state.{{name | pluralize}}.map((instance,index) => {
                   return (
                     <{{class_name}}IndexItem key={index} {{name}}={instance} />
                   )

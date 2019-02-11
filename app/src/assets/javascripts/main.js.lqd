@@ -7,9 +7,15 @@ window.$ = window.jQuery = jQuery;
 
 import { HashRouter } from 'react-router-dom';
 
-ReactDOM.render((
-	  <HashRouter>
-	    <App />
-	  </HashRouter>),
-  document.getElementById("{{name}}_app")
-);
+document.addEventListener('DOMContentLoaded', function() {
+
+  let componentEntry = document.getElementById("{{name}}_app");
+  if (componentEntry) {
+		ReactDOM.render((
+			  <HashRouter>
+			    <App />
+			  </HashRouter>),
+		  document.getElementById("{{name}}_app")
+		);
+  }
+});
