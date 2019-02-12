@@ -1,21 +1,53 @@
 import Amber from 'amber';
-import React from 'react'; 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
 import EventBus from '../../../lib/js/eventBus';
 
+import { {{class_name}} } from './{{name}}';
+import {{class_name}}Form from './{{name}}_form'
+
 export class {{class_name}}Edit extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = props.{{name}};
+    this.state = this.props.location.state
   }
 
-  render() {
+  onBack() {
+    this.props.history.goBack()
+  }
+
+  onChange(event) {
+    this.state[event.target.id] = event.target.value;
+    // trigger re-render
+    this.setState({ [event.target.id]: event.target.value });
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    let {{name}} = new {{class_name}}("/{{name | pluralize}}", this.state);
+    {{name}}.save();
+
+    this.props.history.goBack()
+  }
+
+  componentWillMount() {
+
+  }
+
+  render(props, state) {
     return (
       <div>
-        <{{class_name}}Form {{name}}={ this.state.{{name}} } />
+        <div className="btn btn-primary btn-xs"
+          onClick={this.onBack.bind(this)}
+          >
+           Back
+        </div>
+        <{{class_name}}Form {{name}}={this.state}
+        onSubmit={this.onSubmit.bind(this)}
+        onChange={this.onChange.bind(this)}/>
       </div>
     );
   }

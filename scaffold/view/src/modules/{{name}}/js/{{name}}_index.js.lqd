@@ -13,9 +13,9 @@ export class {{class_name}}Index extends React.Component {
   constructor({{name | pluralize}}) {
     super();
 
+    this.{{name | pluralize}} = {}
     this.state = {
-      {{name | pluralize}}: {},
-      sorted_{{name | pluralize}}: [],
+      list: [],
       sort_column: 'id',
       sort_direction: 'up'};
   }
@@ -31,7 +31,7 @@ export class {{class_name}}Index extends React.Component {
 
     let vm = this;
 
-    let sorted = Object.keys(this.state.{{name | pluralize}}).map(key => vm.state.{{name | pluralize}}[key]).sort((a,b) => {
+    let sorted = Object.keys(this.{{name | pluralize}}).map(key => vm.{{name | pluralize}}[key]).sort((a,b) => {
       let a_val = a[vm.state.sort_column];
       let b_val = b[vm.state.sort_column];
 
@@ -45,7 +45,7 @@ export class {{class_name}}Index extends React.Component {
       }
     });
 
-    this.setState({sorted_{{name | pluralize}}: sorted});
+    this.setState({list: sorted});
   }
 
   componentWillMount() {
@@ -59,7 +59,7 @@ export class {{class_name}}Index extends React.Component {
       console.log('new {{name}}', message.data);
       let {{name}} = JSON.parse(message.data);
 
-      vm.state.{{name | pluralize}}[{{name}}.id] = new {{class_name}}("/{{name | pluralize}}", {{name}} );
+      vm.{{name | pluralize}}["{{name}}_"+{{name}}.id] = new {{class_name}}("/{{name | pluralize}}", {{name}} );
       vm.sort();
     });
 
@@ -67,7 +67,7 @@ export class {{class_name}}Index extends React.Component {
       console.log('update {{name}}', message.data);
       let {{name}} = JSON.parse(message.data);
 
-      Object.assign(vm.state.{{name | pluralize}}[{{name}}.id], {{name}});
+      Object.assign(vm.{{name | pluralize}}["{{name}}_"+{{name}}.id], {{name}});
 
       EventBus.emit('update:model:'+{{name}}.id, {{name}});
       vm.sort();
@@ -77,7 +77,7 @@ export class {{class_name}}Index extends React.Component {
       console.log('delete {{name}}', message.data);
       let {{name}} = JSON.parse(message.data);
 
-      delete vm.state.{{name | pluralize}}[{{name}}.id];
+      delete vm.{{name | pluralize}}["{{name}}_"+{{name}}.id];
       vm.sort();
     });
 
@@ -86,7 +86,7 @@ export class {{class_name}}Index extends React.Component {
       if (data) {
         data.forEach((entry) => {
           let {{name}} =  new {{class_name}}("/{{name | pluralize}}", entry);
-          vm.state.{{name | pluralize}}[""+{{name}}.id] = {{name}};
+          vm.{{name | pluralize}}["{{name}}_"+{{name}}.id] = {{name}};
         })
         vm.sort();
       }
@@ -101,13 +101,23 @@ export class {{class_name}}Index extends React.Component {
   // delete an instance of the model
   delete(id) {
     let vm = this;
-    delete vm.state.{{name | pluralize}}[""+id];
-    vm.sort();
+    let {{name}} = vm.{{name | pluralize}}["{{name}}_"+id];
+    {{name}}.destroy().then((res) => {
+      delete vm.{{name | pluralize}}["{{name}}_"+id];
+      vm.setState(state => {
+        const list = state.list.filter((item, j) => item.id !=  parseInt(id));
+
+        return {
+         list,
+        };
+      });
+    })
+
   }
 
   render() {
     return (
-      <{{class_name}}IndexList {{name | pluralize}}={this.state.sorted_{{name | pluralize}}} />
+      <{{class_name}}IndexList {{name | pluralize}}={this.state.list} />
     )
   }
 }
@@ -121,6 +131,7 @@ class {{class_name}}IndexList extends React.Component {
   }
 
   render() {
+    console.log('render {{class_name}}IndexList with', this.props.{{name | pluralize}})
     return (
       <div>
         <div className="row {{name}}-index-title-row index-title-row">
@@ -128,7 +139,7 @@ class {{class_name}}IndexList extends React.Component {
             <h2 className="{{name}}-index-title index-title">{{display_name | pluralize}}</h2>
           </div>
           <div className="col-sm-1">
-            <div className="{{name}}-index-new-button index-new-button btn btn-success btn-xs">
+            <div className="{{name}}-index-new-button index-new-button btn btn-secondary btn-xs">
               <Link to="/{{name | pluralize}}/new">New</Link>
             </div>
           </div>
@@ -191,7 +202,7 @@ class {{class_name}}IndexItem extends React.Component {
     if (event.target.dataset && event.target.dataset.id) {
       let id = event.target.dataset.id;
       console.log("delete {{name}}", id)
-      if (window.confirm('Are you sure?')) {
+      if (window.confirm('Are you sure you want to delete this {{name | capitalize}}?')) {
         EventBus.emit('cmd:delete:{{name}}',  id);
       }
     }
@@ -202,36 +213,39 @@ class {{class_name}}IndexItem extends React.Component {
   }
 
   render() {
-
+    console.log('render {{class_name}}IndexItem with', this.props.{{name}})
+    let {{name}} = this.props.{{name}}
     return (
       <tr className="{{name}}-index-table-row index-table-row">
       {% for field in visible_fields %}
         {% if field.type == "reference" %}
-        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{
-          <Link to={ "{{field.name | pluralize}}/" +this.state.{{field.name}} }>{ this.state.{{field.name}} }</Link>
-          }</td>
+        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
+          <Link to={ "{{field.name | pluralize}}/" +{{name}}.{{field.name}}_id }>{ {{name}}.{{field.name}}_id }</Link>
+          </td>
         {% else %}
-        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ this.state.{{field.name}} }</td>
+        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
         {% endif %}
       {% endfor %}
-        <td className="col {{name}}-index-actions-column index-actions-column">
-        <div className="col btn btn-success btn-xs {{name}}-index-actions-read index-actions-read"
-          onClick={this.read} data-id={this.state.id}
-          >
-          read
-        </div>
+        <td className="{{name}}-index-actions-column index-actions-column">
 
-        <div className="col btn btn-success btn-xs {{name}}-index-actions-edit index-actions-edit"
-          onClick={this.edit} data-id={this.state.id}
-          >
-          edit
-        </div>
+        <Link to={
+          {
+            pathname: "/{{name | pluralize}}/show/"+ {{name}}.id,
+            state: {{name}}
+          }
+        }>Read</Link>  |
+        <Link to={
+          {
+            pathname: "/{{name | pluralize}}/edit/"+ {{name}}.id,
+            state: {{name}}
+          }
+        }>Edit</Link>  |
 
-        <div className="col btn btn-danger btn-xs {{name}}-index-actions-delete index-actions-delete"
-          onClick={this.delete} data-id={this.state.id}
+        <span className="btn btn-danger {{name}}-index-actions-delete index-actions-delete"
+          onClick={this.delete.bind(this)} data-id={ {{name}}.id }
           >
-          delete
-        </div>
+          Delete
+        </span>
         </td>
       </tr>
     );

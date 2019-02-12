@@ -17,7 +17,10 @@ export class {{class_name}}New extends React.Component {
 {{"      "}}{{field.name}}: '',
     {% endfor -%}
     });
+  }
 
+  onBack() {
+    this.props.history.goBack()
   }
 
   onChange(event) {
@@ -35,13 +38,17 @@ export class {{class_name}}New extends React.Component {
   }
 
   componentWillMount() {
-    this.setState(
-    )
+
   }
 
   render(props, state) {
     return (
       <div>
+        <div className="btn btn-primary btn-xs"
+          onClick={this.onBack.bind(this)}
+          >
+           Back
+        </div>
         <{{class_name}}Form {{name}}={this.state}
         onSubmit={this.onSubmit.bind(this)}
         onChange={this.onChange.bind(this)}/>

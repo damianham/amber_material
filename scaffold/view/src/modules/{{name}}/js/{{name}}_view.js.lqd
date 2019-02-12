@@ -1,28 +1,47 @@
 import Amber from 'amber';
-import React from 'react'; 
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
 import EventBus from '../../../lib/js/eventBus';
 
-export default class {{class_name}}View extends React.Component {
+export class {{class_name}}View extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = props.{{name}};
+    this.state = this.props.location.state
+  }
+
+  onBack() {
+    this.props.history.goBack()
   }
 
   render() {
     return (
-      <div>
-      {% for field in visible_fields %}
-        <div className="row">
-          <div className="col-sm-2 {{name}}-view-header-column view-header-column">{{ field.name | capitalize }}</div>
-          <div className="col-sm-10 {{name}}-view-data-column view-data-column">{ this.state.{{field.name}} }</div>
-        </div>
-
-      {% endfor %}
+    <div className="table-responsive {{name}}-view-table">
+      <div className="btn btn-primary btn-xs"
+        onClick={this.onBack.bind(this)}
+        >
+        Back
       </div>
+      <table className="table table-striped">
+        <tbody>
+        {% for field in visible_fields %}
+          <tr>
+            <th className="{{name}}-view-header-column view-header-column">{{ field.name | capitalize }}</th>
+            {% if field.type == "reference" %}
+            <td className="{{name}}-view-data-column view-data-column">
+              <Link to={ "{{field.name | pluralize}}/" +this.state.{{field.name}}_id }>{ this.state.{{field.name}}_id }</Link>
+              </td>
+            {% else %}
+            <td className="{{name}}-view-data-column view-data-column">{ this.state.{{field.name}} }</td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
     );
   }
 }

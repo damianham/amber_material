@@ -60,10 +60,10 @@ class {{class_name}}Form extends React.Component {
             value={ this.props.{{name}}.{{field.name}}_id }
             onChange={this.props.onChange}
           >
-            <option value=''>Select {field.name}</option>
+            <option value='' key='none'>Select {{field.name}}</option>
           { titlesForResource(this, "{{field.name | pluralize}}").map((opt) => {
               return (
-                <option value={opt.value}>{opt.name}</option>
+                <option value={opt.value} key={opt.value}>{opt.name}</option>
               )
             })
           }
