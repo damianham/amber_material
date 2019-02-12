@@ -226,22 +226,23 @@ class {{class_name}}IndexItem extends React.Component {
 
         <Link to={
           {
-            pathname: "/{{name | pluralize}}/show/"+ {{name}}.id,
-            state: {{name}}
-          }
-        }>Read</Link>  |
-        <Link to={
-          {
             pathname: "/{{name | pluralize}}/edit/"+ {{name}}.id,
             state: {{name}}
           }
-        }>Edit</Link>  |
+        }><i className="material-icons">edit</i></Link>
 
-        <span className="btn btn-danger {{name}}-index-actions-delete index-actions-delete"
+        <span className="{{name}}-index-actions-delete index-actions-delete"
           onClick={this.delete.bind(this)} data-id={ {{name}}.id }
           >
-          Delete
+          <i className="material-icons">delete</i>
         </span>
+
+        <Link to={
+          {
+            pathname: "/{{name | pluralize}}/show/"+ {{name}}.id,
+            state: {{name}}
+          }
+        }><i className="material-icons">arrow_forward_ios</i></Link>
         </td>
       </tr>
     );

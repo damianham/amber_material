@@ -9,6 +9,7 @@ html
     link rel="apple-touch-icon" href="/favicon.png"
     link rel="icon" href="/favicon.png"
     link rel="icon" type="image/x-icon" href="/favicon.ico"
+    link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"
 
   body
 

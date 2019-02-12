@@ -4,13 +4,19 @@
 
 .index-actions-row {}
 
-.index-actions-column {}
+.index-actions-column {
+  a {
+    margin: 0px 20px 
+  }
+}
 
 .index-actions-read {}
 
 .index-actions-edit {}
 
-.index-actions-delete {}
+.index-actions-delete {
+  color: $primary;
+}
 
 .view-header-column {}
 
