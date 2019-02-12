@@ -19,8 +19,8 @@ class {{ class_name }}Controller < ApplicationController
 
   def show
     respond_with do
-        html render_module("show.{{ language }}")
-        json {{ name }}.to_json
+      html render_module("show.{{ language }}")
+      json {{ name }}.to_json
     end
   end
 
@@ -33,7 +33,7 @@ class {{ class_name }}Controller < ApplicationController
 
   def create
 {% if model == "granite" -%}
-    {{ name }} = {{ class_name }}.new({{ name }}_params.validate!)
+{{"    "}}{{ name }} = {{ class_name }}.new({{ name }}_params.validate!)
     if {{ name }}.save
       respond_with do
         html ->{ redirect_to action: :index, flash: {"success" => "Created {{ class_name }} successfully."} }
@@ -69,9 +69,9 @@ class {{ class_name }}Controller < ApplicationController
 
   def edit
 {% if model == "crecto" -%}
-{{"      "}}changeset = Repo.update({{ name }})
+{{"    "}}changeset = Repo.update({{ name }})
 {% endif -%}
-{{"      "}}render_module("edit.{{ language }}")
+{{"    "}}render_module("edit.{{ language }}")
   end
 
   def update
@@ -116,13 +116,12 @@ class {{ class_name }}Controller < ApplicationController
 {% else -%}
     Repo.delete({{ name }})
 {% endif -%}
-{{"      "}}msg = "{{ class_name }} with ID #{params["id"]} deleted"
+{{"    "}}msg = "{{ class_name }} with ID #{params["id"]} deleted"
     result = {result: msg}
     respond_with do
       html ->{ redirect_to action: :index, flash: {"success" => msg} }
       json result.to_json
     end
-
   end
 
   private def {{ name }}_params
@@ -134,10 +133,10 @@ class {{ class_name }}Controller < ApplicationController
   end
 
   private def set_{{ name }}
-    {% if model == "granite" -%}
+{% if model == "granite" -%}
 {{"    "}}@{{ name }} = {{ class_name }}.find! params["id"]
-    {% else -%}
+{% else -%}
 {{"    "}}@{{ name }} = Repo.get!({{ class_name }}, params["id"])
-    {% endif -%}
-  end
+{% endif -%}
+{{"  "}}end
 end
