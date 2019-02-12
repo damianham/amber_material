@@ -46,8 +46,6 @@ export default class Resource {
       clone.user_id = user.id;
     }
 
-    console.log('saving instance', clone)
-
     return  $.ajax(
       {
         url: url,
