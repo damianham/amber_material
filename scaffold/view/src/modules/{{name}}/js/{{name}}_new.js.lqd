@@ -21,6 +21,8 @@ export class {{class_name}}New extends React.Component {
   }
 
   onChange(event) {
+    this.state[event.target.id] = event.target.value;
+    // trigger re-render
     this.setState({ [event.target.id]: event.target.value });
   }
 
