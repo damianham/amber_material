@@ -40,7 +40,7 @@ class Auth {
   }
 
   static getUser() {
-    return JSON.parse(localStorage.getItem('user') || {});
+    return JSON.parse(localStorage.getItem('user') || '{}');
   }
 
 }
