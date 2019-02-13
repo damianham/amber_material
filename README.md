@@ -20,8 +20,7 @@ by changing the index method in
 ```
 src/controllers/home_controller.cr
 ```
-Thus;
-For a guest the home page is rendered from src/views/home/index.slang (or .ecr if you elect to use ECR template engine).
+Thus; for a guest the home page is rendered from src/views/home/index.slang (or .ecr if you elect to use ECR template engine).
 For an authenticated user the home screen is part of the SPA and is contained in the Home component at;
 ```
 src/views/home/js/home.js
