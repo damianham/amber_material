@@ -26,7 +26,8 @@ export class {{class_name}}View extends React.Component {
       </div>
       <table className="table table-striped">
         <tbody>
-        {% for field in visible_fields %}
+          {% for field in visible_fields %}
+          {% if field.name != "user" %}
           <tr>
             <th className="{{name}}-view-header-column view-header-column">{{ field.name | capitalize }}</th>
             {% if field.type == "reference" %}
@@ -37,7 +38,8 @@ export class {{class_name}}View extends React.Component {
             <td className="{{name}}-view-data-column view-data-column">{ this.state.{{field.name}} }</td>
             {% endif %}
           </tr>
-        {% endfor %}
+          {% endif %}
+          {% endfor %}
         </tbody>
       </table>
     </div>

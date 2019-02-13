@@ -22,10 +22,12 @@ export class {{class_name}}Index extends React.Component {
     };
 
     {% for field in visible_fields -%}
-      {% if field.type == "reference" -%}
+    {% if field.type == "reference" -%}
+    {% if field.name != "user" -%}
     {{" "}}
     this.state.{{field.name | pluralize}} = []
-      {% endif -%}
+    {% endif -%}
+    {% endif -%}
     {% endfor %}
   }
 
@@ -118,6 +120,7 @@ export class {{class_name}}Index extends React.Component {
     // fetch related data
 {% for field in visible_fields -%}
   {% if field.type == "reference" -%}
+  {% if field.name != "user" -%}
 {{" "}}
     new Resource("/{{field.name | pluralize}}").all().then((data) => {
       if (data) {
@@ -129,6 +132,7 @@ export class {{class_name}}Index extends React.Component {
         this.setState({ {{field.name | pluralize}}: entries})
       }
     });
+  {% endif -%}
   {% endif -%}
 {% endfor %}
   }
@@ -183,8 +187,10 @@ class {{class_name}}IndexList extends React.Component {
           <table className="table table-striped">
             <thead>
               <tr className="{{name}}-index.table-head-row index-table-head-row">
-              {% for field in visible_fields %}
+              {% for field in visible_fields -%}
+              {% if field.name != "user" %}
                 <th className="{{name}}-index-table-head index-table-head">{{field.name | capitalize }}</th>
+              {% endif -%}
               {% endfor %}
                 <th>Actions</th>
               </tr>
@@ -249,13 +255,16 @@ class {{class_name}}IndexItem extends React.Component {
     let {{name}} = this.props.{{name}}
 {% for field in visible_fields -%}
 {% if field.type == "reference" -%}
+{% if field.name != "user" -%}
 {{"    "}}this.{{field.name}} = this.props.delegate.getRelated("{{field.name | pluralize}}", {{name}}.{{field.name}}_id)
+{% endif -%}
 {% endif -%}
 {% endfor -%}
 {{" "}}
     return (
       <tr className="{{name}}-index-table-row index-table-row">
         {% for field in visible_fields -%}
+        {% if field.name != "user" -%}
         {% if field.type == "reference" -%}
         <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
           <Link to={
@@ -268,6 +277,7 @@ class {{class_name}}IndexItem extends React.Component {
           </td>
         {% else -%}
           <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
+        {% endif -%}
         {% endif -%}
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">

@@ -33,6 +33,7 @@ class {{class_name}}Form extends React.Component {
 
         <form onSubmit={this.props.onSubmit}>
         {% for field in visible_fields %}
+        {% if field.name != "user" %}
           <div className="form-group">
           <label htmlFor="{{field.name}}">{{field.name | capitalize}}</label>
           {% if field.type == "text" -%}
@@ -78,6 +79,7 @@ class {{class_name}}Form extends React.Component {
             onChange={this.props.onChange} />
           {% endif -%}
           </div>
+        {% endif %}
         {% endfor %}
           <button type="submit" className="btn btn-success btn-lg">
             SAVE

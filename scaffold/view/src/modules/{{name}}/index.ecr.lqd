@@ -12,7 +12,9 @@
     <thead>
       <tr>
 {% for field in visible_fields %}
+{% if field.name != "user" %}
         <th>{{ field.name | capitalize }}</th>
+{% endif %}
 {% endfor %}
         <th>Actions</th>
       </tr>
@@ -20,7 +22,9 @@
     <%- {{ name | pluralize }}.each do |{{ name }}| %>
       <tr>
 {% for field in visible_fields %}
+{% if field.name != "user" %}
         <td><%={{ name }}.{{ field.name }}{% if field.type == "reference" %}.id{% endif %} %></td>
+{% endif %}
 {% endfor %}
         <td>
           <span>

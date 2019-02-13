@@ -8,14 +8,18 @@ div.table-responsive
     thead
       tr
         {% for field in visible_fields %}
+        {% if field.name != "user" %}
         th {{ field.name | capitalize }}
+        {% endif %}
         {% endfor %}
         th Actions
     tbody
       - {{ name | pluralize }}.each do |{{ name }}|
         tr
           {% for field in visible_fields %}
+          {% if field.name != "user" %}
           td = {{ name }}.{{ field.name }}{% if field.type == "reference" %}.id{% endif %}
+          {% endif %}
           {% endfor %}
           td
             span
