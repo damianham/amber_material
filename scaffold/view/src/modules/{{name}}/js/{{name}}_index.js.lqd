@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import Resource from '../../../lib/js/resource';
 import ResourceStream from '../../../lib/js/resourceStream';
 import {EventBus} from '../../../lib/js/eventBus';
+import {bestTitleForClass} from '../../../lib/js/utils';
 
 import { {{class_name}} } from './{{name}}'
 
@@ -17,7 +18,15 @@ export class {{class_name}}Index extends React.Component {
     this.state = {
       list: [],
       sort_column: 'id',
-      sort_direction: 'up'};
+      sort_direction: 'up'
+    };
+
+    {% for field in visible_fields -%}
+      {% if field.type == "reference" -%}
+    {{" "}}
+    this.state.{{field.name | pluralize}} = []
+      {% endif -%}
+    {% endfor %}
   }
 
   sort(event) {
@@ -46,6 +55,10 @@ export class {{class_name}}Index extends React.Component {
     });
 
     this.setState({list: sorted});
+  }
+
+  getRelated(klazz, id) {
+    return this.state[klazz].filter((item) => item.id == id)[0]
   }
 
   componentWillMount() {
@@ -78,7 +91,13 @@ export class {{class_name}}Index extends React.Component {
       let {{name}} = JSON.parse(message.data);
 
       delete vm.{{name | pluralize}}["{{name}}_"+{{name}}.id];
-      vm.sort();
+      vm.setState(state => {
+        const list = state.list.filter((item, j) => item.id !=  parseInt({{name}}.id));
+
+        return {
+         list,
+        };
+      });
     });
 
     // fetch and sort the index
@@ -95,6 +114,23 @@ export class {{class_name}}Index extends React.Component {
     EventBus.on("cmd:delete:{{name}}", (id) => {
       vm.delete(id);
     })
+
+    // fetch related data
+{% for field in visible_fields -%}
+  {% if field.type == "reference" -%}
+{{" "}}
+    new Resource("/{{field.name | pluralize}}").all().then((data) => {
+      if (data) {
+        let entries = []
+        data.forEach((entry) => {
+          entries.push(new Resource("/{{field.name | pluralize}}", entry))
+        })
+
+        this.setState({ {{field.name | pluralize}}: entries})
+      }
+    });
+  {% endif -%}
+{% endfor %}
   }
 
   // delete an instance of the model
@@ -116,7 +152,7 @@ export class {{class_name}}Index extends React.Component {
 
   render() {
     return (
-      <{{class_name}}IndexList {{name | pluralize}}={this.state.list} />
+      <{{class_name}}IndexList {{name | pluralize}}={this.state.list} delegate={this}/>
     )
   }
 }
@@ -157,7 +193,7 @@ class {{class_name}}IndexList extends React.Component {
               { this.props.{{name | pluralize}} &&
                 this.props.{{name | pluralize}}.map((instance,index) => {
                   return (
-                    <{{class_name}}IndexItem key={index} {{name}}={instance} />
+                    <{{class_name}}IndexItem key={index} {{name}}={instance} delegate={this.props.delegate} />
                   )
                 })
               }
@@ -211,16 +247,28 @@ class {{class_name}}IndexItem extends React.Component {
 
   render() {
     let {{name}} = this.props.{{name}}
+    {% for field in visible_fields -%}
+      {% if field.type == "reference" -%}
+{{"    "}}this.{{field.name}} = this.props.delegate.getRelated("{{field.name | pluralize}}", {{name}}.{{field.name}}_id)
+      {% endif -%}
+    {% endfor %}
+
     return (
       <tr className="{{name}}-index-table-row index-table-row">
-      {% for field in visible_fields %}
-        {% if field.type == "reference" %}
+      {% for field in visible_fields -%}
+        {% if field.type == "reference" -%}
         <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
-          <Link to={ "{{field.name | pluralize}}/" +{{name}}.{{field.name}}_id }>{ {{name}}.{{field.name}}_id }</Link>
+          <Link to={
+            {
+              pathname: "{{field.name | pluralize}}/" +{{name}}.{{field.name}}_id,
+              state: this.{{field.name}} || {}
+            }
+          }>
+          { bestTitleForClass(this.{{field.name}} || {id: {{name}}.{{field.name}}_id}) }</Link>
           </td>
-        {% else %}
+        {% else -%}
         <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
-        {% endif %}
+        {% endif -%}
       {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
