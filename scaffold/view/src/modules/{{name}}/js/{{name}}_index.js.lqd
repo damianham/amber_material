@@ -247,29 +247,29 @@ class {{class_name}}IndexItem extends React.Component {
 
   render() {
     let {{name}} = this.props.{{name}}
-    {% for field in visible_fields -%}
-      {% if field.type == "reference" -%}
+{% for field in visible_fields -%}
+{% if field.type == "reference" -%}
 {{"    "}}this.{{field.name}} = this.props.delegate.getRelated("{{field.name | pluralize}}", {{name}}.{{field.name}}_id)
-      {% endif -%}
-    {% endfor %}
-
+{% endif -%}
+{% endfor -%}
+{{" "}}
     return (
       <tr className="{{name}}-index-table-row index-table-row">
-      {% for field in visible_fields -%}
+        {% for field in visible_fields -%}
         {% if field.type == "reference" -%}
         <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
           <Link to={
             {
-              pathname: "{{field.name | pluralize}}/" +{{name}}.{{field.name}}_id,
+              pathname: "{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
               state: this.{{field.name}} || {}
             }
           }>
           { bestTitleForClass(this.{{field.name}} || {id: {{name}}.{{field.name}}_id}) }</Link>
           </td>
         {% else -%}
-        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
+          <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
         {% endif -%}
-      {% endfor %}
+        {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
         <Link to={
