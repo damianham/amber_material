@@ -28,8 +28,8 @@ export const titlesForResource = function(delegate, endpoint) {
   }
   let res = new Resource(endpoint)
 
-  res.all().then((data) => {
-    delegate.onLoaded(endpoint, data)
+  res.all().then((resp) => {
+    delegate.onLoaded(endpoint, resp)
   });
 
   return [];
