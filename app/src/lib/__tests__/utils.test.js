@@ -77,8 +77,8 @@ it('gets the options For a Class', () => {
   }
 
   expect(optionsForClass(store,'products')).toEqual([
-    {value: obj1.id, name: obj1.title},
-    {value: obj2.id, name: obj1.name}
+    {value: obj1.id, label: obj1.title},
+    {value: obj2.id, label: obj1.name}
   ])
 })
 
@@ -94,8 +94,8 @@ describe('titlesForResource', () => {
     }
 
     expect(titlesForResource(data,'products')).toEqual([
-      {value: obj1.id, name: obj1.title},
-      {value: obj2.id, name: obj1.name}
+      {value: obj1.id, label: obj1.title},
+      {value: obj2.id, label: obj1.name}
     ])
   })
 

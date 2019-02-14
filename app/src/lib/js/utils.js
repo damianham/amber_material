@@ -16,14 +16,14 @@ export const titleForId = function(store, id, klazz) {
 export const optionsForClass = function(store, klazz) {
   if (typeof store.getState()[klazz] === 'undefined') return [];
   return store.getState()[klazz].map(item => {
-    return {value: item.id, name: bestTitleForClass(item)}
+    return {value: item.id, label: bestTitleForClass(item)}
   });
 }
 
 export const titlesForResource = function(delegate, endpoint) {
   if (typeof delegate[endpoint] !== 'undefined') {
     return delegate[endpoint].map(item => {
-      return {value: item.id, name: bestTitleForClass(item)}
+      return {value: item.id, label: bestTitleForClass(item)}
     });
   }
   let res = new Resource(endpoint)
