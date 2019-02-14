@@ -14,7 +14,7 @@ export class {{class_name}}SidebarComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = props.{{name}};
+    this.state = this.props.location.state
   }
 
   render() {
@@ -27,8 +27,8 @@ export class {{class_name}}SidebarComponent extends React.Component {
 }
 
 export class {{class_name}} extends Resource {
-  constructor(endpoint, attributes) {
-    super(endpoint, attributes);
+  constructor( attributes) {
+    super("/{{name | pluralize}}", attributes);
 
   }
 }

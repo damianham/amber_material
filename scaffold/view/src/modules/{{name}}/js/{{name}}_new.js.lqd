@@ -12,7 +12,7 @@ export class {{class_name}}New extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = new {{class_name}}("/{{name | pluralize}}",{
+    this.state = new {{class_name}}({
     {% for field in visible_fields -%}
 {{"      "}}{{field.name}}: '',
     {% endfor -%}
@@ -31,7 +31,7 @@ export class {{class_name}}New extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    let {{name}} = new {{class_name}}("/{{name | pluralize}}", this.state);
+    let {{name}} = new {{class_name}}(this.state);
     {{name}}.save();
 
     this.props.history.goBack()

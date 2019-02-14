@@ -27,7 +27,7 @@ export class {{class_name}}Edit extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    let {{name}} = new {{class_name}}("/{{name | pluralize}}", this.state);
+    let {{name}} = new {{class_name}}( this.state);
     {{name}}.save();
 
     this.props.history.goBack()
