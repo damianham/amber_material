@@ -9,7 +9,7 @@
     "build": "webpack --config config/webpack/development.js",
     "watch": "webpack -w --config config/webpack/development.js",
     "release": "webpack -p --config config/webpack/production.js",
-    "test": "echo \"No test specified\" && exit 1"
+    "test": "jest"
   },
   "dependencies": {
     "bootstrap": "^4.2.1",
