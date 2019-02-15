@@ -63,3 +63,17 @@ it('finds a record in a record set', () => {
     expect(store.find('product', 1)).toEqual(products[0])
   })
 })
+
+it('deletes a record in a record set', () => {
+  const endpoint = '/products'
+  const products = [new Resource(endpoint,{id:1, name: 'Widget'}),
+                    new Resource(endpoint,{id: 2, name: 'Wimble'})];
+  const resp = {data: products};
+
+  jquery.ajax.mockImplementation(() => Promise.resolve(resp))
+
+  store.loadResources('product', endpoint, (results) => {
+    store.delete('product', 1)
+    expect(store.find('product', 1)).toEqual(undefined)
+  })
+})
