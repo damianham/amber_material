@@ -65,13 +65,8 @@ class Store {
     stream.on('update:model', message => {
       console.log('update model', message.data);
       let model = JSON.parse(message.data);
-      let old_model = vm.find(klazz, model.id)
 
-      if (old_model) {
-        Object.assign(old_model, model);
-
-        EventBus.emit('update:model:'+klazz, model);
-      }
+      vm.update(klazz, model.id, model)
     });
 
     stream.on('delete:model', message => {
@@ -102,6 +97,18 @@ class Store {
     return undefined
   }
 
+  update(klazz, id, model) {
+    if (this.isLoaded(klazz)) {
+      let old_model = this.find(klazz, model.id)
+
+      if (old_model) {
+        Object.assign(old_model, model);
+
+        EventBus.emit('update:model:'+klazz, model);
+      }
+    }
+  }
+
   delete(klazz, id) {
     let model
 
@@ -110,7 +117,6 @@ class Store {
         this.state[klazz] = this.state[klazz].filter((item, j) => item.id !=  parseInt(id));
 
         model.destroy()
-        console.log('emit delete model', klazz, id)
         EventBus.emit('delete:model:'+klazz, model);
       }
     }
