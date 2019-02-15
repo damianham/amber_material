@@ -3,8 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import {EventBus} from '../../../lib/js/eventBus';
+import {store} from '../../../lib/js/store'
 
-import { {{class_name}} } from './{{name}}';
 import {{class_name}}Form from './{{name}}_form'
 
 export class {{class_name}}Edit extends React.Component {
@@ -26,8 +26,8 @@ export class {{class_name}}Edit extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    let {{name}} = new {{class_name}}( this.state);
-    {{name}}.save();
+
+    store.update("{{name}}", this.state.id, this.state)
 
     this.props.history.goBack()
   }

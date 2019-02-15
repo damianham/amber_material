@@ -104,6 +104,8 @@ class Store {
       if (old_model) {
         Object.assign(old_model, model);
 
+        old_model.save();
+
         EventBus.emit('update:model:'+klazz, model);
       }
     }

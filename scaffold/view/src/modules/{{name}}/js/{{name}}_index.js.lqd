@@ -58,19 +58,19 @@ export class {{class_name}}Index extends React.Component {
       }
     })
 
-    EventBus.on('new:model:{{name}}', (model) => {
+    EventBus.on('new:model:{{name}}', this.newListener = (model) => {
       vm.sort();
     });
 
-    EventBus.on('update:model:{{name}}', (model) => {
+    EventBus.on('update:model:{{name}}', this.updateListener = (model) => {
       vm.sort();
     });
 
-    EventBus.on('delete:model:{{name}}', (model) => {
+    EventBus.on('delete:model:{{name}}', this.deleteListener = (model) => {
       vm.sort();
     });
 
-    EventBus.on("cmd:delete:{{name}}", (id) => {
+    EventBus.on("cmd:delete:{{name}}", this.cmdListener = (id) => {
       store.delete("{{name}}", id)
     })
 
@@ -88,6 +88,13 @@ export class {{class_name}}Index extends React.Component {
   {% endif -%}
   {% endif -%}
 {% endfor %}
+  }
+
+  componentWillUnmount() {
+    EventBus.off('new:model:{{name}}', this.newListener)
+    EventBus.off('update:model:{{name}}', this.updateListener)
+    EventBus.off('delete:model:{{name}}', this.deleteListener)
+    EventBus.off("cmd:delete:{{name}}", this.cmdListener)
   }
 
   render() {
