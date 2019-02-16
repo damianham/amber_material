@@ -65,8 +65,14 @@ class Store {
     stream.on('update:model', message => {
       console.log('update model', message.data);
       let model = JSON.parse(message.data);
+      let old_model = this.find(klazz, model.id)
 
-      vm.update(klazz, model.id, model)
+      if (old_model) {
+        Object.assign(old_model, model);
+
+        EventBus.emit('update:model:'+klazz, model);
+      }
+
     });
 
     stream.on('delete:model', message => {

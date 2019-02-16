@@ -1,13 +1,16 @@
-{% if model == "granite" -%}
 class {{class_name}} < Granite::Base
   adapter {{database}}
   table_name {{table_name}}
+
+  after_create :on_created
+  after_update :on_updated
+  after_destroy :on_deleted
+
 {% for field in fields -%}
 {% if field.type == "reference" -%}
 {{"  "}}belongs_to :{{field.name}}
 {% endif -%}
 {% endfor %}
-
   # id : Int64 primary key is created for you
 {% for field in fields -%}
 {% if field.type != "reference" -%}
@@ -16,23 +19,19 @@ class {{class_name}} < Granite::Base
 {% endif -%}
 {% endif -%}
 {% endfor -%}
-
 {% if database != "sqlite" -%}
 {{"  "}}timestamps
-{% endif -%}
-end
-{% else -%}
-class {{class_name}} < Crecto::Model
-  schema {{table_name}} do
-  {% for field in fields -%}
-  {% if field.hidden == false -%}
-  {{"  "}}{% if field.type == "reference" -%}
-  belongs_to :{{field.name}}, {{field.name | camelcase}}
-  {% else -%}
-  field :{{field.name}}, {{field.cr_type}}
-  {% endif -%}
-  {% endif -%}
-  {% endfor -%}
+{% endif %}
+
+  def on_created
+    Sockets::Model.send_model("{{name}}", "new", self.to_json)
+  end
+
+  def on_updated
+    Sockets::Model.send_model("{{name}}", "update", self.to_json)
+  end
+
+  def on_deleted
+    Sockets::Model.send_model("{{name}}", "delete", { :id => self.id }.to_json )
   end
 end
-{% endif -%}

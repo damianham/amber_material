@@ -1,5 +1,5 @@
 import Amber from 'amber';
-const EventEmitter = require('event-emitter'); 
+const EventEmitter = require('event-emitter');
 
 import Resource from './resource';
 
@@ -69,19 +69,19 @@ class ResourceStream  {
 
         channel.on('update', (message) => {
           // handle new message here
-          // console.log('updated model message', message)
+          console.log('updated model message', message)
           vm.emit('update:model', message);
         });
 
         channel.on('new', (message) => {
           // handle new message here
-          // console.log('new model message', message)
+          console.log('new model message', message)
           vm.emit('new:model', message);
         });
 
         channel.on('delete', (message) => {
           // handle new message here
-          // console.log('delete model message', message)
+          console.log('delete model message', message)
           vm.emit('delete:model', message);
         });
 
