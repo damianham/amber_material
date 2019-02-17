@@ -24,21 +24,17 @@ export class {{class_name}}New extends React.Component {
   }
 
   onChange(event) {
-    this.state[event.target.id] = event.target.value;
-    // trigger re-render
-    this.setState({ [event.target.id]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
+    EventBus.emit("field:changed:{{name}}", event.target.name)
   }
 
   onSubmit(event) {
     event.preventDefault();
     let {{name}} = new {{class_name}}(this.state);
-    {{name}}.save();
-
-    this.props.history.goBack()
-  }
-
-  componentWillMount() {
-
+    {{name}}.save().then(this.onBack.bind(this))
+    .catch((error) => {
+      store.handleErrors("Add", "{{name}}", error.statusText, error.responseJSON)
+    })
   }
 
   render(props, state) {

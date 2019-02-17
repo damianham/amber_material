@@ -31,7 +31,41 @@ class Store {
       }
     }).catch((error) => {
       console.log('store load resources failed with', error)
+      vm.handleErrors('Load', klazz, error.statusText, error.responseJSON)
     });
+  }
+
+  validationErrors(action, klazz, response) {
+
+    let msgs = response.replace('Validation failed. [', '').split('Amber::Validators::Error')
+    msgs.shift()
+
+    let re = /\@message=.(Field [a-zA-Z0-9 _]+)/
+    msgs.forEach((msg) => {
+      msg.replace(re, (match, msg) => {
+        window.toastr.error(msg)
+        EventBus.emit(`validation:failed:${klazz}`, msg.replace('Field ',''))
+      });
+    })
+  }
+
+  handleErrors(action, klazz, statusText, response) {
+
+    if (response.error && typeof response.error === 'string' && response.error.startsWith('Validation')) {
+      window.toastr.error(`${action} ${klazz} ${statusText} - Validation failed`)
+      return this.validationErrors(action, klazz, response.error)
+    }
+
+    if (response.error && typeof response.error === 'array') {
+      window.toastr.error(`${action} ${klazz} ${statusText}`)
+      // array of error messages
+      msgs.forEach((msg) => {
+        window.toastr.error(msg)
+      })
+    } else if (response.error && typeof response.error === 'string') {
+      window.toastr.error(`${action} ${klazz} ${statusText}`)
+      window.toastr.error(response.error)
+    }
   }
 
   subscribe(klazz, endpoint, done) {
@@ -93,6 +127,9 @@ class Store {
         EventBus.emit('loaded:models:'+klazz, vm.state[klazz]);
         done(vm.state[klazz])
       }
+    }).catch((error) => {
+      console.log('load error', error);
+      vm.handleErrors('Load', klazz, error.statusText, error.responseJSON)
     });
   }
 
@@ -110,9 +147,7 @@ class Store {
       if (old_model) {
         Object.assign(old_model, model);
 
-        old_model.save();
-
-        EventBus.emit('update:model:'+klazz, model);
+        return old_model.save();
       }
     }
   }

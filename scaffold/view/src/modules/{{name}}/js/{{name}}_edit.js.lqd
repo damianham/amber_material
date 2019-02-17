@@ -19,20 +19,18 @@ export class {{class_name}}Edit extends React.Component {
   }
 
   onChange(event) {
-    this.state[event.target.id] = event.target.value;
-    // trigger re-render
-    this.setState({ [event.target.id]: event.target.value });
+    this.setState({ [event.target.name]: event.target.value });
+    EventBus.emit("field:changed:{{name}}", event.target.name)
   }
 
   onSubmit(event) {
     event.preventDefault();
 
     store.update("{{name}}", this.state.id, this.state)
-
-    this.props.history.goBack()
-  }
-
-  componentWillMount() {
+      .then(this.onBack.bind(this))
+      .catch((error) => {
+        store.handleErrors("Update", "{{name}}", error.statusText, error.responseJSON)
+      })
 
   }
 

@@ -19,6 +19,34 @@ class {{class_name}}Form extends React.Component {
     this.setState({optionsLoaded: Date.now() })
   }
 
+  componentWillMount() {
+    EventBus.on("validation:failed:{{name}}", this.updateListener = (msg) => {
+      // get the field name and highlight the field, format of the msg is
+      // <fieldname> <error message>
+      let fieldname = msg.split(' ')[0]
+      let field = `#{{name}}-${fieldname}-form-data`
+      let error = `#{{name}}-${fieldname}-form-error`
+
+      $(field).addClass('has-error')
+
+      $(error).show().text(msg)
+    })
+
+    EventBus.on("field:changed:{{name}}", this.changeListener = (fieldname) => {
+      let field = `#{{name}}-${fieldname}-form-data`
+      let error = `#{{name}}-${fieldname}-form-error`
+
+      $(field).removeClass('has-error')
+
+      $(error).hide()
+    })
+  }
+
+  componentWillUnmount() {
+    EventBus.off("validation:failed:{{name}}", this.updateListener)
+    EventBus.off("field:changed:{{name}}", this.changeListener)
+  }
+
   render() {
 
     return (
@@ -34,21 +62,22 @@ class {{class_name}}Form extends React.Component {
         {% for field in visible_fields %}
         {% if field.name != "user" %}
           <div className="form-group">
-          <label htmlFor="{{field.name}}">{{field.name | capitalize}}</label>
+          <label htmlFor="{{field.name}}">{{field.name | capitalize}}
+            <span className="form-data-error" id="{{name}}-{{field.name}}-form-error" />
+          </label>
           {% if field.type == "text" -%}
           <textarea
             rows={10}
             name="{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{field.name}}"
+            id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
             onChange={this.props.onChange} />
-
           {% elsif field.type == "boolean" -%}
           <input type="checkbox"
             name="{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{field.name}}"
+            id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
             onChange={this.props.onChange}
           />
@@ -56,7 +85,7 @@ class {{class_name}}Form extends React.Component {
           <select
             name="{{field.name}}_id"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{field.name}}_id"
+            id="{{name}}-{{field.name}}_id-form-data"
             value={ this.props.{{name}}.{{field.name}}_id }
             onChange={this.props.onChange}
           >
@@ -73,7 +102,7 @@ class {{class_name}}Form extends React.Component {
             name="{{field.name}}"
             type="text"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{field.name}}"
+            id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
             onChange={this.props.onChange} />
           {% endif -%}
