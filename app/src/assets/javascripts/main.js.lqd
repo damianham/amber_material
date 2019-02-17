@@ -9,7 +9,7 @@ import toastr from './toastr';
 toastr.options = {
   "closeButton": true,
   "debug": false,
-  "newestOnTop": true,
+  "newestOnTop": false,
   "progressBar": true,
   "positionClass": "toast-top-center",
   "preventDuplicates": false,
