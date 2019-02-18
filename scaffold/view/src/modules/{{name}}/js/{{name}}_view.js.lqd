@@ -41,9 +41,12 @@ export class {{class_name}}View extends React.Component {
     // this is included to help developers load related objects for a model
     // the recipe generator cannot know which models belong to {{name}}
     // rename 'related' to the model name and uncomment the sections
-    // e.g.
-    // if (this.state.{{name}} && typeof this.state.comment === 'undefined') {
-    // for comments that belong to this {{name}}
+    // e.g. for 'comments' that belong to this {{name}}
+    // if (this.state.{{name}} && typeof this.state.comments === 'undefined') {
+
+    // this requires the related objects to already be loaded in the store
+    // develoeprs can ensure that with e.g.
+    // store.loadResources('comment', '/comments', (data) => { /* data is an array of Resource */})
 
     /*
     if (this.state.{{name}} && typeof this.state.related === 'undefined') {
@@ -58,6 +61,21 @@ export class {{class_name}}View extends React.Component {
         vm.setState({related: related})
       }
     }
+    */
+
+    // An alternative is to use Resource.query() which makes a request to the backend
+    /*
+      import Resource from '../../../lib/js/resource'
+      let res = new Resource('/comments')
+
+      res.query({field: "{{name}}_id", value: 1}).then((response) => {
+        if (response.data) {
+          vm.setState({ comments: response.data})
+        }
+      }).catch((error) => {
+        console.log('store load resources failed with', error)
+        store.handleErrors('Query', 'comment', error.statusText, error.responseJSON)
+      });
     */
 
   }
