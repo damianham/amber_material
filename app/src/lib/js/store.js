@@ -140,6 +140,21 @@ class Store {
     return undefined
   }
 
+  related(klazz, fieldname, value) {
+    // find the records from klazz where fieldname == value
+    if (this.isLoaded(klazz)) {
+      return this.getState()[klazz].filter((item) => item[fieldname] == value)
+    }
+    return new Promise(function(resolve, reject) {
+      reject({
+        statusText: `Could not find related records`,
+        responseJSON: {
+          error: `Records for ${klazz} are not loaded`
+        }
+      });
+    });
+  }
+
   update(klazz, id, model) {
     if (this.isLoaded(klazz)) {
       let old_model = this.find(klazz, model.id)
@@ -150,17 +165,32 @@ class Store {
         return old_model.save();
       }
     }
+    let msg = this.isLoaded(klazz) ? `Could not find record :${id}` : `Records for ${klazz} are not loaded`
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        reject({error: {
+          statusText: `Could not update ID:${id}`,
+          responseJSON: {
+            error: msg
+          }
+        }});
+      }, 300);
+    });
   }
 
   delete(klazz, id) {
     let model
+    let vm = this
 
     if (this.isLoaded(klazz)) {
       if (model = this.find(klazz, id)) {
         this.state[klazz] = this.state[klazz].filter((item, j) => item.id !=  parseInt(id));
 
-        model.destroy()
-        EventBus.emit('delete:model:'+klazz, model);
+        model.destroy().then(() => {
+          EventBus.emit('delete:model:'+klazz, model);
+        }).catch((error) => {
+          vm.handleErrors("Delete", klazz, error.statusText, error.responseJSON)
+        })
       }
     }
   }
