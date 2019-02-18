@@ -36,12 +36,36 @@ export class {{class_name}}View extends React.Component {
     }
     {% endif -%}
     {% endif -%}
-    {% endfor %}
+    {% endfor -%}
+
+    // this is included to help developers load related objects for a model
+    // the recipe generator cannot know which models belong to {{name}}
+    // rename 'related' to the model name and uncomment the sections
+    // e.g.
+    // if (this.state.{{name}} && typeof this.state.comment === 'undefined') {
+    // for comments that belong to this {{name}}
+
+    /*
+    if (this.state.{{name}} && typeof this.state.related === 'undefined') {
+      let related = store.related('related', '{{name}}_id', this.state.{{name}}.id)
+
+      if (typeof related.catch === 'function') {
+        related.catch((error) => {
+          store.handleErrors("Show", "related", error.statusText, error.responseJSON)
+        })
+      } else {
+        // we got an array of records with matching {{name}}_id
+        vm.setState({related: related})
+      }
+    }
+    */
 
   }
 
   render() {
     const {{name}} = this.state.{{name}} || {}
+    const related = this.state.related || []
+
     {% for field in visible_fields -%}
     {% if field.type == "reference" -%}
     {% if field.name != "user" %}
@@ -83,6 +107,43 @@ export class {{class_name}}View extends React.Component {
           {% endfor %}
         </tbody>
       </table>
+
+      { related.length > 0 &&
+        <div>
+          <h3>RELATED - change me</h3>
+          <table className="table table-striped">
+            <tbody>
+              {
+                related.map((obj) => {
+                  /*
+                    we could link to the related object with
+                    <td className="related-view-data-column view-data-column">
+                      <Link to={
+                        {
+                          // change plural_related to the plural related model name
+                          pathname: "/plural_related/show/"+ obj.id,
+                          state: {
+                            related: obj,  // change related to the related model name
+                            {{name}}: {{name}}
+                          }
+                        }
+                      }>{ bestTitleForClass(obj) }</Link>
+                    </td>
+                  */
+                  return (
+                    <tr key={obj.id}>
+                      <td className="related-view-data-column view-data-column">{ bestTitleForClass(obj) }</td>
+
+                    </tr>
+                  )
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+
+      }
+
     </div>
 
     );
