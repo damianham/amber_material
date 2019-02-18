@@ -85,6 +85,18 @@ export default class Resource {
       });
   }
 
+  query(data) {
+    let $ = window.$;
+
+    return  $.ajax(
+      {
+        data: data,
+        url: this.endpoint,
+        method: 'GET',
+        dataType: 'json'
+      });
+  }
+
   save() {
     return this.save_instance(this);
   }

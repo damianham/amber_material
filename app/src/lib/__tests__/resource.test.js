@@ -44,6 +44,25 @@ it('gets a record via $.ajax', () => {
   });
 });
 
+it('finds records with a value via $.ajax', () => {
+  const product = {id:1, name: 'Widget'};
+  const resp = {data: product};
+
+  jquery.ajax.mockImplementation(() => Promise.resolve(resp))
+
+  let res = new Resource('/products')
+
+  res.query({field: 'id', value: 1}).then(resp => expect(resp.data).toEqual(product));
+
+  // Now make sure that $.ajax was properly called
+  expect($.ajax).toBeCalledWith({
+    data: {field: 'id', value: 1},
+    method: 'GET',
+    url: '/products',
+    dataType: 'json'
+  });
+});
+
 
 it('creates a record via $.ajax', () => {
   const product = {name: 'Widget'};
