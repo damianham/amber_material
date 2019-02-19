@@ -51,7 +51,7 @@ class {{class_name}}Form extends React.Component {
 
     return (
 
-      <div>
+      <div className="{{name}}-form-div form-div">
         <div className="row {{name}}-form-title-row form-title-row">
           <div className="col-sm-11">
             <h2 className="{{name}}-form-title form-title">{{display_name}}</h2>
@@ -97,6 +97,31 @@ class {{class_name}}Form extends React.Component {
             })
           }
           </select>
+          {% elsif field.cr_type == "Int32" or field.cr_type == "Int64" -%}
+          <input
+            name="{{field.name}}"
+            type="number"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{name}}-{{field.name}}-form-data"
+            value={ this.props.{{name}}.{{field.name}} }
+            onChange={this.props.onChange} />
+          {% elsif field.cr_type == "Float32" or field.cr_type == "Float64" -%}
+          <input
+            name="{{field.name}}"
+            type="number"
+            step="any"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{name}}-{{field.name}}-form-data"
+            value={ this.props.{{name}}.{{field.name}} }
+            onChange={this.props.onChange} />
+          {% elsif field.type == "password" -%}
+          <input
+            name="{{field.name}}"
+            type="password"
+            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
+            id="{{name}}-{{field.name}}-form-data"
+            value={ this.props.{{name}}.{{field.name}} }
+            onChange={this.props.onChange} />
           {% else -%}
           <input
             name="{{field.name}}"
@@ -109,7 +134,7 @@ class {{class_name}}Form extends React.Component {
           </div>
         {% endif %}
         {% endfor %}
-          <button type="submit" className="btn btn-success btn-lg">
+          <button type="submit" className="btn btn-success btn-lg {{name}}-form-submit form-submit">
             SAVE
           </button>
         </form>

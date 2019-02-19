@@ -40,7 +40,7 @@ export class {{class_name}}New extends React.Component {
   render(props, state) {
     return (
       <div>
-        <div className="btn btn-primary btn-xs"
+        <div className="btn btn-primary btn-xs {{name}}-new-back-button new-back-button"
           onClick={this.onBack.bind(this)}
           >
            Back

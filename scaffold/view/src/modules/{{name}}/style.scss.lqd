@@ -1,21 +1,48 @@
 // styles for this module
 
-.{{name}}-index-column {}
+.{{name}}-index-title-row {}
+.{{name}}-index-new-button {}
+.{{name}}-index-table {
+  .{{name}}-index.table-head-row {}
+  .{{name}}-index-table-head {}
+  .{{name}}-index-table-row {}
+  .{{name}}-index-table-data {}
 
-.{{name}}-index-actions-row {}
+  .{{name}}-index-actions-column {}
+  .{{name}}-index-actions-delete {}
+  .{{name}}-index-actions-edit {}
+  .{{name}}-index-actions-show {}
 
-.{{name}}-index-actions-column {}
+  {% for field in visible_fields -%}
+  {% if field.name != "user" -%}
+  .{{name}}-{{field.name}}-index-table-data {}
+  {% endif -%}
+  {% endfor %}
+}
 
-.{{name}}-index-actions-read {}
+.{{name}}-edit-back-button
+.{{name}}-new-back-button
 
-.{{name}}-index-actions-edit {}
+.{{name}}-form-div {
+  .{{name}}-form-title-row {
+    .{{name}}-form-title {}
+  }
+  .{{name}}-form-data {}
+  .{{name}}-form-submit {}
 
-.{{name}}-index-actions-delete {}
+  {% for field in visible_fields -%}
+  {% if field.name != "user" -%}
+  #{{name}}-{{field.name}}-form-error {}
+  .{{name}}-{{field.name}}-form-data {}
+  {% endif -%}
+  {% endfor %}
+}
 
-.{{name}}-view-header-column {}
+.{{name}}-view-table {
+  .{{name}}-view-table-head {}
+  .{{name}}-view-table-data {}
+  .{{name}}-related-table {
+    .{{name}}-related-table-data {}
+  }
 
-.{{name}}-view-data-column {}
-
-.{{name}}-edit-header-column {}
-
-.{{name}}-edit-data-column {}
+}

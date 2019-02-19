@@ -126,7 +126,7 @@ class {{class_name}}IndexList extends React.Component {
           </div>
         </div>
 
-        <div className="table-responsive {{name}}-index-table">
+        <div className="table-responsive {{name}}-index-table index-table">
           <table className="table table-striped">
             <thead>
               <tr className="{{name}}-index.table-head-row index-table-head-row">
@@ -207,11 +207,13 @@ class {{class_name}}IndexItem extends React.Component {
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
-        <Link to={
+        <Link className="{{name}}-index-actions-edit index-actions-edit"
+          to={
           {
             pathname: "/{{name | pluralize}}/edit/"+ {{name}}.id,
             state: {{name}}
           }
+
         }><i className="material-icons">edit</i></Link>
 
         <span className="{{name}}-index-actions-delete index-actions-delete"
@@ -220,7 +222,8 @@ class {{class_name}}IndexItem extends React.Component {
           <i className="material-icons">delete</i>
         </span>
 
-        <Link to={
+        <Link className="{{name}}-index-actions-show index-actions-show"
+          to={
           {
             pathname: "/{{name | pluralize}}/show/"+ {{name}}.id,
             state: {

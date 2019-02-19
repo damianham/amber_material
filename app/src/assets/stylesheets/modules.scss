@@ -1,34 +1,44 @@
 
-
-.index-column {}
-
-.index-actions-row {}
-
-.index-actions-column {
-  a {
-    margin: 0px 20px 
-  }
-}
-
-.index-actions-read {}
-
-.index-actions-edit {}
-
-.index-actions-delete {
-  color: $primary;
-}
-
-.view-header-column {}
-
-.view-data-column {}
-
-.edit-header-column {}
-
-.edit-data-column {}
-
+.index-title-row {}
 .index-new-button {
   a {
     color: #ffffff;
+  }
+}
+.index-table {
+  .index-table-head-row {}
+  .index-table-head {}
+  .index-table-data {}
+  .index-actions-column {
+    a {
+      margin: 0px 20px
+    }
+  }
+  .index-actions-delete {
+    color: $primary;
+  }
+  .index-actions-edit {}
+  .index-actions-show {}
+}
+
+.edit-back-button {}
+.new-back-button {}
+
+.form-div {
+  .form-title-row {
+    .form-title {}
+  }
+
+  .form-data-error {}
+  .form-data {}
+  .form-submit {}
+}
+
+.view-table {
+  .view-table-head {}
+  .view-table-data {}
+  .related-table {
+    .related-table-data {}
   }
 }
 

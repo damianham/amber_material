@@ -93,7 +93,7 @@ export class {{class_name}}View extends React.Component {
     {% endfor %}
 
     return (
-    <div className="table-responsive {{name}}-view-table">
+    <div className="table-responsive {{name}}-view-table view-table">
       <div className="btn btn-primary btn-xs"
         onClick={this.onBack.bind(this)}
         >
@@ -104,9 +104,9 @@ export class {{class_name}}View extends React.Component {
           {% for field in visible_fields %}
           {% if field.name != "user" %}
           <tr>
-            <th className="{{name}}-view-header-column view-header-column">{{ field.name | capitalize }}</th>
+            <th className="{{name}}-view-table-head view-table-head">{{ field.name | capitalize }}</th>
             {% if field.type == "reference" %}
-            <td className="{{name}}-view-data-column view-data-column">
+            <td className="{{name}}-view-table-data view-table-data">
               <Link to={
                 {
                   pathname: "/{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
@@ -118,7 +118,7 @@ export class {{class_name}}View extends React.Component {
               }>{ bestTitleForClass({{field.name}} || {id: {{name}}.{{field.name}}_id })}</Link>
               </td>
             {% else %}
-            <td className="{{name}}-view-data-column view-data-column">{ {{name}}.{{field.name}} }</td>
+            <td className="{{name}}-view-table-data view-table-data">{ {{name}}.{{field.name}} }</td>
             {% endif %}
           </tr>
           {% endif %}
@@ -127,7 +127,7 @@ export class {{class_name}}View extends React.Component {
       </table>
 
       { related.length > 0 &&
-        <div>
+        <div className="{{name}}-related-table related-table">
           <h3>RELATED - change me</h3>
           <table className="table table-striped">
             <tbody>
@@ -135,7 +135,7 @@ export class {{class_name}}View extends React.Component {
                 related.map((obj) => {
                   /*
                     we could link to the related object with
-                    <td className="related-view-data-column view-data-column">
+                    <td className="{{name}}-related-table-data related-table-data view-table-data">
                       <Link to={
                         {
                           // change plural_related to the plural related model name
@@ -150,7 +150,7 @@ export class {{class_name}}View extends React.Component {
                   */
                   return (
                     <tr key={obj.id}>
-                      <td className="related-view-data-column view-data-column">{ bestTitleForClass(obj) }</td>
+                      <td className="{{name}}-related-table-data related-table-data view-table-data">{ bestTitleForClass(obj) }</td>
 
                     </tr>
                   )

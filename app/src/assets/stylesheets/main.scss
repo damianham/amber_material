@@ -19,5 +19,9 @@ $primary: #f4994b;
   }
 }
 
+.table-responsive {
+  overflow-x: auto;
+}
+
 @import './modules.scss';
 @import './toastr.scss';

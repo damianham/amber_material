@@ -36,7 +36,7 @@ export class {{class_name}}Edit extends React.Component {
   render(props, state) {
     return (
       <div>
-        <div className="btn btn-primary btn-xs"
+        <div className="btn btn-primary btn-xs {{name}}-edit-back-button edit-back-button"
           onClick={this.onBack.bind(this)}
           >
            Back
