@@ -1,4 +1,5 @@
 import React from 'react';
+import Resource from '../../../lib/js/resource';
 
 export * from "./{{name}}_edit";
 export * from "./{{name}}_index";

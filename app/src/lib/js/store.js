@@ -89,7 +89,7 @@ class Store {
     };
 
     stream.on('new:model', message => {
-      console.log('new model', message.data);
+      //console.log('new model', message.data);
       let model = JSON.parse(message.data);
 
       vm.state[klazz].push( new Resource(endpoint, model) );
@@ -98,7 +98,7 @@ class Store {
     });
 
     stream.on('update:model', message => {
-      console.log('update model', message.data);
+      //console.log('update model', message.data);
       let model = JSON.parse(message.data);
       let old_model = this.find(klazz, model.id);
 
@@ -111,7 +111,7 @@ class Store {
     });
 
     stream.on('delete:model', message => {
-      console.log('delete model', message.data);
+      //console.log('delete model', message.data);
       let model = JSON.parse(message.data);
 
       vm.state[klazz] = vm.state[klazz].filter((item, j) => item.id !=  parseInt(model.id));
