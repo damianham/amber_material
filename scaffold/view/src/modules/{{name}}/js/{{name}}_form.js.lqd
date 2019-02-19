@@ -5,13 +5,13 @@ import PropTypes from "prop-types";
 
 import {optionsForClass} from '../../../lib/js/utils';
 import {EventBus} from '../../../lib/js/eventBus';
-import {store} from '../../../lib/js/store'
+import {store} from '../../../lib/js/store';
 
 class {{class_name}}Form extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {}
   }
 
   onLoaded(name, data) {
@@ -23,27 +23,27 @@ class {{class_name}}Form extends React.Component {
     EventBus.on("validation:failed:{{name}}", this.updateListener = (msg) => {
       // get the field name and highlight the field, format of the msg is
       // <fieldname> <error message>
-      let fieldname = msg.split(' ')[0]
-      let field = `#{{name}}-${fieldname}-form-data`
-      let error = `#{{name}}-${fieldname}-form-error`
+      let fieldname = msg.split(' ')[0];
+      let field = `#{{name}}-${fieldname}-form-data`;
+      let error = `#{{name}}-${fieldname}-form-error`;
 
-      $(field).addClass('has-error')
+      $(field).addClass('has-error');
 
       $(error).show().text(msg)
-    })
+    });
 
     EventBus.on("field:changed:{{name}}", this.changeListener = (fieldname) => {
-      let field = `#{{name}}-${fieldname}-form-data`
-      let error = `#{{name}}-${fieldname}-form-error`
+      let field = `#{{name}}-${fieldname}-form-data`;
+      let error = `#{{name}}-${fieldname}-form-error`;
 
-      $(field).removeClass('has-error')
+      $(field).removeClass('has-error');
 
       $(error).hide()
     })
   }
 
   componentWillUnmount() {
-    EventBus.off("validation:failed:{{name}}", this.updateListener)
+    EventBus.off("validation:failed:{{name}}", this.updateListener);
     EventBus.off("field:changed:{{name}}", this.changeListener)
   }
 
@@ -114,7 +114,7 @@ class {{class_name}}Form extends React.Component {
           </button>
         </form>
       </div>
-    );
+    )
   }
 }
 

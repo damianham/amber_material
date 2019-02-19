@@ -3,9 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import {EventBus} from '../../../lib/js/eventBus';
-import {store} from '../../../lib/js/store'
+import {store} from '../../../lib/js/store';
 
-import {{class_name}}Form from './{{name}}_form'
+import {{class_name}}Form from './{{name}}_form';
 
 export class {{class_name}}Edit extends React.Component {
   constructor(props) {
@@ -31,7 +31,6 @@ export class {{class_name}}Edit extends React.Component {
       .catch((error) => {
         store.handleErrors("Update", "{{name}}", error.statusText, error.responseJSON)
       })
-
   }
 
   render(props, state) {
@@ -46,6 +45,6 @@ export class {{class_name}}Edit extends React.Component {
         onSubmit={this.onSubmit.bind(this)}
         onChange={this.onChange.bind(this)}/>
       </div>
-    );
+    )
   }
 }

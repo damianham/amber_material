@@ -1,5 +1,7 @@
+'use strict';
+
 import Amber from 'amber';
-import EventBus from './eventBus';
+import {EventBus} from './eventBus';
 
 /*
   // example usage
@@ -41,16 +43,16 @@ export default class Signal {
         channel.on('new', (message) => {
           // handle new message here
           // console.log('new signal message', message)
-          EventBus.emit('new:signal', message);
-        });
+          EventBus.emit('new:signal', message)
+        })
 
-      });
+      })
   }
 
   close() {
     if (this.signal_socket) {
       this.signal_socket.disconnect();
-      delete this.signal_socket;
+      delete this.signal_socket
     }
   }
 

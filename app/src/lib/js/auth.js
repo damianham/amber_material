@@ -1,3 +1,4 @@
+'use strict';
 
 class Auth {
 
@@ -8,7 +9,7 @@ class Auth {
    */
   static authenticateUser(token, user) {
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user) );
+    localStorage.setItem('user', JSON.stringify(user) )
   }
 
   /**
@@ -17,7 +18,7 @@ class Auth {
    * @returns {boolean}
    */
   static isUserAuthenticated() {
-    return localStorage.getItem('token') !== null;
+    return localStorage.getItem('token') !== null
   }
 
   /**
@@ -26,7 +27,7 @@ class Auth {
    */
   static deauthenticateUser() {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('user')
   }
 
   /**
@@ -36,11 +37,11 @@ class Auth {
    */
 
   static getToken() {
-    return localStorage.getItem('token');
+    return localStorage.getItem('token')
   }
 
   static getUser() {
-    return JSON.parse(localStorage.getItem('user') || '{}');
+    return JSON.parse(localStorage.getItem('user') || '{}')
   }
 
 }

@@ -1,12 +1,13 @@
+'use strict';
 
-import Resource from './resource'
-import ResourceStream from './resourceStream'
-import {EventBus} from './eventBus'
+import Resource from './resource';
+import ResourceStream from './resourceStream';
+import {EventBus} from './eventBus';
 
 class Store {
   constructor(state) {
 
-    this.state = state || {}
+    this.state = state || {};
     this.streams = {}
   }
 
@@ -19,8 +20,8 @@ class Store {
   }
 
   loadResources(klazz, endpoint, done) {
-    this.state[klazz] = []
-    let vm = this
+    this.state[klazz] = [];
+    let vm = this;
 
     new Resource(endpoint).all().then((resp) => {
       if (resp.data) {
@@ -30,53 +31,53 @@ class Store {
         done(vm.state[klazz])
       }
     }).catch((error) => {
-      console.log('store load resources failed with', error)
+      console.log('store load resources failed with', error);
       vm.handleErrors('Load', klazz, error.statusText, error.responseJSON)
-    });
+    })
   }
 
   validationErrors(action, klazz, response) {
 
-    let msgs = response.replace('Validation failed. [', '').split('Amber::Validators::Error')
-    msgs.shift()
+    let msgs = response.replace('Validation failed. [', '').split('Amber::Validators::Error');
+    msgs.shift();
 
-    let re = /\@message=.(Field [a-zA-Z0-9 _]+)/
+    let re = /\@message=.(Field [a-zA-Z0-9 _]+)/;
     msgs.forEach((msg) => {
       msg.replace(re, (match, msg) => {
-        window.toastr.error(msg)
+        window.toastr.error(msg);
         EventBus.emit(`validation:failed:${klazz}`, msg.replace('Field ',''))
-      });
+      })
     })
   }
 
   handleErrors(action, klazz, statusText, response) {
 
     if (response.error && typeof response.error === 'string' && response.error.startsWith('Validation')) {
-      window.toastr.error(`${action} ${klazz} ${statusText} - Validation failed`)
+      window.toastr.error(`${action} ${klazz} ${statusText} - Validation failed`);
       return this.validationErrors(action, klazz, response.error)
     }
 
     if (response.error && typeof response.error === 'array') {
-      window.toastr.error(`${action} ${klazz} ${statusText}`)
+      window.toastr.error(`${action} ${klazz} ${statusText}`);
       // array of error messages
       msgs.forEach((msg) => {
         window.toastr.error(msg)
       })
     } else if (response.error && typeof response.error === 'string') {
-      window.toastr.error(`${action} ${klazz} ${statusText}`)
+      window.toastr.error(`${action} ${klazz} ${statusText}`);
       window.toastr.error(response.error)
     }
   }
 
   subscribe(klazz, endpoint, done) {
-    let vm = this
+    let vm = this;
 
     if (this.streams[klazz]) {
-      done(this.state[klazz])
+      done(this.state[klazz]);
       return
     }
 
-    this.state[klazz] = []
+    this.state[klazz] = [];
 
     // create a ResourceStream and subscribe to events
     let stream = new ResourceStream(klazz, endpoint)
@@ -85,7 +86,7 @@ class Store {
       stream: stream,
       page: 0,
       per_page: 50
-    }
+    };
 
     stream.on('new:model', message => {
       console.log('new model', message.data);
@@ -93,18 +94,18 @@ class Store {
 
       vm.state[klazz].push( new Resource(endpoint, model) );
 
-      EventBus.emit('new:model:'+klazz, model);
+      EventBus.emit('new:model:'+klazz, model)
     });
 
     stream.on('update:model', message => {
       console.log('update model', message.data);
       let model = JSON.parse(message.data);
-      let old_model = this.find(klazz, model.id)
+      let old_model = this.find(klazz, model.id);
 
       if (old_model) {
         Object.assign(old_model, model);
 
-        EventBus.emit('update:model:'+klazz, model);
+        EventBus.emit('update:model:'+klazz, model)
       }
 
     });
@@ -115,14 +116,14 @@ class Store {
 
       vm.state[klazz] = vm.state[klazz].filter((item, j) => item.id !=  parseInt(model.id));
 
-      EventBus.emit('delete:model:'+klazz, model);
+      EventBus.emit('delete:model:'+klazz, model)
     });
 
     // fetch and sort the index
     stream.all().then((data) => {
       if (data) {
         data.forEach((entry) => {
-          vm.state[klazz].push( new Resource(endpoint, entry) );
+          vm.state[klazz].push( new Resource(endpoint, entry) )
         })
         EventBus.emit('loaded:models:'+klazz, vm.state[klazz]);
         done(vm.state[klazz])
@@ -151,30 +152,28 @@ class Store {
         responseJSON: {
           error: `Records for ${klazz} are not loaded`
         }
-      });
-    });
+      })
+    })
   }
 
   update(klazz, id, model) {
     if (this.isLoaded(klazz)) {
-      let old_model = this.find(klazz, model.id)
+      let old_model = this.find(klazz, model.id);
 
       if (old_model) {
         Object.assign(old_model, model);
 
-        return old_model.save();
+        return old_model.save()
       }
     }
-    let msg = this.isLoaded(klazz) ? `Could not find record :${id}` : `Records for ${klazz} are not loaded`
+    let msg = this.isLoaded(klazz) ? `Could not find record :${id}` : `Records for ${klazz} are not loaded`;
     return new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        reject({error: {
-          statusText: `Could not update ID:${id}`,
-          responseJSON: {
-            error: msg
-          }
-        }});
-      }, 300);
+      reject({error: {
+        statusText: `Could not update ID:${id}`,
+        responseJSON: {
+          error: msg
+        }
+      }})
     });
   }
 
@@ -187,7 +186,7 @@ class Store {
         this.state[klazz] = this.state[klazz].filter((item, j) => item.id !=  parseInt(id));
 
         model.destroy().then(() => {
-          EventBus.emit('delete:model:'+klazz, model);
+          EventBus.emit('delete:model:'+klazz, model)
         }).catch((error) => {
           vm.handleErrors("Delete", klazz, error.statusText, error.responseJSON)
         })

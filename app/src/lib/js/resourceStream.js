@@ -1,7 +1,8 @@
+'use strict';
+
 import Amber from 'amber';
 const EventEmitter = require('event-emitter');
 
-import Resource from './resource';
 
 /*
   // example usage
@@ -17,7 +18,7 @@ import Resource from './resource';
       console.log('new post', message.data);
       let post = JSON.parse(message.data);
 
-      vm.posts[post.id] = new Post("/posts", post);
+      vm.posts[post.id] = new Post("/posts", post)
     });
 
     this.stream.on('update:model', message => {
@@ -26,19 +27,19 @@ import Resource from './resource';
 
       Object.assign(vm.posts[post.id], post);
 
-      EventBus.emit('update:model:'+post.id, post);
+      EventBus.emit('update:model:'+post.id, post)
     });
 
     this.stream.on('delete:model', message => {
       console.log('delete post', message.data);
       let post = JSON.parse(message.data);
 
-      delete vm.posts[post.id];
+      delete vm.posts[post.id]
     });
   }
 
   componentWillUnmount() {
-    this.stream.close();
+    this.stream.close()
   }
 
 */
@@ -50,7 +51,7 @@ class ResourceStream  {
     this.resource = new Resource(endpoint);
     this.models = {};
 
-    this.subscribe();
+    this.subscribe()
   }
 
   subscribe() {
@@ -70,22 +71,22 @@ class ResourceStream  {
         channel.on('update', (message) => {
           // handle new message here
           console.log('updated model message', message)
-          vm.emit('update:model', message);
+          vm.emit('update:model', message)
         });
 
         channel.on('new', (message) => {
           // handle new message here
           console.log('new model message', message)
-          vm.emit('new:model', message);
+          vm.emit('new:model', message)
         });
 
         channel.on('delete', (message) => {
           // handle new message here
           console.log('delete model message', message)
-          vm.emit('delete:model', message);
+          vm.emit('delete:model', message)
         });
 
-      });
+      })
   }
 
   refresh() {
@@ -94,25 +95,25 @@ class ResourceStream  {
   }
 
   all() {
-    return this.resource.all();
+    return this.resource.all()
   }
 
   get(id) {
-    return this.resource.get(id);
+    return this.resource.get(id)
   }
 
   add(instance) {
-    return this.resource.save_instance(instance);
+    return this.resource.save_instance(instance)
   }
 
   destroy(instance) {
-    return this.resource.destroy_instance(instance);
+    return this.resource.destroy_instance(instance)
   }
 
   close() {
     if (this.socket) {
       this.socket.disconnect();
-      delete this.socket;
+      delete this.socket
     }
   }
 

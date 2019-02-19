@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 
 import {EventBus} from '../../../lib/js/eventBus';
 import {bestTitleForClass} from '../../../lib/js/utils';
-import {store} from '../../../lib/js/store'
+import {store} from '../../../lib/js/store';
 
-import { {{class_name}} } from './{{name}}'
+import { {{class_name}} } from './{{name}}';
 
 export class {{class_name}}Index extends React.Component {
   constructor(props) {
@@ -17,14 +17,14 @@ export class {{class_name}}Index extends React.Component {
       list: [],
       sort_column: 'id',
       sort_direction: 'up'
-    };
+    }
   }
 
   sort(event) {
 
     if (event && typeof event === 'String') {
       // we were given the column to sort on as a string
-      this.state.sort_column = event;
+      this.state.sort_column = event
     } else if (event && event.target) {
       // the sort column to sort on is the result of a click or selection
     }
@@ -36,16 +36,16 @@ export class {{class_name}}Index extends React.Component {
       let b_val = b[vm.state.sort_column];
 
       if (a_val == b_val) {
-        return 0;
+        return 0
       }
       if (a_val < b_val) {
-        return vm.state.sort_direction === 'up' ? -1 : 1;
+        return vm.state.sort_direction === 'up' ? -1 : 1
       } else {
-        return vm.state.sort_direction === 'up' ? 1 : -1;
+        return vm.state.sort_direction === 'up' ? 1 : -1
       }
     });
 
-    this.setState({list: sorted});
+    this.setState({list: sorted})
   }
 
   componentWillMount() {
@@ -54,20 +54,20 @@ export class {{class_name}}Index extends React.Component {
 
     store.subscribe("{{name}}",  "/{{name | pluralize}}", (data) => {
       if (data) {
-        vm.sort();
+        vm.sort()
       }
     })
 
     EventBus.on('new:model:{{name}}', this.newListener = (model) => {
-      vm.sort();
+      vm.sort()
     });
 
     EventBus.on('update:model:{{name}}', this.updateListener = (model) => {
-      vm.sort();
+      vm.sort()
     });
 
     EventBus.on('delete:model:{{name}}', this.deleteListener = (model) => {
-      vm.sort();
+      vm.sort()
     });
 
     EventBus.on("cmd:delete:{{name}}", this.cmdListener = (id) => {
@@ -84,16 +84,16 @@ export class {{class_name}}Index extends React.Component {
         // trigger a re-render
         vm.sort()
       }
-    })
+    });
   {% endif -%}
   {% endif -%}
 {% endfor %}
   }
 
   componentWillUnmount() {
-    EventBus.off('new:model:{{name}}', this.newListener)
-    EventBus.off('update:model:{{name}}', this.updateListener)
-    EventBus.off('delete:model:{{name}}', this.deleteListener)
+    EventBus.off('new:model:{{name}}', this.newListener);
+    EventBus.off('update:model:{{name}}', this.updateListener);
+    EventBus.off('delete:model:{{name}}', this.deleteListener);
     EventBus.off("cmd:delete:{{name}}", this.cmdListener)
   }
 
@@ -108,7 +108,7 @@ export default {{class_name}}Index;
 
 class {{class_name}}IndexList extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
   }
 
@@ -158,14 +158,14 @@ class {{class_name}}IndexItem extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = props.{{name}};
+    this.state = props.{{name}}
   }
 
   delete(id, event) {
     event.preventDefault();
     if (id) {
       if (window.confirm('Are you sure you want to delete this {{name | capitalize}}?')) {
-        EventBus.emit('cmd:delete:{{name}}',  id);
+        EventBus.emit('cmd:delete:{{name}}',  id)
       }
     }
   }
@@ -175,11 +175,11 @@ class {{class_name}}IndexItem extends React.Component {
   }
 
   render() {
-    const {{name}} = this.props.{{name}}
+    const {{name}} = this.props.{{name}};
 {% for field in visible_fields -%}
 {% if field.type == "reference" -%}
 {% if field.name != "user" -%}
-{{"    "}}const {{field.name}} = store.find("{{field.name}}", {{name}}.{{field.name}}_id)
+{{"    "}}const {{field.name}} = store.find("{{field.name}}", {{name}}.{{field.name}}_id);
 {% endif -%}
 {% endif -%}
 {% endfor -%}
@@ -237,7 +237,7 @@ class {{class_name}}IndexItem extends React.Component {
         }><i className="material-icons">arrow_forward_ios</i></Link>
         </td>
       </tr>
-    );
+    )
   }
 
 }

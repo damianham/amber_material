@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 
 import {EventBus} from '../../../lib/js/eventBus';
 import {bestTitleForClass} from '../../../lib/js/utils';
-import {store} from '../../../lib/js/store'
+import {store} from '../../../lib/js/store';
 
-import { {{class_name}} } from './{{name}}'
+import { {{class_name}} } from './{{name}}';
 
 export class {{class_name}}View extends React.Component {
   constructor(props) {
@@ -50,7 +50,7 @@ export class {{class_name}}View extends React.Component {
 
     /*
     if (this.state.{{name}} && typeof this.state.related === 'undefined') {
-      let related = store.related('related', '{{name}}_id', this.state.{{name}}.id)
+      let related = store.related('related', '{{name}}_id', this.state.{{name}}.id);
 
       if (typeof related.catch === 'function') {
         related.catch((error) => {
@@ -66,28 +66,28 @@ export class {{class_name}}View extends React.Component {
     // An alternative is to use Resource.query() which makes a request to the backend
     /*
       import Resource from '../../../lib/js/resource'
-      let res = new Resource('/comments')
+      let res = new Resource('/comments');
 
       res.query({field: "{{name}}_id", value: 1}).then((response) => {
         if (response.data) {
           vm.setState({ comments: response.data})
         }
       }).catch((error) => {
-        console.log('store load resources failed with', error)
+        console.log('store load resources failed with', error);
         store.handleErrors('Query', 'comment', error.statusText, error.responseJSON)
-      });
+      })
     */
 
   }
 
   render() {
-    const {{name}} = this.state.{{name}} || {}
-    const related = this.state.related || []
+    const {{name}} = this.state.{{name}} || {};
+    const related = this.state.related || [];
 
     {% for field in visible_fields -%}
     {% if field.type == "reference" -%}
     {% if field.name != "user" %}
-    const {{field.name}} =  this.state.{{field.name}} || {}
+    const {{field.name}} =  this.state.{{field.name}} || {};
     {% endif -%}
     {% endif -%}
     {% endfor %}
@@ -164,6 +164,6 @@ export class {{class_name}}View extends React.Component {
 
     </div>
 
-    );
+    )
   }
 }

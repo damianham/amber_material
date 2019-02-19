@@ -3,10 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import {EventBus} from '../../../lib/js/eventBus';
-import {store} from '../../../lib/js/store'
+import {store} from '../../../lib/js/store';
 
 import { {{class_name}} } from './{{name}}';
-import {{class_name}}Form from './{{name}}_form'
+import {{class_name}}Form from './{{name}}_form';
 
 export class {{class_name}}New extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export class {{class_name}}New extends React.Component {
     {% for field in visible_fields -%}
 {{"      "}}{{field.name}}: '',
     {% endfor -%}
-    });
+    })
   }
 
   onBack() {
@@ -49,6 +49,6 @@ export class {{class_name}}New extends React.Component {
         onSubmit={this.onSubmit.bind(this)}
         onChange={this.onChange.bind(this)}/>
       </div>
-    );
+    )
   }
 }

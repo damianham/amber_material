@@ -1,4 +1,4 @@
-import EventBus from './eventBus';
+'use strict';
 
 import Auth from './auth';
 
@@ -8,7 +8,7 @@ export default class Resource {
     this.endpoint = endpoint;
 
     if (attributes) {
-      Object.assign(this, attributes);
+      Object.assign(this, attributes)
     }
 
   }
@@ -21,7 +21,7 @@ export default class Resource {
         url: this.endpoint,
         method: 'GET',
         dataType: 'json'
-      });
+      })
   }
 
   save_instance(instance) {
@@ -37,13 +37,13 @@ export default class Resource {
     if (instance.id) {
       url = this.endpoint+'/'+instance.id;;
       method = 'PUT';
-      clone._method = 'patch';
+      clone._method = 'patch'
     }
 
     // inject my user_id in case the model requires it
     if (typeof clone.user_id === 'undefined' && Auth.isUserAuthenticated()) {
       let user = Auth.getUser();
-      clone.user_id = user.id;
+      clone.user_id = user.id
     }
 
     return  $.ajax(
@@ -55,7 +55,7 @@ export default class Resource {
         },
         dataType: 'json',
         data: clone
-      });
+      })
   }
 
   destroy_instance(instance) {
@@ -70,7 +70,7 @@ export default class Resource {
           "X-CSRF-TOKEN": window.csrf_token
         },
         dataType: 'json',
-      });
+      })
   }
 
   get(id) {
@@ -82,7 +82,7 @@ export default class Resource {
         url: url,
         method: 'GET',
         dataType: 'json'
-      });
+      })
   }
 
   query(data) {
@@ -94,14 +94,14 @@ export default class Resource {
         url: this.endpoint,
         method: 'GET',
         dataType: 'json'
-      });
+      })
   }
 
   save() {
-    return this.save_instance(this);
+    return this.save_instance(this)
   }
 
   destroy() {
-    return this.destroy_instance(this);
+    return this.destroy_instance(this)
   }
 }
