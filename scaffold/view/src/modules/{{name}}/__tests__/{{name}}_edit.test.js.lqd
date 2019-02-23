@@ -1,0 +1,159 @@
+import React from 'react';
+import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import 'jest-dom/extend-expect';
+import jquery from 'jquery';
+
+import {EventBus} from '../../../lib/js/eventBus';
+import {store} from '../../../lib/js/store';
+import Resource from '../../../lib/js/resource';
+
+import { {{class_name}}Edit } from '../js/{{name}}_edit';
+
+import { dataExamples } from '../../__fixtures__/example_data';
+
+window.$ = $ = jquery;
+window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh';
+
+beforeEach(() => jest.resetModules());
+
+afterEach(cleanup);
+
+
+{% for field in visible_fields -%}
+{% if field.name != "user" -%}
+
+{% if field.type == "reference" -%}
+it("selecting new {{field.name}} changes the selected value", () => {
+  const {{field.name | pluralize}} = [{id:1, name: 'Widget'}, {id: 2, name: 'Gasket'}];
+  const {{name}} = {id:1, {{field.name}}_id: '1'};
+  store.getState()["{{field.name}}"] = {{field.name | pluralize}}
+
+  const { getByLabelText, getByRole, container, asFragment} = render(
+    <{{class_name}}Edit location={ {state: {{name}} }} />,
+  );
+
+  const list = getByRole("{{field.name}}-select");
+
+  fireEvent.select(list, { target: { selected_id: '2' } });
+  expect(list.selected_id).toBe('2')
+})
+
+{% elsif field.type == "boolean" -%}
+it("changing {{field.name}} changes the value", () => {
+  const {{name}} = {id:1, {{field.name}}: 0};
+
+  const { getByLabelText, container, asFragment} = render(
+    <{{class_name}}Edit location={ {state: {{name}} }} />,
+  );
+
+  const cbox = getByLabelText(/{{field.name}}/i);
+
+  expect(cbox.value).toBeFalsy();
+
+  fireEvent.click(cbox);
+
+  expect(cbox).toBeTruthy();
+})
+
+{% else -%}
+
+it("changing {{field.name}} changes the value", () => {
+  let data = dataExamples("{{field.cr_type}}");
+  const {{name}} = {id:1, {{field.name}}: data[0]};
+
+  const { getByLabelText, container, asFragment} = render(
+    <{{class_name}}Edit location={ {state: {{name}} }} />,
+  );
+
+  const input = getByLabelText(/{{field.name}}/i);
+
+  fireEvent.change(input, { target: { value: data[1] } });
+  expect(input.value).toBe(data[1])
+})
+
+{% if field.cr_type == "Int32" or field.cr_type == "Int64" or field.cr_type == "Float32" or field.cr_type == "Float64" -%}
+it("cannot enter characters into {{field.name}}", () => {
+  const {{name}} = {id:1, {{field.name}}: ''};
+
+  const { getByLabelText, container, asFragment} = render(
+    <{{class_name}}Edit location={ {state: {{name}} }} />,
+  );
+
+  const input = getByLabelText(/{{field.name}}/i);
+
+  expect(input.value).toBe(''); // empty before change event
+  fireEvent.change(input, { target: { value: 'Hello world' } });
+  expect(input.value).toBe('') // still empty
+})
+{% endif -%}
+
+
+{% endif -%}
+
+it("changing {{field.name}} emits an EventBus event", () => {
+  let data = dataExamples("{{field.cr_type}}");
+  const ev_spy = jest.spyOn(EventBus, 'emit');
+  const on_spy = jest.spyOn(EventBus, 'on');
+  const {{name}} = {id:1, {{field.name}}: data[0]};
+
+  const { getByLabelText, getByRole, getByTestId, container, asFragment} = render(
+    <{{class_name}}Edit location={ {state: {{name}} }} />,
+  );
+
+  {% if field.type == "reference" -%}
+  const fieldname = "{{field.name}}_id";
+  const input = getByRole("{{field.name}}-select");
+  fireEvent.change(input, { target: { value: data[1] } });
+  expect(ev_spy).toBeCalledWith("field:changed:{{name}}", fieldname, '');
+  {% else -%}
+  const fieldname = "{{field.name}}";
+  const input = getByLabelText(/{{field.name}}/i);
+  fireEvent.change(input, { target: { value: data[1] } });
+  expect(ev_spy).toBeCalledWith("field:changed:{{name}}", fieldname, data[1]);
+  {% endif -%}
+
+  ev_spy.mockRestore();
+  on_spy.mockRestore();
+})
+
+{% endif -%}
+{% endfor -%}
+
+it("onSubmit with valid data saves the {{name}} via $.ajax and goes back in history", () => {
+
+  const {{name}} =  {id:1, name: 'Widget'};
+  const resp = {data: {{name}}};
+  const goBackMock = jest.fn();
+
+  store.getState()["{{name}}"] = [new Resource("/{{name | pluralize}}",{{name}}) ]
+
+  $.ajax = jest.fn(() => Promise.resolve(resp));
+
+  const {getByText, container, asFragment} = render(
+    <{{class_name}}Edit location={ {state: {{name}} }} history={
+      {goBack: goBackMock}
+    }/>,
+  );
+
+  fireEvent.click(getByText(/save/i));
+
+  // Now make sure that $.ajax was properly called
+  expect($.ajax).toBeCalledWith({
+    data: {...{{name}}, _method: 'patch'},
+    method: 'PUT',
+    url: '/{{name | pluralize}}/1',
+    dataType: 'json',
+    headers: {
+      "X-CSRF-TOKEN": window.csrf_token
+    },
+  });
+
+})
+
+it("onSubmit with invalid data fires error handling", () => {
+
+})
+
+it("clicking Back calls history.goBack", () => {
+
+})

@@ -1,0 +1,118 @@
+import React from 'react';
+import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import 'jest-dom/extend-expect';
+import jquery from 'jquery';
+
+import {EventBus} from '../../../lib/js/eventBus';
+import {store} from '../../../lib/js/store';
+
+import {{class_name}}Form from '../js/{{name}}_form';
+
+import { dataExamples } from '../../__fixtures__/example_data';
+
+beforeEach(() => jest.resetModules());
+
+afterEach(cleanup);
+
+{% for field in visible_fields -%}
+{% if field.name != "user" -%}
+
+{% if field.type == "reference" -%}
+
+it("selecting new {{field.name}} fires onChange event", () => {
+  const {{field.name | pluralize}} = [{id:1, name: 'Widget'}, {id: 2, name: 'Gasket'}];
+  const {{name}} = {id:1, {{field.name}}_id: '1'};
+  store.getState()["{{field.name}}"] = {{field.name | pluralize}}
+
+  const onChange = jest.fn()
+
+  const {container, getByLabelText, getByRole} = render(
+    <{{class_name}}Form {{name}}={ {{name}}}
+    onSubmit={() => {}}
+    onChange={onChange} />,
+  );
+
+  const list = getByRole("{{field.name}}-select");
+
+  fireEvent.change(list, { target: { value: '2' } });
+  expect(onChange).toHaveBeenCalledTimes(1)
+
+})
+
+{% elsif field.type == "boolean" -%}
+
+it("toggling {{field.name}} fires onChange event", () => {
+  const {{name}} = {id:1, {{field.name}}: '0'};
+  const onChange = jest.fn()
+
+  const {container, getByLabelText} = render(
+    <{{class_name}}Form {{name}}={ {{name}}}
+    onSubmit={() => {}}
+    onChange={onChange} />,
+  );
+
+  const cbox = getByLabelText(/{{field.name}}/i);
+
+  expect(cbox.value).toBeFalsy();
+
+  fireEvent.click(cbox);
+
+  expect(onChange).toHaveBeenCalledTimes(1);
+})
+
+{% else -%}
+
+it("changing {{field.name}} fires onChange event", () => {
+  let data = dataExamples("{{field.cr_type}}")
+  const {{name}} = {id:1, {{field.name}}: data[0]};
+  const onChange = jest.fn()
+
+  const {container, getByLabelText} = render(
+    <{{class_name}}Form {{name}}={ {{name}}}
+    onSubmit={() => {}}
+    onChange={onChange} />,
+  );
+
+  const input = getByLabelText(/{{field.name}}/i);
+
+  fireEvent.change(input, { target: { value: data[1] } });
+
+  expect(onChange).toHaveBeenCalledTimes(1);
+})
+
+{% endif -%}
+
+it("changing {{field.name}} hides error message and normalises field", () => {
+  let data = dataExamples("{{field.cr_type}}")
+  const jq_spy = jest.spyOn($.fn, 'removeClass');
+  const {{name}} = {id:1, {{field.name}}: data[0]};
+
+  const {container, getByLabelText, getByRole} = render(
+    <{{class_name}}Form {{name}}={ {{name}} }
+    onSubmit={() => {}}
+    onChange={() => {
+      EventBus.emit("field:changed:{{name}}", "{{field.name}}", data[1])
+    }} />,
+  );
+
+  const span = getByRole("{{name}}-{{field.name}}-form-error")
+
+  {% if field.type == "reference" -%}
+  const elem = getByRole("{{field.name}}-select");
+  {% else -%}
+  const elem = getByLabelText(/{{field.name}}/i);
+  {% endif -%}
+
+  fireEvent.change(elem, { target: { value: data[1] } });
+
+  expect(jq_spy).toBeCalledWith("has-error");
+
+  expect(elem).not.toHaveClass("has-error");
+
+  expect(span).not.toBeVisible();
+
+  jq_spy.mockRestore();
+})
+
+{% endif -%}
+{% endfor -%}

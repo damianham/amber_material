@@ -15,7 +15,7 @@ export class {{class_name}}SidebarComponent extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="{{name}}-sidebar-component sidebar-component">
         {{display_name}}
       </div>
     );
@@ -27,4 +27,36 @@ export class {{class_name}} extends Resource {
     super("/{{name | pluralize}}", attributes);
 
   }
+
+  // client side validation
+  save() {
+    let errors = [];
+
+    {% for field in visible_fields -%}
+    {% if field.name != "user" -%}
+    {% if field.type == "reference" -%}
+    if (this.{{field.name}}_id === '') {
+    {% else -%}
+    if (this.{{field.name}} === '') {
+    {% endif -%}
+      errors.push({field: "{{field.name}}", value: this.{{field.name}}, message: "is required"})
+    }
+    {% endif -%}
+    {% endfor -%}
+
+    if (errors.length > 0) {
+      return new Promise(function(resolve, reject) {
+        reject({
+          statusText: "Could not save {{name}}",
+          responseJSON: {
+            error: "Validation failed. [" + erros.map((err) => {
+              return `Amber::Validators:Error(@param="${err.field}", @value="${err.value}", @message="Field ${err.field} ${err.message}" )`
+            }).join(', ') + "]"
+          }
+        })
+      })
+    }
+    return super.save()
+  }
+
 }

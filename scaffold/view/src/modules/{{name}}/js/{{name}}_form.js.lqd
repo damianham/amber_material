@@ -32,7 +32,7 @@ class {{class_name}}Form extends React.Component {
       $(error).show().text(msg)
     });
 
-    EventBus.on("field:changed:{{name}}", this.changeListener = (fieldname) => {
+    EventBus.on("field:changed:{{name}}", this.changeListener = (fieldname, value) => {
       let field = `#{{name}}-${fieldname}-form-data`;
       let error = `#{{name}}-${fieldname}-form-error`;
 
@@ -62,11 +62,13 @@ class {{class_name}}Form extends React.Component {
         {% for field in visible_fields %}
         {% if field.name != "user" %}
           <div className="form-group">
-          <label htmlFor="{{field.name}}">{{field.name | capitalize}}
-            <span className="form-data-error" id="{{name}}-{{field.name}}-form-error" />
+          <label htmlFor="{{name}}-{{field.name}}-form-data">{{field.name | capitalize}}
+            <span className="form-data-error" id="{{name}}-{{field.name}}-form-error"
+            role="{{name}}-{{field.name}}-form-error" />
           </label>
           {% if field.type == "text" -%}
           <textarea
+            role="{{name}}-{{field.name}}"
             rows={10}
             name="{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
@@ -75,6 +77,7 @@ class {{class_name}}Form extends React.Component {
             onChange={this.props.onChange} />
           {% elsif field.type == "boolean" -%}
           <input type="checkbox"
+            role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
@@ -83,6 +86,7 @@ class {{class_name}}Form extends React.Component {
           />
           {% elsif field.type == "reference" -%}
           <select
+            role="{{field.name}}-select"
             name="{{field.name}}_id"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}_id-form-data"
@@ -99,6 +103,7 @@ class {{class_name}}Form extends React.Component {
           </select>
           {% elsif field.cr_type == "Int32" or field.cr_type == "Int64" -%}
           <input
+            role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="number"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
@@ -107,6 +112,7 @@ class {{class_name}}Form extends React.Component {
             onChange={this.props.onChange} />
           {% elsif field.cr_type == "Float32" or field.cr_type == "Float64" -%}
           <input
+            role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="number"
             step="any"
@@ -116,6 +122,7 @@ class {{class_name}}Form extends React.Component {
             onChange={this.props.onChange} />
           {% elsif field.type == "password" -%}
           <input
+            role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="password"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
@@ -124,6 +131,7 @@ class {{class_name}}Form extends React.Component {
             onChange={this.props.onChange} />
           {% else -%}
           <input
+            role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="text"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
