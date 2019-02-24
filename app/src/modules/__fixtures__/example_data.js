@@ -6,6 +6,8 @@ export function dataExamples(type) {
     return ['42.95', '99.67']
   } else if (type === 'String') {
     return ['Widget', 'Gasket']
+  } else if (type === 'Bool') {
+    return ['1', '0']
   }
 }
 
