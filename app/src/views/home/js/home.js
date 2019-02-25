@@ -1,13 +1,28 @@
 import React from 'react';
+import {
+  Link
+} from 'react-router-dom';
 
-export default class Home extends React.Component {
+export class HomeSidebar extends React.Component {
+
+	render(props, state) {
+		return (
+			<div>
+        <p>
+          Home sidebar component
+        </p>
+			</div>
+		)
+	}
+}
+
+export class Home extends React.Component {
 
 	render(props, state) {
 		return (
 			<section className="home">
         <div className="row">
           <div className="col-sm-12 main">
-            <div id="logo" className="col-sm-6"></div>
             <div className="col-sm-6">
               <h2>Welcome to Amber Framework!</h2>
               <p>Thank you for trying out the Amber Framework.
