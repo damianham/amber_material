@@ -6,10 +6,10 @@ import jquery from 'jquery';
 import {EventBus} from '../../../lib/js/eventBus';
 import {store} from '../../../lib/js/store';
 import Resource from '../../../lib/js/resource';
+import { dataExamples } from '../../__fixtures__/example_data';
+import { {{name | pluralize}}_data } from '../__fixtures__/{{name}}_fixtures';
 
 import { {{class_name}}Edit } from '../js/{{name}}_edit';
-
-import { dataExamples } from '../../__fixtures__/example_data';
 
 window.$ = $ = jquery;
 window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh';
@@ -40,7 +40,7 @@ it("selecting new {{field.name}} changes the selected value", () => {
 
 {% elsif field.type == "boolean" -%}
 it("changing {{field.name}} changes the value", () => {
-  const {{name}} = {id:1, {{field.name}}: 0};
+  const {{name}} = {id:1, {{field.name}}: '0'};
 
   const { getByLabelText, container, asFragment} = render(
     <{{class_name}}Edit location={ {state: {{name}} }} />,
@@ -48,11 +48,11 @@ it("changing {{field.name}} changes the value", () => {
 
   const cbox = getByLabelText(/{{field.name}}/i);
 
-  expect(cbox.value).toBeFalsy();
+  expect(cbox.value).toBe('0');
 
   fireEvent.click(cbox);
 
-  expect(cbox).toBeTruthy();
+  expect(cbox.value).toBe('1');
 })
 
 {% else -%}
@@ -91,7 +91,11 @@ it("cannot enter characters into {{field.name}}", () => {
 {% endif -%}
 
 it("changing {{field.name}} emits an EventBus event", () => {
+  {% if field.type == "boolean" -%}
+  let data = dataExamples("Bool");
+  {% else -%}
   let data = dataExamples("{{field.cr_type}}");
+  {% endif -%}
   const ev_spy = jest.spyOn(EventBus, 'emit');
   const on_spy = jest.spyOn(EventBus, 'on');
   const {{name}} = {id:1, {{field.name}}: data[0]};
@@ -107,8 +111,12 @@ it("changing {{field.name}} emits an EventBus event", () => {
   expect(ev_spy).toBeCalledWith("field:changed:{{name}}", fieldname, '');
   {% else -%}
   const fieldname = "{{field.name}}";
-  const input = getByLabelText(/{{field.name}}/i);
-  fireEvent.change(input, { target: { value: data[1] } });
+  const elem = getByLabelText(/{{field.name}}/i);
+  {% if field.type == "boolean" -%}
+  fireEvent.click(elem);
+  {% else -%}
+  fireEvent.change(elem, { target: { value: data[1] } });
+  {% endif -%}
   expect(ev_spy).toBeCalledWith("field:changed:{{name}}", fieldname, data[1]);
   {% endif -%}
 

@@ -1,0 +1,55 @@
+
+import {randomString} from '../../__fixtures__/example_data';
+import {store} from '../../../lib/js/store';
+
+export function factory(name) {
+
+}
+
+export const {{name | pluralize}}_data = [
+  {
+    id: 1
+    {% for field in visible_fields -%}
+    {% if field.name != "user" -%}
+    {% if field.type == "reference" -%}
+    , {{field.name}}_id: randomString(20)
+    {% else -%}
+    , {{field.name}}: randomString(20)
+    {% endif -%}
+    {% endif -%}
+    {% endfor %}
+  },
+  {
+    id: 2
+    {% for field in visible_fields -%}
+    {% if field.type == "reference" -%}
+    {% if field.name != "user" -%}
+    , {{field.name}}: randomString(20)
+    {% endif -%}
+    {% endif -%}
+    {% endfor %}
+  },
+  {
+    id: 3
+    {% for field in visible_fields -%}
+    {% if field.type == "reference" -%}
+    {% if field.name != "user" -%}
+    , {{field.name}}: randomString(20)
+    {% endif -%}
+    {% endif -%}
+    {% endfor %}
+  }
+
+];
+
+{% for field in visible_fields -%}
+{% if field.type == "reference" -%}
+{% if field.name != "user" %}
+store.getState()["{{field.name}}"] = [
+  {id:1, name : randomString(20)},
+  {id:2, name: randomString(20)},
+  {id:3, name: randomString(20)}
+  ];
+{% endif -%}
+{% endif -%}
+{% endfor %}

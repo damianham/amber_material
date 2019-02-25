@@ -10,6 +10,7 @@ import {{class_name}}Form from '../js/{{name}}_form';
 
 import { dataExamples } from '../../__fixtures__/example_data';
 
+window.$ = $ = jquery;
 beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
@@ -53,7 +54,7 @@ it("toggling {{field.name}} fires onChange event", () => {
 
   const cbox = getByLabelText(/{{field.name}}/i);
 
-  expect(cbox.value).toBeFalsy();
+  expect(cbox.value).toBe('0');
 
   fireEvent.click(cbox);
 
@@ -99,11 +100,17 @@ it("changing {{field.name}} hides error message and normalises field", () => {
 
   {% if field.type == "reference" -%}
   const elem = getByRole("{{field.name}}-select");
-  {% else -%}
-  const elem = getByLabelText(/{{field.name}}/i);
-  {% endif -%}
 
   fireEvent.change(elem, { target: { value: data[1] } });
+  {% elsif field.type == "boolean" -%}
+  const elem = getByLabelText(/{{field.name}}/i);
+
+  fireEvent.click(elem);
+  {% else -%}
+  const elem = getByLabelText(/{{field.name}}/i);
+
+  fireEvent.change(elem, { target: { value: data[1] } });
+  {% endif -%}
 
   expect(jq_spy).toBeCalledWith("has-error");
 
