@@ -2,8 +2,8 @@
 Amber web framework modular application recipe for a React SPA with Granite ORM.
 
 The amber backend serves both html and json.  Also includes a JWT authorisation
-pipe in src/pipes.  Create a new amber app with this recipe and scaffold out some
-components with these commands;
+pipe in src/pipes.  Create a new amber app with this recipe using SQLite3 database
+ and scaffold out some components with these commands;
 
 ```
 amber new mynewapp -r damianham/amber_react_sidebar
@@ -15,8 +15,7 @@ amber g scaffold Comment body:text product:reference user:reference
 ```
 
 The React SPA is only displayed when the user is logged in, otherwise the views are
-rendered by the Amber template rendering engine.  You can make the SPA active for all users
-by changing the index method in
+rendered by the Amber template rendering engine.  This recipe has a feature to support streaming data changes via websockets.  Changes to database models on the backend are instantly reflected in the SPA for all connected clients. You can make the SPA active for all users by changing the index method in
 ```
 src/controllers/home_controller.cr
 ```
@@ -35,8 +34,7 @@ The scaffold generator will generate code modules for components in
 src/modules/<component_name>
 ```
 Component artifacts are generated for both the SPA frontend and the Amber backend template engine.
-The generated component module contains (almost) everything related to the module, Controller, Model, Views,
-custom stylesheet and SPA javascript modules.
+The generated component module contains (almost) everything related to the module, Controller, Model, Views, custom stylesheet and SPA javascript modules.
 
 For example, for an application that uses the slang template engine, given the command;
 ```
@@ -54,6 +52,11 @@ src/modules/product/
   show.slang
   style.scss
 
+spec/modules/product/
+  product_controller_spec.cr
+  product_spec.cr
+  spec_helper.cr
+
 src/modules/product/js
     product_edit.js  
     product_form.js
@@ -61,6 +64,16 @@ src/modules/product/js
     product.js
     product_new.js        
     product_view.js
+
+src/modules/product/__tests__
+    product_edit.test.js  
+    product_form.test.js
+    product_index.test.js
+    product.test.js
+    product_new.test.js        
+    product_view.test.js
+
+src/modules/product/__fixtures__/product_fixtures.js
 ```
 
 And will add links and routes to
