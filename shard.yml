@@ -1,11 +1,11 @@
-name: amber_react_sidebar
+name: amber_material
 version: 0.1.0
 
 authors:
    - Damian Hamill <damianham@gmail.com>
 
 description: |
-   Application recipe for a React SPA with Granite ORM
+   Application recipe for a React SPA with Material UI
 
 license: MIT
 

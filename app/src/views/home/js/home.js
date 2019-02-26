@@ -3,19 +3,6 @@ import {
   Link
 } from 'react-router-dom';
 
-export class HomeSidebar extends React.Component {
-
-	render(props, state) {
-		return (
-			<div>
-        <p>
-          Home sidebar component
-        </p>
-			</div>
-		)
-	}
-}
-
 export class Home extends React.Component {
 
 	render(props, state) {

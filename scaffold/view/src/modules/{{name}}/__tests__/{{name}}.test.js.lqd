@@ -2,18 +2,9 @@ import React from 'react';
 import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
 import 'jest-dom/extend-expect';
 
-import { {{class_name}}SidebarComponent } from '../js/{{name}}';
-
 import { {{name | pluralize}}_data } from '../__fixtures__/{{name}}_fixtures'
 
-it("renders the sidebar component", () => {
-  let {{name}} = {{name | pluralize}}_data[0];
-  const { getByText, getByRole, container, asFragment} = render(
-    <{{class_name}}SidebarComponent location={ {state: {{name}} }} />,
-  );
+it.skip("", () => {
 
-  const textNode = getByText("{{display_name}}")
-
-  expect(textNode).not.toBe(null)
 
 })

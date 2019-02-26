@@ -1,12 +1,12 @@
-# amber_react_sidebar
-Amber web framework modular application recipe for a React SPA with Granite ORM.
+# amber_material
+Amber web framework modular application recipe for a React SPA with Material UI.
 
 The amber backend serves both html and json.  Also includes a JWT authorisation
 pipe in src/pipes.  Create a new amber app with this recipe using SQLite3 database
  and scaffold out some components with these commands;
 
 ```
-amber new mynewapp -r damianham/amber_react_sidebar
+amber new mynewapp -r damianham/amber_material
 cd mynewapp
 amber g auth User
 amber g scaffold Category title:string user:reference
