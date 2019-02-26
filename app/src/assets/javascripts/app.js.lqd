@@ -227,12 +227,24 @@ class App extends React.Component {
             <Divider />
             <List>
               { this.isAuthenticated() ? (
-                  <li className="nav-item">
-                    <a className='nav-link' href='/signout'>Sign Out</a>
+
+                  <li>
+                    <a className='nav-link' href='/signout'>
+                    <ListItem button >
+                      <ListItemIcon>{<ExitToApp />}</ListItemIcon>
+                      <ListItemText primary="Sign Out" />
+                    </ListItem>
+                  </a>
                   </li>
                 ) : (
                   <li className="nav-item">
-                    <a className='nav-Link' href='/signin'>Sign In</a>
+                    <a className='nav-Link' href='/signin'>
+                      <ListItem button >
+                        <ListItemIcon>{<ExitToApp />}</ListItemIcon>
+                        <ListItemText primary="Sign In" />
+                      </ListItem>
+
+                      Sign In</a>
                   </li>
                 )
               }
