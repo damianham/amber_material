@@ -79,14 +79,15 @@ src/modules/product/__fixtures__/product_fixtures.js
 And will add links and routes to
 ```
 src/views/layouts/_nav.slang
-src/modules/js/routes/js
+src/modules/js/routes.js
 
 ```
-The SPA application layout (in src/assets/javascripts/app.js) has a section for a
-sidebar and a main content section.  Each generated component module in the SPA
-contains components that will be rendered in the main content section based on the route
-and a sidebar component (which you can find in src/modules/product/js/product.js in the above example)
-which will be rendered in the sidebar content section.
+
+The SPA application layout (in src/assets/javascripts/app.js) has a Material-UI
+Mini Variant Drawer menu.  The routes added for each module contain an index route with
+a MailIcon icon.  You should change the icon to something that reflects the purpose of the module.
+Choose an icon from [material.io/tools/icons](https://material.io/tools/icons/?style=baseline) then
+import the icon src/modules/js/routes.js.  See [Usage](https://github.com/mui-org/material-ui/blob/next/packages/material-ui-icons/README.md#usage) for details about icon naming.
 
 
 ### Notes
