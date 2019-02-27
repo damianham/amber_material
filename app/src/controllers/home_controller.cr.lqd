@@ -2,11 +2,7 @@ require "jwt"
 
 class HomeController < ApplicationController
   def index
-    if context.current_user
-      render("app.{{ language }}", "spa.{{ language }}")
-    else
-      render("index.{{ language }}")
-    end
+    render("app.{{ language }}", "spa.{{ language }}")
   end
 
   def token_sign_in_helper

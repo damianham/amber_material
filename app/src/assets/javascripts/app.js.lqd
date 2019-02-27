@@ -19,20 +19,31 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-
-
+import ExitToApp from '@material-ui/icons/ExitToApp'
 import HomeIcon from '@material-ui/icons/Home';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import PersonIcon from '@material-ui/icons/Person';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
 
 import Auth from '../../lib/js/auth';
 import routes from '../../modules/js/routes';
 
+const icons = {
+  'Exit': ExitToApp,
+  'Home': HomeIcon,
+  'Inbox': InboxIcon,
+  'Mail': MailIcon,
+  'Person': PersonIcon,
+  'View': ViewModuleIcon
+};
 
 const drawerWidth = 240;
 
@@ -193,7 +204,7 @@ class App extends React.Component {
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6" color="inherit" noWrap>
-                Amber Application
+                {{name | capitalize}}
               </Typography>
             </Toolbar>
           </AppBar>
@@ -203,7 +214,7 @@ class App extends React.Component {
               [classes.drawerOpen]: this.state.open,
               [classes.drawerClose]: !this.state.open,
             })}
-            classes={{
+            classes={ {
               paper: classNames({
                 [classes.drawerOpen]: this.state.open,
                 [classes.drawerClose]: !this.state.open,
@@ -219,45 +230,56 @@ class App extends React.Component {
             <Divider />
             <List>
 
-              { routes.filter(route => route.type === 'index').map((route, index) => (
-                <ListItemLink exact key={route.path} to={route.path} primary={route.name} icon={route.icon} />
-              ))
-              }
+            { routes.filter(route => route.type === 'index').map((route, index) => {
+                let RouteIcon = icons[route.icon];
+                return <ListItemLink exact key={route.path} to={route.path} primary={route.name} icon={<RouteIcon />} />
+              })
+            }
             </List>
             <Divider />
             <List>
-              { this.isAuthenticated() ? (
-
-                  <li>
-                    <a className='nav-link' href='/signout'>
+            { this.isAuthenticated() ? (
+                <li>
+                  <a href='/signout'>
+                  <ListItem button >
+                    <ListItemIcon>{<ExitToApp />}</ListItemIcon>
+                    <ListItemText primary="Sign Out" />
+                  </ListItem>
+                  </a>
+                </li>
+              ) : (
+                <li>
+                  <a href='/signin'>
                     <ListItem button >
                       <ListItemIcon>{<ExitToApp />}</ListItemIcon>
-                      <ListItemText primary="Sign Out" />
+                      <ListItemText primary="Sign In" />
                     </ListItem>
-                  </a>
-                  </li>
-                ) : (
-                  <li className="nav-item">
-                    <a className='nav-Link' href='/signin'>
-                      <ListItem button >
-                        <ListItemIcon>{<ExitToApp />}</ListItemIcon>
-                        <ListItemText primary="Sign In" />
-                      </ListItem>
+                    </a>
+                </li>
+              )
+            }
+            { this.isAuthenticated() ? (
 
-                      Sign In</a>
-                  </li>
-                )
-              }
-              { this.isAuthenticated() ? (
-                  <li className="nav-item">
-                    <NavLink className='nav-link' to='/profile'>{this.state.current_user.email}</NavLink>
-                  </li>
-                ) : (
-                  <li className="nav-item">
-                    <a className='nav-link' href='/signup'>Sign Up</a>
-                  </li>
-                )
-              }
+                <li>
+                  <a  href='/profile'>
+                    <ListItem button >
+                      <ListItemIcon>{<PersonIcon />}</ListItemIcon>
+                      <ListItemText primary="Profile" />
+                    </ListItem>
+                    </a>
+                </li>
+              ) : (
+
+                <li>
+                  <a  href='/signup'>
+                    <ListItem button >
+                      <ListItemIcon>{<PersonAddIcon />}</ListItemIcon>
+                      <ListItemText primary="Sign Up" />
+                    </ListItem>
+                    </a>
+                </li>
+              )
+            }
             </List>
           </Drawer>
           <main className={classes.content}>

@@ -1,7 +1,4 @@
 import React from 'react';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import HomeIcon from '@material-ui/icons/Home';
 
 var routes = [];
 
@@ -15,7 +12,7 @@ routes.push(  {
   type: 'index',
   name: 'Home',
   main: Home,
-  icon: <HomeIcon />
+  icon: 'Home'
   });
 
 // append routes
