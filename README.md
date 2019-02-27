@@ -89,6 +89,11 @@ a MailIcon icon.  You should change the icon to something that reflects the purp
 Choose an icon from [material.io/tools/icons](https://material.io/tools/icons/?style=baseline) then
 import the icon src/modules/js/routes.js.  See [Usage](https://github.com/mui-org/material-ui/blob/next/packages/material-ui-icons/README.md#usage) for details about icon naming.
 
+## TODO
+
+- signin/signout from the SPA
+- login with JWT token
+- modify profile in SPA
 
 ### Notes
 
