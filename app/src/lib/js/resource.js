@@ -30,8 +30,7 @@ export default class Resource {
     let $ = window.$;
 
     // create a clone of this object with only the source attributes
-    let clone = {};
-    Object.assign(clone, instance);
+    let clone = Object.assign({}, instance);
     delete clone.endpoint;
 
     if (instance.id) {
