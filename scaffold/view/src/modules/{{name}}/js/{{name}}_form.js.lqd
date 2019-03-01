@@ -11,12 +11,6 @@ class {{class_name}}Form extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {}
-  }
-
-  onLoaded(name, data) {
-    this[name] = data;
-    this.setState({optionsLoaded: Date.now() })
   }
 
   componentWillMount() {
@@ -62,7 +56,7 @@ class {{class_name}}Form extends React.Component {
         {% for field in visible_fields %}
         {% if field.name != "user" %}
           <div className="form-group">
-          <label htmlFor="{{name}}-{{field.name}}-form-data">{{field.name | capitalize}}
+          <label htmlFor="{{name}}-{{field.name}}-form-data" id="{{name}}-{{field.name}}">{{field.name | capitalize}}
             <span className="form-data-error" id="{{name}}-{{field.name}}-form-error"
             role="{{name}}-{{field.name}}-form-error" />
           </label>
@@ -71,6 +65,7 @@ class {{class_name}}Form extends React.Component {
             role="{{name}}-{{field.name}}"
             rows={10}
             name="{{field.name}}"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
@@ -79,6 +74,7 @@ class {{class_name}}Form extends React.Component {
           <input type="checkbox"
             role="{{name}}-{{field.name}}"
             name="{{field.name}}"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
@@ -88,6 +84,7 @@ class {{class_name}}Form extends React.Component {
           <select
             role="{{field.name}}-select"
             name="{{field.name}}_id"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}_id-form-data"
             value={ this.props.{{name}}.{{field.name}}_id }
@@ -106,6 +103,7 @@ class {{class_name}}Form extends React.Component {
             role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="number"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
@@ -116,6 +114,7 @@ class {{class_name}}Form extends React.Component {
             name="{{field.name}}"
             type="number"
             step="any"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
@@ -125,6 +124,7 @@ class {{class_name}}Form extends React.Component {
             role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="password"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }
@@ -134,6 +134,7 @@ class {{class_name}}Form extends React.Component {
             role="{{name}}-{{field.name}}"
             name="{{field.name}}"
             type="text"
+            aria-labelledby="{{name}}-{{field.name}}"
             className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
             id="{{name}}-{{field.name}}-form-data"
             value={ this.props.{{name}}.{{field.name}} }

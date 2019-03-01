@@ -14,8 +14,14 @@ export class {{class_name}}New extends React.Component {
 
     this.state = new {{class_name}}({
     {% for field in visible_fields -%}
+    {% if field.name != "user" -%}
+    {% if field.type == "reference" -%}
+    {{"      "}}{{field.name}}_id: '',
+    {% else %}
 {{"      "}}{{field.name}}: '',
-    {% endfor -%}
+    {% endif -%}
+    {% endif -%}
+    {% endfor %}
     })
   }
 

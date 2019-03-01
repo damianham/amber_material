@@ -24,9 +24,7 @@ afterEach(cleanup);
 
 {% if field.type == "reference" -%}
 it("selecting new {{field.name}} changes the selected value", () => {
-  const {{field.name | pluralize}} = [{id:1, name: 'Widget'}, {id: 2, name: 'Gasket'}];
   const {{name}} = {id:1, {{field.name}}_id: '1'};
-  store.getState()["{{field.name}}"] = {{field.name | pluralize}}
 
   const { getByLabelText, getByRole, container, asFragment} = render(
     <{{class_name}}Edit location={ {state: {{name}} }} />,
@@ -34,13 +32,13 @@ it("selecting new {{field.name}} changes the selected value", () => {
 
   const list = getByRole("{{field.name}}-select");
 
-  fireEvent.select(list, { target: { selected_id: '2' } });
-  expect(list.selected_id).toBe('2')
+  fireEvent.change(list, { target: { value: '2' } });
+  expect(list.value).toBe('2')
 })
 
 {% elsif field.type == "boolean" -%}
 it("changing {{field.name}} changes the value", () => {
-  const {{name}} = {id:1, {{field.name}}: '0'};
+  const {{name}} = {{name | pluralize}}_data[0];
 
   const { getByLabelText, container, asFragment} = render(
     <{{class_name}}Edit location={ {state: {{name}} }} />,
@@ -50,7 +48,7 @@ it("changing {{field.name}} changes the value", () => {
 
   expect(cbox.value).toBe('0');
 
-  fireEvent.click(cbox);
+  fireEvent.click(cbox, { target: { value: '1' } });
 
   expect(cbox.value).toBe('1');
 })
@@ -58,17 +56,23 @@ it("changing {{field.name}} changes the value", () => {
 {% else -%}
 
 it("changing {{field.name}} changes the value", () => {
-  let data = dataExamples("{{field.cr_type}}");
-  const {{name}} = {id:1, {{field.name}}: data[0]};
+  const {{name}} = {{name | pluralize}}_data[0];
 
   const { getByLabelText, container, asFragment} = render(
     <{{class_name}}Edit location={ {state: {{name}} }} />,
   );
+  {% if field.cr_type == "Int32" or field.cr_type == "Int64" %}
+  const val = '999';
+  {% elsif field.cr_type == "Float32" or field.cr_type == "Float64" -%}
+  const val = '99.99';
+  {% else %}
+  const val = 'new value';
+  {% endif %}
 
   const input = getByLabelText(/{{field.name}}/i);
 
-  fireEvent.change(input, { target: { value: data[1] } });
-  expect(input.value).toBe(data[1])
+  fireEvent.change(input, { target: { value: val } });
+  expect(input.value).toBe(val)
 })
 
 {% if field.cr_type == "Int32" or field.cr_type == "Int64" or field.cr_type == "Float32" or field.cr_type == "Float64" -%}
@@ -91,33 +95,35 @@ it("cannot enter characters into {{field.name}}", () => {
 {% endif -%}
 
 it("changing {{field.name}} emits an EventBus event", () => {
-  {% if field.type == "boolean" -%}
-  let data = dataExamples("Bool");
-  {% else -%}
-  let data = dataExamples("{{field.cr_type}}");
-  {% endif -%}
   const ev_spy = jest.spyOn(EventBus, 'emit');
   const on_spy = jest.spyOn(EventBus, 'on');
-  const {{name}} = {id:1, {{field.name}}: data[0]};
+  const {{name}} = {{name | pluralize}}_data[0];
 
   const { getByLabelText, getByRole, getByTestId, container, asFragment} = render(
     <{{class_name}}Edit location={ {state: {{name}} }} />,
   );
 
   {% if field.type == "reference" -%}
-  const fieldname = "{{field.name}}_id";
-  const input = getByRole("{{field.name}}-select");
-  fireEvent.change(input, { target: { value: data[1] } });
-  expect(ev_spy).toBeCalledWith("field:changed:{{name}}", fieldname, '');
+  const list = getByRole("{{field.name}}-select");
+  fireEvent.change(list, { target: { value: '2' } });
+  expect(ev_spy).toBeCalledWith("field:changed:{{name}}", "{{field.name}}_id", '2');
   {% else -%}
-  const fieldname = "{{field.name}}";
   const elem = getByLabelText(/{{field.name}}/i);
+
   {% if field.type == "boolean" -%}
-  fireEvent.click(elem);
+  const val = "1";
+  fireEvent.click(elem, { target: { value: '1' } });
   {% else -%}
-  fireEvent.change(elem, { target: { value: data[1] } });
+  {% if field.cr_type == "Int32" or field.cr_type == "Int64" %}
+  const val = '999';
+  {% elsif field.cr_type == "Float32" or field.cr_type == "Float64" -%}
+  const val = '99.99';
+  {% else %}
+  const val = 'new value';
+  {% endif %}
+  fireEvent.change(elem, { target: { value: val } });
   {% endif -%}
-  expect(ev_spy).toBeCalledWith("field:changed:{{name}}", fieldname, data[1]);
+  expect(ev_spy).toBeCalledWith("field:changed:{{name}}", "{{field.name}}", val);
   {% endif -%}
 
   ev_spy.mockRestore();
@@ -129,11 +135,9 @@ it("changing {{field.name}} emits an EventBus event", () => {
 
 it("onSubmit with valid data saves the {{name}} via $.ajax and goes back in history", () => {
 
-  const {{name}} =  {id:1, name: 'Widget'};
+  const {{name}} =  {{name | pluralize}}_data[0];
   const resp = {data: {{name}}};
   const goBackMock = jest.fn();
-
-  store.getState()["{{name}}"] = [new Resource("/{{name | pluralize}}",{{name}}) ]
 
   $.ajax = jest.fn(() => Promise.resolve(resp));
 
@@ -145,9 +149,12 @@ it("onSubmit with valid data saves the {{name}} via $.ajax and goes back in hist
 
   fireEvent.click(getByText(/save/i));
 
+  let clone = Object.assign({}, {{name}});
+  delete clone.endpoint;
+
   // Now make sure that $.ajax was properly called
   expect($.ajax).toBeCalledWith({
-    data: {...{{name}}, _method: 'patch'},
+    data: {...clone, _method: 'patch'},
     method: 'PUT',
     url: '/{{name | pluralize}}/1',
     dataType: 'json',

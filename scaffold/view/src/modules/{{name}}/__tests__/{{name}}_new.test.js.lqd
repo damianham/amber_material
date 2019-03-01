@@ -3,12 +3,67 @@ import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library'
 import 'jest-dom/extend-expect';
 import jquery from 'jquery';
 
-jest.mock('jquery');
+import { {{name | pluralize}}_data } from '../__fixtures__/{{name}}_fixtures';
+
+import { {{class_name}}New } from '../js/{{name}}_new';
+
+window.$ = $ = jquery;
+window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh';
 
 beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
 
-it("tests something", () => {
+it("onSubmit with valid data saves the {{name}} via $.ajax and goes back in history", () => {
+
+  const {{name}} =  {{name | pluralize}}_data[0];
+  const resp = {data: {{name}}};
+  const goBackMock = jest.fn();
+
+  $.ajax = jest.fn(() => Promise.resolve(resp));
+
+  const {getByRole, getByText, getByLabelText, container, asFragment} = render(
+    <{{class_name}}New history={
+      {goBack: goBackMock}
+    }/>,
+  );
+
+  let elem;
+  let clone = Object.assign({}, {{name}});
+  delete clone.endpoint;
+  delete clone.id;
+
+  // populate the visible_fields
+  {% for field in visible_fields -%}
+  {% if field.name != "user" -%}
+  {% if field.type == "reference" -%}
+  elem = getByRole("{{field.name}}-select");
+  fireEvent.change(elem, { target: { value: '2' } });
+  clone.{{field.name}}_id = '2';
+  {% else -%}
+  elem = getByLabelText(/{{field.name}}/i);
+
+  {% if field.type == "boolean" -%}
+  fireEvent.click(elem, { target: { value: {{name}}.{{field.name}} } });
+  {% else -%}
+  fireEvent.change(elem, { target: { value: {{name}}.{{field.name}} } });
+  {% endif -%}
+
+  {% endif -%}
+  {% endif -%}
+  {% endfor %}
+
+  fireEvent.click(getByText(/save/i));
+
+  // Now make sure that $.ajax was properly called
+  expect($.ajax).toBeCalledWith({
+    data: {...clone},
+    method: 'POST',
+    url: '/{{name | pluralize}}',
+    dataType: 'json',
+    headers: {
+      "X-CSRF-TOKEN": window.csrf_token
+    },
+  });
 
 })

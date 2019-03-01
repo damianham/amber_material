@@ -15,6 +15,18 @@ export function randomString(len) {
   return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, len);
 }
 
+export function randomValue(type, len) {
+  if (type === "Int32" || type === "Int64") {
+    return Math.round(Math.random() * 100).toString()
+  } else if (type === 'Float32' || type === 'Float64') {
+    return (Math.round((Math.random() * 10000)) / 100).toString()
+  } else if (type === 'String') {
+    return randomString(len)
+  } else if (type === 'Bool') {
+    return "" +0
+  }
+}
+
 export const exampleUsers = [
   {
     id: 1,

@@ -20,11 +20,13 @@ export class {{class_name}} extends Resource {
     {% if field.name != "user" -%}
     {% if field.type == "reference" -%}
     if (this.{{field.name}}_id === '') {
+    {{"  "}}errors.push({field: "{{field.name}}_id", value: this.{{field.name}}_id, message: "is required"})
+    }
     {% else -%}
     if (this.{{field.name}} === '') {
-    {% endif -%}
     {{"  "}}errors.push({field: "{{field.name}}", value: this.{{field.name}}, message: "is required"})
     }
+    {% endif -%}
     {% endif -%}
     {% endfor -%}
 
