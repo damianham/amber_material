@@ -23,7 +23,7 @@ export class {{class_name}} extends Resource {
     {% else -%}
     if (this.{{field.name}} === '') {
     {% endif -%}
-      errors.push({field: "{{field.name}}", value: this.{{field.name}}, message: "is required"})
+    {{"  "}}errors.push({field: "{{field.name}}", value: this.{{field.name}}, message: "is required"})
     }
     {% endif -%}
     {% endfor -%}
