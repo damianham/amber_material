@@ -106,7 +106,7 @@ export class {{class_name}}Index extends React.Component {
 
 export default {{class_name}}Index;
 
-class {{class_name}}IndexList extends React.Component {
+export class {{class_name}}IndexList extends React.Component {
   constructor(props) {
     super(props)
 
@@ -154,7 +154,7 @@ class {{class_name}}IndexList extends React.Component {
   }
 }
 
-class {{class_name}}IndexItem extends React.Component {
+export class {{class_name}}IndexItem extends React.Component {
   constructor(props) {
     super(props);
 
