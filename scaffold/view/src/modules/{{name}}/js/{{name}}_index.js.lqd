@@ -18,6 +18,7 @@ export class {{class_name}}Index extends React.Component {
       sort_column: 'id',
       sort_direction: 'up'
     }
+    this.toggleSort = this.toggleSort.bind(this)
   }
 
   toggleSort(event) {
@@ -121,6 +122,7 @@ export class {{class_name}}IndexList extends React.Component {
   }
 
   render() {
+    let clickHandler = this.props.delegate ? this.props.delegate.toggleSort : () =>{}
     return (
       <div>
         <div className="row {{name}}-index-title-row index-title-row">
@@ -142,7 +144,7 @@ export class {{class_name}}IndexList extends React.Component {
               {% if field.name != "user" %}
                 <th className="{{name}}-index-table-head index-table-head"
                 {% if field.type != "reference" -%}
-                data-field="{{field.name}}" onClick={this.props.delegate.toggleSort.bind(this.props.delegate)}
+                data-field="{{field.name}}" onClick={clickHandler)}
                 {% endif -%}
                 >{{field.name | capitalize }}</th>
               {% endif -%}
