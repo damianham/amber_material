@@ -20,6 +20,14 @@ export class {{class_name}}Index extends React.Component {
     }
   }
 
+  toggleSort(event) {
+    if(this.state.sort_column === event.target.dataset.field) {
+      this.state.sort_direction = this.state.sort_direction === 'up' ? 'down' : 'up'
+    }
+    this.state.sort_column = event.target.dataset.field
+    this.sort()
+  }
+
   sort(event) {
 
     if (event && typeof event === 'String') {
@@ -132,7 +140,11 @@ export class {{class_name}}IndexList extends React.Component {
               <tr className="{{name}}-index.table-head-row index-table-head-row">
               {% for field in visible_fields -%}
               {% if field.name != "user" %}
-                <th className="{{name}}-index-table-head index-table-head">{{field.name | capitalize }}</th>
+                <th className="{{name}}-index-table-head index-table-head"
+                {% if field.type != "reference" -%}
+                data-field="{{field.name}}" onClick={this.props.delegate.toggleSort.bind(this.props.delegate)}
+                {% endif -%}
+                >{{field.name | capitalize }}</th>
               {% endif -%}
               {% endfor %}
                 <th>Actions</th>
