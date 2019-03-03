@@ -1,14 +1,31 @@
 import React from 'react';
+import { HashRouter } from 'react-router-dom';
 import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
 import jquery from 'jquery';
 
-jest.mock('jquery');
+import { {{class_name}}View } from '../js/{{name}}_view';
+
+import { {{name | pluralize}}_data } from '../__fixtures__/{{name}}_fixtures';
 
 beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
 
-it("tests something", () => {
+it.skip("renders the {{class_name}}View", () => {
+  const {{name}} = {{name | pluralize}}_data[0];
 
+  const component = renderer.create(<HashRouter>
+    <{{class_name}}View location={ {
+        state: {
+          {{name}}: {{name}}
+        }
+      }
+    } match={ {params: {id: {{name}}.id }}} />
+   </HashRouter>
+  );
+
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
 })

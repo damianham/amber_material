@@ -144,7 +144,7 @@ export class {{class_name}}IndexList extends React.Component {
               {% if field.name != "user" %}
                 <th className="{{name}}-index-table-head index-table-head"
                 {% if field.type != "reference" -%}
-                data-field="{{field.name}}" onClick={clickHandler)}
+                data-field="{{field.name}}" onClick={clickHandler}
                 {% endif -%}
                 >{{field.name | capitalize }}</th>
               {% endif -%}

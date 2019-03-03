@@ -1,5 +1,6 @@
 import React from 'react';
 import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
 import jquery from 'jquery';
 
@@ -18,16 +19,26 @@ beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
 
+it.skip("renders the {{class_name}}Edit", () => {
+  const {{name}} = {{name | pluralize}}_data[0];
+
+  const component = renderer.create(
+    <{{class_name}}Edit location={ {state: {{name}} }} />
+  );
+
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+})
 
 {% for field in visible_fields -%}
 {% if field.name != "user" -%}
 
 {% if field.type == "reference" -%}
 it("selecting new {{field.name}} changes the selected value", () => {
-  const {{name}} = {id:1, {{field.name}}_id: '1'};
+  const {{name}} = {{name | pluralize}}_data[0];
 
   const { getByLabelText, getByRole, container, asFragment} = render(
-    <{{class_name}}Edit location={ {state: {{name}} }} />,
+    <{{class_name}}Edit location={ {state: {{name}} }} />
   );
 
   const list = getByRole("{{field.name}}-select");
@@ -100,7 +111,7 @@ it("changing {{field.name}} emits an EventBus event", () => {
   const {{name}} = {{name | pluralize}}_data[0];
 
   const { getByLabelText, getByRole, getByTestId, container, asFragment} = render(
-    <{{class_name}}Edit location={ {state: {{name}} }} />,
+    <{{class_name}}Edit location={ {state: {{name}} }} />
   );
 
   {% if field.type == "reference" -%}

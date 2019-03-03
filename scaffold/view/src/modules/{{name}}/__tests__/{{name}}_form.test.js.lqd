@@ -1,5 +1,6 @@
 import React from 'react';
 import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
 import jquery from 'jquery';
 
@@ -9,11 +10,24 @@ import {store} from '../../../lib/js/store';
 import {{class_name}}Form from '../js/{{name}}_form';
 
 import { dataExamples } from '../../__fixtures__/example_data';
+import { {{name | pluralize}}_data } from '../__fixtures__/{{name}}_fixtures';
 
 window.$ = $ = jquery;
 beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
+
+it.skip("renders the {{class_name}}Form", () => {
+  const {{name}} = {{name | pluralize}}_data[0];
+
+  const component = renderer.create(<{{class_name}}Form {{name}}={ {{name}}}
+    onSubmit={() => {}}
+    onChange={() => {}} />
+  );
+
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+})
 
 {% for field in visible_fields -%}
 {% if field.name != "user" -%}
@@ -30,7 +44,7 @@ it("selecting new {{field.name}} fires onChange event", () => {
   const {container, getByLabelText, getByRole} = render(
     <{{class_name}}Form {{name}}={ {{name}}}
     onSubmit={() => {}}
-    onChange={onChange} />,
+    onChange={onChange} />
   );
 
   const list = getByRole("{{field.name}}-select");

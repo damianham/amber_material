@@ -1,5 +1,7 @@
 import React from 'react';
+import { HashRouter } from 'react-router-dom';
 import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import TestRenderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
 import jquery from 'jquery';
 
@@ -9,7 +11,8 @@ import {store} from '../../../lib/js/store';
 import { dataExamples } from '../../__fixtures__/example_data';
 import { {{name | pluralize}}_data } from '../__fixtures__/{{name}}_fixtures';
 
-import {{class_name}}Index from '../js/{{name}}_index';
+import { {{class_name}}} from '../js/{{name}}';
+import { {{class_name}}Index, {{class_name}}IndexList, {{class_name}}IndexItem} from '../js/{{name}}_index';
 
 window.$ = $ = jquery;
 window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh';
@@ -18,35 +21,153 @@ beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
 
-it.skip("{{class_name}}Index sorts the data by default on id field", () => {
+it("{{class_name}}Index sorts the data by default on id field", () => {
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(store.getState()["{{name}}"])
+  });
 
-  // sort the fixture data on id
+  let state = store.getState()["{{name}}"];
 
-  // get the rendered data
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+  const list = testInstance.findByType({{class_name}}IndexList);
 
-  expect(names).toEqual(sorted_names)
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[2]);
 })
 
-it.skip("{{class_name}}Index changes the sort direction", () => {
+it("{{class_name}}Index changes the sort direction", () => {
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(store.getState()["{{name}}"])
+  });
 
-  // sort the fixture data on id desc
+  let state = store.getState()["{{name}}"];
 
-  // get the rendered data
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
 
-  expect(names).toEqual(sorted_names)
+  const list = testInstance.findByType({{class_name}}IndexList);
+  const index = testInstance.findByType({{class_name}}Index);
 
+  index.instance.toggleSort({target: { dataset: {field: 'id'}}});
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[2]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[0]);
 })
 
-it.skip("{{class_name}}Index sorts the data on first text field", () => {
+{% for field in visible_fields -%}
+{% if field.name != "user" and field.type != "reference" -%}
+it("{{class_name}}Index sorts the data on {{field.name}}", () => {
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(store.getState()["{{name}}"])
+  });
 
+  let sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
+    if (a.{{field.name}} == b.{{field.name}}) {
+      return 0
+    }
+    return a.{{field.name}} < b.{{field.name}} ? -1 : 1
+  });
+
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  const list = testInstance.findByType({{class_name}}IndexList);
+  const index = testInstance.findByType({{class_name}}Index);
+
+  index.instance.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(sorted[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(sorted[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(sorted[2]);
 })
 
-it.skip("{{class_name}}Index#componentWillMount subscribes to the resource stream", () => {
+it("{{class_name}}Index sorts the data on {{field.name}} descending", () => {
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(store.getState()["{{name}}"])
+  });
 
+  let sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
+    if (a.{{field.name}} == b.{{field.name}}) {
+      return 0
+    }
+    return a.{{field.name}} < b.{{field.name}} ? 1 : -1
+  });
+
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  const list = testInstance.findByType({{class_name}}IndexList);
+  const index = testInstance.findByType({{class_name}}Index);
+
+  index.instance.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
+  index.instance.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(sorted[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(sorted[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(sorted[2]);
+})
+{% endif -%}
+{% endfor %}
+
+it("{{class_name}}Index#componentWillMount subscribes to the resource stream", () => {
+  store.subscribe = jest.fn();
+
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  expect(store.subscribe).toBeCalledWith("{{name}}", "/{{name | pluralize}}", expect.any(Function));
 })
 
-it.skip("{{class_name}}Index#componentWillMount adds a new model and re-sorts the data", () => {
+it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the data", () => {
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(store.getState()["{{name}}"])
+  })
 
+  let state = store.getState()["{{name}}"];
+  let clone = new {{class_name}}(state[0]);
+  clone.id = state.length + 1;
+
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+  const index = testInstance.findByType({{class_name}}Index);
+
+  index.instance.toggleSort({target: { dataset: {field: 'id'}}});
+
+  state.push(clone);
+
+  EventBus.emit('new:model:{{name}}', clone);
+
+  const list = testInstance.findByType({{class_name}}IndexList);
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(4);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[3]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][3]).toBe(state[0]);
 })
 
 it.skip("{{class_name}}Index#componentWillMount updates a model and re-sorts the data", () => {
@@ -59,14 +180,41 @@ it.skip("{{class_name}}Index#componentWillMount deletes a model and re-sorts the
 it.skip("{{class_name}}Index#componentWillMount deletes a model via the store", () => {
 
 })
-it.skip("{{class_name}}Index#componentWillMount subscribes to related models", () => {
+{% for field in visible_fields -%}
+{% if field.name != "user" and field.type == "reference" -%}
+it("{{class_name}}Index#componentWillMount subscribes to related {{field.name | pluralize}}", () => {
+  store.subscribe = jest.fn()
 
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  expect(store.subscribe).toBeCalledWith("{{field.name}}", "/{{field.name | pluralize}}", expect.any(Function))
 })
-it.skip("{{class_name}}Index renders 1 {{class_name}}IndexList", () => {
+{% endif -%}
+{% endfor %}
 
+it("{{class_name}}Index renders 1 {{class_name}}IndexList", () => {
+  store.subscribe = jest.fn();
+
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  expect(testInstance.findAllByType({{class_name}}IndexList).length).toBe(1)
 })
-it.skip("{{class_name}}IndexList renders {{class_name}}IndexItem for each {{class_name}}", () => {
 
+it("{{class_name}}IndexList renders {{class_name}}IndexItem for each {{class_name}}", () => {
+  store.subscribe = jest.fn();
+
+  const testRenderer = TestRenderer.create(<HashRouter>
+     <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  expect(testInstance.findAllByType({{class_name}}IndexItem).length).toBe(store.getState()["{{name}}"].length)
 })
 it.skip("{{class_name}}IndexItem#delete shows window confirmation dialog", () => {
 

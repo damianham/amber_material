@@ -1,5 +1,6 @@
 import React from 'react';
 import {render, fireEvent, cleanup, waitForElement} from 'react-testing-library';
+import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
 import jquery from 'jquery';
 
@@ -14,6 +15,18 @@ beforeEach(() => jest.resetModules());
 
 afterEach(cleanup);
 
+it.skip("renders the {{class_name}}New", () => {
+  const {{name}} = {{name | pluralize}}_data[0];
+
+  const component = renderer.create(  <{{class_name}}New history={
+      {goBack: () => {}}
+    }/>
+  );
+
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
+})
+
 it("onSubmit with valid data saves the {{name}} via $.ajax and goes back in history", () => {
 
   const {{name}} =  {{name | pluralize}}_data[0];
@@ -25,7 +38,7 @@ it("onSubmit with valid data saves the {{name}} via $.ajax and goes back in hist
   const {getByRole, getByText, getByLabelText, container, asFragment} = render(
     <{{class_name}}New history={
       {goBack: goBackMock}
-    }/>,
+    }/>
   );
 
   let elem;
