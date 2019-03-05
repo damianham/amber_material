@@ -28,16 +28,43 @@ toastr.options = {
 window.toastr = toastr;
 
 import { HashRouter } from 'react-router-dom';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true,
+  },
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#f4994b',  // Amber framework primary colour
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      // light: will be calculated to contrast with palette.secondary.main
+      main: '#f44336',
+      // dark: will be calculated from palette.secondary.main,
+      // contrastText: will be calculated to contrast with palette.secondary.main
+    },
+    // error: will use the default color
+  },
+  status: {
+    danger: 'orange',
+  },
+});
 
 document.addEventListener('DOMContentLoaded', function() {
 
-  let componentEntry = document.getElementById("{{name}}_app");
-  if (componentEntry) {
+  let element = document.getElementById("{{name}}_app");
+  if (element) {
 		ReactDOM.render((
-			  <HashRouter>
-			    <App />
-			  </HashRouter>),
-		  document.getElementById("{{name}}_app")
+      <HashRouter>
+        <MuiThemeProvider theme={theme}>
+			     <App />
+        </MuiThemeProvider>
+      </HashRouter>),
+		  element)
 		);
   }
 });
