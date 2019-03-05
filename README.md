@@ -85,14 +85,30 @@ src/modules/js/routes.js
 
 The SPA application layout (in src/assets/javascripts/app.js) has a Material-UI
 Mini Variant Drawer menu.  The routes added for each module contain an index route with
-a MailIcon icon.  You should change the icon to something that reflects the purpose of the module.
+a ViewModuleIcon icon.  You should change the icon to something that reflects the purpose of the module.
 Choose an icon from [material.io/tools/icons](https://material.io/tools/icons/?style=baseline) then
-import the icon src/modules/js/routes.js.  See [Usage](https://github.com/mui-org/material-ui/blob/next/packages/material-ui-icons/README.md#usage) for details about icon naming.
+import the icon in src/assets/javascripts/app.js. You also need to define a text name for the icon in
+the icons object
+```
+// src/assets/javascripts/app.js
+const icons = {
+  'Exit': ExitToApp,
+  'Home': HomeIcon,
+  'Inbox': InboxIcon,
+  'Mail': MailIcon,
+  'Person': PersonIcon,
+  'View': ViewModuleIcon
+};
+
+```
+and use the text name as the icon identifier for the route in src/modules/js/routes.js.
+
+See [Usage](https://github.com/mui-org/material-ui/blob/next/packages/material-ui-icons/README.md#usage) for details about icon naming.
 
 ## TODO
 
 - signin/signout from the SPA
-- login with JWT token
+- oauth signin
 - modify profile in SPA
 
 ### Notes

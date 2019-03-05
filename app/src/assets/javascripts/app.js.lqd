@@ -36,6 +36,8 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import Auth from '../../lib/js/auth';
 import routes from '../../modules/js/routes';
 
+// define a mapping from a text name used as the icon ID in routes in
+// ../../modules/js/routes.js to an imported icon
 const icons = {
   'Exit': ExitToApp,
   'Home': HomeIcon,
