@@ -22,20 +22,23 @@ export class {{class_name}}Index extends React.Component {
   }
 
   toggleSort(event) {
-    if(this.state.sort_column === event.target.dataset.field) {
-      this.state.sort_direction = this.state.sort_direction === 'up' ? 'down' : 'up'
-    }
-    this.state.sort_column = event.target.dataset.field
-    this.sort()
+    this.sort(event)
   }
 
   sort(event) {
 
     if (event && typeof event === 'String') {
       // we were given the column to sort on as a string
+      if(this.state.sort_column === event) {
+        this.state.sort_direction = this.state.sort_direction === 'up' ? 'down' : 'up'
+      }
       this.state.sort_column = event
     } else if (event && event.target) {
-      // the sort column to sort on is the result of a click or selection
+      // the sort column to sort on is the result of a click
+      if(this.state.sort_column === event.target.dataset.field) {
+        this.state.sort_direction = this.state.sort_direction === 'up' ? 'down' : 'up'
+      }
+      this.state.sort_column = event.target.dataset.field
     }
 
     let vm = this;
