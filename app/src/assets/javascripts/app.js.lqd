@@ -150,14 +150,35 @@ class App extends React.Component {
 
   handleDrawerOpen() {
     this.setState({ open: true });
-  };
+  }
 
   handleDrawerClose() {
     this.setState({ open: false });
-  };
+  }
 
-  componentWillMount() {
-    // get the current user
+  authenticateWithToken(token) {
+    let vm = this;
+    let $ = window.$;
+
+    $.ajax(
+      {
+        url: "/authenticateWithToken?token=" + token,
+        method: 'GET',
+        dataType: 'json'
+      })
+      .done(function (data) {
+        window.csrf_token = data.csrf;
+        Auth.authenticateUser(data.token, data.user);
+        vm.setState({ current_user: data.user });
+      })
+      .fail(function (data) {
+        console.log('error authenticating user with token', token, data)
+        Auth.deauthenticateUser();
+        window.location = "/signin";
+      })
+  }
+
+  authenticateWithRequest() {
     let vm = this;
     let $ = window.$;
 
@@ -167,17 +188,33 @@ class App extends React.Component {
         method: 'GET',
         dataType: 'json'
       })
-      .done(function(data) {
+      .done(function (data) {
+        window.csrf_token = data.csrf;
         Auth.authenticateUser(data.token, data.user);
-        vm.setState({current_user: data.user});
+        vm.setState({ current_user: data.user });
       })
-      .fail(function(data) {
-        console.log('error getting user', data)
+      .fail(function (data) {
+        console.log('error getting user', data);
+        Auth.deauthenticateUser();
+        window.location = "/signin";
       })
+  }
+
+  componentWillMount() {
+    if (Auth.isUserAuthenticated()) {
+      this.authenticateWithToken(Auth.getToken());
+    } else {
+      this.authenticateWithRequest();
+    }
   }
 
   isAuthenticated() {
     return Auth.isUserAuthenticated() && this.state && typeof this.state.current_user !== 'undefined'
+  }
+
+  signOut() {
+    Auth.deauthenticateUser();
+    window.location = "/signout";
   }
 
   render() {
