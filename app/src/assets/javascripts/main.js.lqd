@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			     <App />
         </MuiThemeProvider>
       </HashRouter>),
-		  element)
+		  element
 		);
   }
 });

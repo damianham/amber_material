@@ -148,6 +148,12 @@ and use the text name as the icon identifier for the route in src/modules/js/rou
 
 See [Usage](https://github.com/mui-org/material-ui/blob/next/packages/material-ui-icons/README.md#usage) for details about icon naming.
 
+## Material UI Theme
+
+The SPA uses Material UI to theme the frontend application.  You can customize the colour scheme of the theme
+in **src/assets/javascripts/main.js**. See [Material UI Themes](https://material-ui.com/customization/themes/)
+for information about how to customize the theme. A handy tool is the [Material Color Tool](https://material.io/tools/color/#!/?view.left=0&view.right=0) to help you pick your colour scheme.
+
 ### Testing
 
 Test the web application crystal code with
