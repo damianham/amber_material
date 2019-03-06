@@ -17,7 +17,10 @@ import { {{class_name}}Index, {{class_name}}IndexList, {{class_name}}IndexItem} 
 window.$ = $ = jquery;
 window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh';
 
-beforeEach(() => jest.resetModules());
+beforeEach(() => {
+  jest.resetModules();
+  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
+});
 
 afterEach(cleanup);
 
@@ -140,7 +143,6 @@ it("{{class_name}}Index#componentWillMount subscribes to the resource stream", (
 })
 
 it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the data", () => {
-  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
   const state = store.getState()["{{name}}"];
 
   store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
@@ -170,12 +172,9 @@ it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the dat
   expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
   expect(list.props['{{name | pluralize}}'][2]).toBe(state[1]);
   expect(list.props['{{name | pluralize}}'][3]).toBe(state[0]);
-
-  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
 it("{{class_name}}Index#componentWillMount updates a model and re-sorts the data", () => {
-  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
   const state = store.getState()["{{name}}"];
 
   store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
@@ -203,12 +202,9 @@ it("{{class_name}}Index#componentWillMount updates a model and re-sorts the data
   expect(list.props['{{name | pluralize}}'][0]).toBe(state[1]);
   expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
   expect(list.props['{{name | pluralize}}'][2]).toBe(state[0]);
-
-  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
 it("{{class_name}}Index#componentWillMount deletes a model and re-sorts the data", () => {
-  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
   const state = store.getState()["{{name}}"];
 
   store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
@@ -237,12 +233,9 @@ it("{{class_name}}Index#componentWillMount deletes a model and re-sorts the data
 
   expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
   expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
-
-  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
 it("{{class_name}}Index#componentWillMount deletes a model via the store", () => {
-  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
   const state = store.getState()["{{name}}"];
 
   const {{name}} = {{name | pluralize}}_data[0];
@@ -289,8 +282,6 @@ it("{{class_name}}Index#componentWillMount deletes a model via the store", () =>
 
   expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
   expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
-
-  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
 {% for field in visible_fields -%}
@@ -369,8 +360,6 @@ it("{{class_name}}IndexItem#delete emits EventBus delete", () => {
   });
 
   ev_spy.mockRestore();
-
-  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
 it("{{class_name}}IndexItem renders each field", () => {
@@ -414,52 +403,154 @@ it("{{class_name}}IndexItem renders link to show {{name}}", () => {
   expect(getAllByRole("{{name}}-show")).toHaveLength(store.getState()["{{name}}"].length)
 })
 
+describe('related models', () => {
 {% for field in visible_fields -%}
 {% if field.name != "user" and field.type == "reference" -%}
-it("{{class_name}}IndexItem renders link to related {{field.name}}", () => {
-  // setup the link between each {{name}} and a {{field.name}}
-  store.getState()["{{name}}"].map((item, index) => {
-    item.{{field.name}}_id = index + 1
-  })
-
-  const {getAllByRole, container, asFragment} = render(
-    <HashRouter>
-       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
-     </HashRouter>
-  );
-
-  let links = getAllByRole("{{name}}-{{field.name}}-link");
-
-  expect(links).toHaveLength(store.getState()["{{name}}"].length);
-
-  links.forEach((item, index) => {
-    expect(item).toHaveAttribute('href', `#/{{field.name | pluralize}}/show/${index + 1}`)
-  })
-})
+{{"  "}}let {{field.name}}_data;
 {% endif -%}
 {% endfor %}
 
+  beforeAll(() => {
+  {% for field in visible_fields -%}
+  {% if field.name != "user" and field.type == "reference" -%}
+{{"    "}}{{field.name}}_data = store.getState()["{{field.name}}"].slice();
+  {% endif -%}
+  {% endfor %}
+  })
 
-it.skip("{{class_name}}IndexItem link to related models displays title", () => {
+  beforeEach(() => {
+  {% for field in visible_fields -%}
+  {% if field.name != "user" and field.type == "reference" -%}
+{{"    "}}store.getState()["{{field.name}}"] = {{field.name}}_data.map((item) => {
+      return Object.assign({}, item)
+    });
+  {% endif -%}
+  {% endfor %}
+  })
 
+  {% for field in visible_fields -%}
+  {% if field.name != "user" and field.type == "reference" -%}
+  it("{{class_name}}IndexItem renders link to related {{field.name}}", () => {
+    // setup the link between each {{name}} and a {{field.name}}
+    store.getState()["{{name}}"].map((item, index) => {
+      item.{{field.name}}_id = index + 1
+    })
+
+    const {getAllByRole, container, asFragment} = render(
+      <HashRouter>
+         <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+       </HashRouter>
+    );
+
+    let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+    expect(links).toHaveLength(store.getState()["{{name}}"].length);
+
+    links.forEach((item, index) => {
+      expect(item).toHaveAttribute('href', `#/{{field.name | pluralize}}/show/${index + 1}`)
+    })
+  })
+
+  it("{{class_name}}IndexItem link to related {{field.name}} displays title", () => {
+    store.getState()["{{field.name}}"].map((item, index) => {
+      item.title = `Title ${index +1}`
+    });
+
+    const {getAllByRole, container, asFragment} = render(
+      <HashRouter>
+         <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+       </HashRouter>
+    );
+
+    let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+    links.forEach((item, index) => {
+      expect(item).toHaveTextContent(`Title ${index + 1}`)
+    })
+  })
+
+  it("{{class_name}}IndexItem link to related {{field.name}} displays name", () => {
+    store.getState()["{{field.name}}"].map((item, index) => {
+      item.name = `Name ${index +1}`
+    });
+
+    const {getAllByRole, container, asFragment} = render(
+      <HashRouter>
+         <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+       </HashRouter>
+    );
+
+    let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+    links.forEach((item, index) => {
+      expect(item).toHaveTextContent(`Name ${index + 1}`)
+    })
+  })
+
+  it("{{class_name}}IndexItem link to related {{field.name}} displays username", () => {
+    store.getState()["{{field.name}}"].map((item, index) => {
+      delete item.name;
+      item.username = `Username ${index +1}`
+    });
+
+    const {getAllByRole, container, asFragment} = render(
+      <HashRouter>
+         <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+       </HashRouter>
+    );
+
+    let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+    links.forEach((item, index) => {
+      expect(item).toHaveTextContent(`Username ${index + 1}`)
+    })
+  })
+
+  it("{{class_name}}IndexItem link to related {{field.name}} displays email", () => {
+    store.getState()["{{field.name}}"].map((item, index) => {
+      delete item.name;
+      item.email = `Email ${index +1}`
+    });
+
+    const {getAllByRole, container, asFragment} = render(
+      <HashRouter>
+         <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+       </HashRouter>
+    );
+
+    let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+    links.forEach((item, index) => {
+      expect(item).toHaveTextContent(`Email ${index + 1}`)
+    })
+  })
+
+  it("{{class_name}}IndexItem link to related {{field.name}} displays id default", () => {
+    store.getState()["{{field.name}}"].map((item, index) => {
+      delete item.name;
+      item.id = `${index +1}`
+    });
+
+    const {getAllByRole, container, asFragment} = render(
+      <HashRouter>
+         <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+       </HashRouter>
+    );
+
+    let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+    links.forEach((item, index) => {
+      expect(item).toHaveTextContent(`${index + 1}`)
+    })
+  })
+
+  it.skip("{{class_name}}IndexItem show link includes state for related {{field.name}}", () => {
+
+  })
+  {% endif -%}
+  {% endfor %}
 })
-it.skip("{{class_name}}IndexItem link to related models displays name", () => {
-
-})
-it.skip("{{class_name}}IndexItem link to related models displays username", () => {
-
-})
-it.skip("{{class_name}}IndexItem link to related models displays email", () => {
-
-})
-it.skip("{{class_name}}IndexItem link to related models displays id default", () => {
-
-})
-
 
 it.skip("{{class_name}}IndexItem link to show {{name}} includes state", () => {
-
-})
-it.skip("{{class_name}}IndexItem show link includes state for related models", () => {
 
 })
