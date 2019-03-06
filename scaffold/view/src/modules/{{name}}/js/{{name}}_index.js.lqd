@@ -206,8 +206,8 @@ export class {{class_name}}IndexItem extends React.Component {
         {% for field in visible_fields -%}
         {% if field.name != "user" -%}
         {% if field.type == "reference" -%}
-        <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
-          <Link to={
+        <td title="{{name}}-{{field.name}}" className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
+          <Link role="{{name}}-{{field.name}}-link" to={
             {
               pathname: "{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
               state:  {
@@ -218,13 +218,14 @@ export class {{class_name}}IndexItem extends React.Component {
           { bestTitleForClass({{field.name}} || {id: {{name}}.{{field.name}}_id}) }</Link>
           </td>
         {% else -%}
-          <td className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
+          <td title="{{name}}-{{field.name}}" className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
         {% endif -%}
         {% endif -%}
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
         <Link className="{{name}}-index-actions-edit index-actions-edit"
+          role="{{name}}-edit"
           to={
           {
             pathname: "/{{name | pluralize}}/edit/"+ {{name}}.id,
@@ -234,12 +235,14 @@ export class {{class_name}}IndexItem extends React.Component {
         }><i className="material-icons">edit</i></Link>
 
         <span className="{{name}}-index-actions-delete index-actions-delete"
+          role="{{name}}-delete"
           onClick={this.delete.bind(this, {{name}}.id)}
           >
           <i className="material-icons">delete</i>
         </span>
 
         <Link className="{{name}}-index-actions-show index-actions-show"
+          role="{{name}}-show"
           to={
           {
             pathname: "/{{name | pluralize}}/show/"+ {{name}}.id,

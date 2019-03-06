@@ -140,11 +140,13 @@ it("{{class_name}}Index#componentWillMount subscribes to the resource stream", (
 })
 
 it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the data", () => {
+  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
+  const state = store.getState()["{{name}}"];
+
   store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
-    callback(store.getState()["{{name}}"])
+    callback(state)
   })
 
-  let state = store.getState()["{{name}}"];
   let clone = new {{class_name}}(state[0]);
   clone.id = state.length + 1;
 
@@ -156,7 +158,7 @@ it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the dat
 
   index.instance.toggleSort({target: { dataset: {field: 'id'}}});
 
-  state.push(clone);
+  store.getState()["{{name}}"].push(clone);
 
   EventBus.emit('new:model:{{name}}', clone);
 
@@ -168,18 +170,129 @@ it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the dat
   expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
   expect(list.props['{{name | pluralize}}'][2]).toBe(state[1]);
   expect(list.props['{{name | pluralize}}'][3]).toBe(state[0]);
+
+  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
-it.skip("{{class_name}}Index#componentWillMount updates a model and re-sorts the data", () => {
+it("{{class_name}}Index#componentWillMount updates a model and re-sorts the data", () => {
+  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
+  const state = store.getState()["{{name}}"];
 
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(state)
+  })
+
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  const list = testInstance.findByType({{class_name}}IndexList);
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[2]);
+
+  state[0] = Object.assign({}, state[0]);
+  state[0].id = 5;
+
+  EventBus.emit('update:model:{{name}}', state[0]);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[0]);
+
+  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
 
-it.skip("{{class_name}}Index#componentWillMount deletes a model and re-sorts the data", () => {
+it("{{class_name}}Index#componentWillMount deletes a model and re-sorts the data", () => {
+  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
+  const state = store.getState()["{{name}}"];
 
-})
-it.skip("{{class_name}}Index#componentWillMount deletes a model via the store", () => {
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(state)
+  })
 
+  const testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  const testInstance = testRenderer.root;
+
+  const list = testInstance.findByType({{class_name}}IndexList);
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[2]);
+
+  let deleted = state[1]
+  store.getState()["{{name}}"] = [state[0], state[2]];
+
+  EventBus.emit('delete:model:{{name}}', deleted);
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(2);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
+
+  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
+
+it("{{class_name}}Index#componentWillMount deletes a model via the store", () => {
+  store.getState()["{{name}}"] = {{name | pluralize}}_data.slice();
+  const state = store.getState()["{{name}}"];
+
+  const {{name}} = {{name | pluralize}}_data[0];
+  const resp = {data: {{name}}};
+
+  store.subscribe = jest.fn().mockImplementation((model, endpoint, callback) => {
+    callback(state)
+  })
+
+  $.ajax = jest.fn(() => Promise.resolve(resp));
+
+  let testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  let testInstance = testRenderer.root;
+
+  let list = testInstance.findByType({{class_name}}IndexList);
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(3);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[1]);
+  expect(list.props['{{name | pluralize}}'][2]).toBe(state[2]);
+
+  EventBus.emit('cmd:delete:{{name}}', state[1].id);
+
+  expect($.ajax).toBeCalledWith({
+    method: 'DELETE',
+    url: '/{{name | pluralize}}/'+state[1].id,
+    dataType: 'json',
+    headers: {
+      "X-CSRF-TOKEN": window.csrf_token
+    },
+  });
+
+  testRenderer = TestRenderer.create( <HashRouter>
+     <{{class_name}}Index />
+   </HashRouter>);
+  testInstance = testRenderer.root;
+
+  list = testInstance.findByType({{class_name}}IndexList);
+
+  expect(list.props['{{name | pluralize}}']).toHaveLength(2);
+
+  expect(list.props['{{name | pluralize}}'][0]).toBe(state[0]);
+  expect(list.props['{{name | pluralize}}'][1]).toBe(state[2]);
+
+  store.getState()["{{name}}"] = {{name | pluralize}}_data;
+})
+
 {% for field in visible_fields -%}
 {% if field.name != "user" and field.type == "reference" -%}
 it("{{class_name}}Index#componentWillMount subscribes to related {{field.name | pluralize}}", () => {
@@ -207,8 +320,6 @@ it("{{class_name}}Index renders 1 {{class_name}}IndexList", () => {
 })
 
 it("{{class_name}}IndexList renders {{class_name}}IndexItem for each {{class_name}}", () => {
-  store.subscribe = jest.fn();
-
   const testRenderer = TestRenderer.create(<HashRouter>
      <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
    </HashRouter>);
@@ -216,16 +327,119 @@ it("{{class_name}}IndexList renders {{class_name}}IndexItem for each {{class_nam
 
   expect(testInstance.findAllByType({{class_name}}IndexItem).length).toBe(store.getState()["{{name}}"].length)
 })
-it.skip("{{class_name}}IndexItem#delete shows window confirmation dialog", () => {
 
+it("{{class_name}}IndexItem#delete shows window confirmation dialog", () => {
+  window.confirm = jest.fn(() => false) // cancel the delete
+
+  const { getByLabelText, getByRole, getByTestId, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
+
+  fireEvent.click(getByRole("{{name}}-delete"));
+
+  expect(window.confirm).toBeCalled()
 })
 
-it.skip("{{class_name}}IndexItem#delete emits EventBus delete", () => {
+it("{{class_name}}IndexItem#delete emits EventBus delete", () => {
+  const ev_spy = jest.spyOn(EventBus, 'emit');
+  const {{name}} = {{name | pluralize}}_data[0];
+  const resp = {data: {{name}}};
+  window.confirm = jest.fn(() => true) // continue with delete
+  $.ajax = jest.fn(() => Promise.resolve(resp));
 
-})
-it.skip("{{class_name}}IndexItem renders link to related models", () => {
+  const { getByLabelText, getByRole, getByTestId, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
 
+  fireEvent.click(getByRole("{{name}}-delete"));
+
+  expect(ev_spy).toBeCalledWith("cmd:delete:{{name}}", {{name}}.id);
+
+  expect($.ajax).toBeCalledWith({
+    method: 'DELETE',
+    url: '/{{name | pluralize}}/'+{{name}}.id,
+    dataType: 'json',
+    headers: {
+      "X-CSRF-TOKEN": window.csrf_token
+    },
+  });
+
+  ev_spy.mockRestore();
+
+  store.getState()["{{name}}"] = {{name | pluralize}}_data;
 })
+
+it("{{class_name}}IndexItem renders each field", () => {
+  const {getAllByTitle, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
+
+  {% for field in visible_fields -%}
+  {% if field.name != "user" -%}
+  expect(getAllByTitle("{{name}}-{{field.name}}")).toHaveLength(store.getState()["{{name}}"].length)
+  {% endif -%}
+  {% endfor %}
+})
+
+it("{{class_name}}IndexItem renders link to edit {{name}}", () => {
+  const {getAllByRole, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
+  expect(getAllByRole("{{name}}-edit")).toHaveLength(store.getState()["{{name}}"].length)
+})
+
+it("{{class_name}}IndexItem renders icon to delete {{name}}", () => {
+  const {getAllByRole, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
+  expect(getAllByRole("{{name}}-delete")).toHaveLength(store.getState()["{{name}}"].length)
+})
+
+it("{{class_name}}IndexItem renders link to show {{name}}", () => {
+  const {getAllByRole, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
+  expect(getAllByRole("{{name}}-show")).toHaveLength(store.getState()["{{name}}"].length)
+})
+
+{% for field in visible_fields -%}
+{% if field.name != "user" and field.type == "reference" -%}
+it("{{class_name}}IndexItem renders link to related {{field.name}}", () => {
+  // setup the link between each {{name}} and a {{field.name}}
+  store.getState()["{{name}}"].map((item, index) => {
+    item.{{field.name}}_id = index + 1
+  })
+
+  const {getAllByRole, container, asFragment} = render(
+    <HashRouter>
+       <{{class_name}}IndexList {{name | pluralize}}={store.getState()["{{name}}"]} delegate={jest.fn()} />
+     </HashRouter>
+  );
+
+  let links = getAllByRole("{{name}}-{{field.name}}-link");
+
+  expect(links).toHaveLength(store.getState()["{{name}}"].length);
+
+  links.forEach((item, index) => {
+    expect(item).toHaveAttribute('href', `#/{{field.name | pluralize}}/show/${index + 1}`)
+  })
+})
+{% endif -%}
+{% endfor %}
+
+
 it.skip("{{class_name}}IndexItem link to related models displays title", () => {
 
 })
@@ -242,19 +456,6 @@ it.skip("{{class_name}}IndexItem link to related models displays id default", ()
 
 })
 
-it.skip("{{class_name}}IndexItem renders each field", () => {
-
-})
-it.skip("{{class_name}}IndexItem renders link to edit {{name}}", () => {
-
-})
-
-it.skip("{{class_name}}IndexItem renders icon to delete {{name}}", () => {
-
-})
-it.skip("{{class_name}}IndexItem renders link to show {[name]}", () => {
-
-})
 
 it.skip("{{class_name}}IndexItem link to show {{name}} includes state", () => {
 
