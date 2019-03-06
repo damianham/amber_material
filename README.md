@@ -1,8 +1,51 @@
 # amber_material
+
+[![Amber Framework](https://img.shields.io/badge/using-amber_framework-orange.svg)](https://amberframework.org)
+
 Amber web framework modular application recipe for a React SPA with Material UI.
 
-The amber backend serves both html and json.  Also includes a JWT authorisation
-pipe in src/pipes.  Create a new amber app with this recipe using SQLite3 database
+This is for the [Amber](https://amberframework.org) web framework. An Amber recipe is an application template
+that you can use to bootstrap a new Amber application with some features that are not in the
+base Amber application template. This recipe differs from the base Amber application template in some
+significant ways;
+
+- The scaffold command will place all artifacts for a component (controller, model,
+  view and javascript modules and tests) in a component folder in src/modules. This differs from
+  the standard code layout of a Ruby on Rails and Amber application but it is a better way to
+  organise your code.  Principle of Proximity - yay!
+- To support rendering views within components in **src/modules** controllers use the
+  **render_module** macro from the shard damianham/amber_render_module rather than the standard **render** macro.
+- When a registered user has signed in to the web application the SPA (Single Page Application)
+  presents the UI and the Amber application becomes an API application with data transfer
+  from/to the SPA and the Amber application in JSON format rather than the UI being rendered by the Amber templating engine. This behaviour is easily modifiable in the index method of the HomeController.
+
+Enjoy!
+
+## Prerequisites
+
+Amber requires [Crystal](https://crystal-lang.org/) ([installation guide](https://crystal-lang.org/docs/installation/)).
+
+This recipe requires Amber installed and executable on the path.  See the
+[Amber docs](https://docs.amberframework.org/amber) to get started with Amber.  
+See the [Getting Help](https://docs.amberframework.org/amber/#getting-help) section of the Amber docs
+if you get stuck with anything.  Once you have installed Crystal getting started with Amber
+is super easy.  One way you can do that is to build Amber from the Github repository then copy
+the executable into your shell path.
+```
+$ git clone https://github.com/amberframework/amber.git
+$ cd amber
+$ shards build
+$ cp bin/amber ~/.local/bin  # or ~/bin - whatever is on your path
+
+```
+
+Once you have created and started a new Amber application with this recipe the
+Amber backend serves both html and json.  This recipe also includes a JWT authorisation
+pipe in src/pipes and logs the user into the web application with a token from
+local storage.  See the [Crystal JWT](https://github.com/crystal-community/jwt) docs
+for details on how to configure the JWT token (in src/controllers/HomeController).
+
+Create a new amber app with this recipe using SQLite3 database
  and scaffold out some components with these commands;
 
 ```
@@ -104,6 +147,18 @@ const icons = {
 and use the text name as the icon identifier for the route in src/modules/js/routes.js.
 
 See [Usage](https://github.com/mui-org/material-ui/blob/next/packages/material-ui-icons/README.md#usage) for details about icon naming.
+
+### Testing
+
+Test the web application crystal code with
+```
+$ crystal spec
+```
+
+Test the SPA javascript code with
+```
+$ npm run test
+```
 
 ## TODO
 
