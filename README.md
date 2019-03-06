@@ -13,7 +13,7 @@ significant ways;
   view and javascript modules and tests) in a component folder in src/modules. This differs from
   the standard code layout of a Ruby on Rails and Amber application but it is a better way to
   organise your code.  Principle of Proximity - yay!
-- To support rendering views within components in **src/modules** controllers use the
+- To support rendering views within components in **src/modules**, controllers use the
   **render_module** macro from the shard damianham/amber_render_module rather than the standard **render** macro.
 - When a registered user has signed in to the web application the SPA (Single Page Application)
   presents the UI and the Amber application becomes an API application with data transfer
@@ -169,6 +169,6 @@ $ npm run test
 ### Notes
 
 1. Remove the Authenticate pipe from `config/routes.cr` after generating the auth plugin.  
-2. Uncomment AuthenticateJWT pipe from `config/routes.cr` if authentication is required.
-3. If you're using [JWT](https://jwt.io/) then a `user_id` field is required on your **models**, **param validators** and **migrations** to render `edit` and `delete` buttons according to `current_user`.
+2. Uncomment AuthenticateJWT pipe from `config/routes.cr` if authentication with JWT is required.
+3. If you're using [JWT](https://jwt.io/) then in a future version of this recipe a `user_id` field will required on your **models**, **param validators** and **migrations** to render `edit` and `delete` buttons according to `current_user`.
 4. If you're getting "Could not load..." error then ensure your models URLs are inside `REGEX_PATHS` in `pipes/authenticate_jwt.cr`.
