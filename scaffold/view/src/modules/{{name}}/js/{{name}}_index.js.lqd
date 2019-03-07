@@ -122,7 +122,7 @@ class {{class_name}}IndexComponent extends React.Component {
   theme: PropTypes.object.isRequired
 };
 
-export default withTheme()({{class_name}}IndexComponent);
+export const {{class_name}}Index = withTheme()({{class_name}}IndexComponent);
 
 // export default {{class_name}}Index;
 
@@ -203,7 +203,7 @@ class {{class_name}}IndexListComponent extends React.Component {
 
 {{class_name}}IndexListComponent.propTypes = {
   theme: PropTypes.object.isRequired,
-  posts: PropTypes.object.isRequired,
+  posts: PropTypes.array.isRequired,
   delegate: PropTypes.object.isRequired
 };
 
@@ -245,7 +245,7 @@ class {{class_name}}IndexItemComponent extends React.Component {
         {% if field.name != "user" -%}
         {% if field.type == "reference" -%}
         <td title="{{name}}-{{field.name}}" className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
-          <Link style={styles.link} role="{{name}}-{{field.name}}-link" to={
+          <Link style={this.styles.link} role="{{name}}-{{field.name}}-link" to={
             {
               pathname: "{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
               state:  {
@@ -262,7 +262,7 @@ class {{class_name}}IndexItemComponent extends React.Component {
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
-        <Link style={styles.link} className="{{name}}-index-actions-edit index-actions-edit"
+        <Link style={this.styles.link} className="{{name}}-index-actions-edit index-actions-edit"
           role="{{name}}-edit"
           to={
           {
@@ -272,14 +272,14 @@ class {{class_name}}IndexItemComponent extends React.Component {
 
         }><i className="material-icons">edit</i></Link>
 
-        <span style={styles.link} className="{{name}}-index-actions-delete index-actions-delete"
+        <span style={this.styles.link} className="{{name}}-index-actions-delete index-actions-delete"
           role="{{name}}-delete"
           onClick={this.delete.bind(this, {{name}}.id)}
           >
           <i className="material-icons">delete</i>
         </span>
 
-        <Link style={styles.link} className="{{name}}-index-actions-show index-actions-show"
+        <Link style={this.styles.link} className="{{name}}-index-actions-show index-actions-show"
           role="{{name}}-show"
           to={
           {
