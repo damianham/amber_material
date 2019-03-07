@@ -29,7 +29,7 @@ it("{{class_name}}Index sorts the data by default on id field", () => {
     callback(store.getState()["{{name}}"])
   });
 
-  let state = store.getState()["{{name}}"];
+  const state = store.getState()["{{name}}"];
 
   const testRenderer = TestRenderer.create( <HashRouter>
      <{{class_name}}Index />
@@ -49,17 +49,17 @@ it("{{class_name}}Index changes the sort direction", () => {
     callback(store.getState()["{{name}}"])
   });
 
-  let state = store.getState()["{{name}}"];
+  const state = store.getState()["{{name}}"];
+  const component = React.createRef();
 
   const testRenderer = TestRenderer.create( <HashRouter>
-     <{{class_name}}Index />
+     <{{class_name}}Index innerRef={component} />
    </HashRouter>);
   const testInstance = testRenderer.root;
 
   const list = testInstance.findByType({{class_name}}IndexList);
-  const index = testInstance.findByType({{class_name}}Index);
 
-  index.instance.toggleSort({target: { dataset: {field: 'id'}}});
+  component.current.toggleSort({target: { dataset: {field: 'id'}}});
 
   expect(list.props['{{name | pluralize}}']).toHaveLength(3);
 
@@ -75,22 +75,23 @@ it("{{class_name}}Index sorts the data on {{field.name}}", () => {
     callback(store.getState()["{{name}}"])
   });
 
-  let sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
+  const sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
     if (a.{{field.name}} == b.{{field.name}}) {
       return 0
     }
     return a.{{field.name}} < b.{{field.name}} ? -1 : 1
   });
 
+  const component = React.createRef();
+
   const testRenderer = TestRenderer.create( <HashRouter>
-     <{{class_name}}Index />
+     <{{class_name}}Index innerRef={component} />
    </HashRouter>);
   const testInstance = testRenderer.root;
 
-  const list = testInstance.findByType({{class_name}}IndexList);
-  const index = testInstance.findByType({{class_name}}Index);
+  const list = testInstance.findByType({{class_name}}IndexList); 
 
-  index.instance.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
+  component.current.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
 
   expect(list.props['{{name | pluralize}}']).toHaveLength(3);
 
@@ -104,23 +105,23 @@ it("{{class_name}}Index sorts the data on {{field.name}} descending", () => {
     callback(store.getState()["{{name}}"])
   });
 
-  let sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
+  const sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
     if (a.{{field.name}} == b.{{field.name}}) {
       return 0
     }
     return a.{{field.name}} < b.{{field.name}} ? 1 : -1
   });
+  const component = React.createRef();
 
   const testRenderer = TestRenderer.create( <HashRouter>
-     <{{class_name}}Index />
+     <{{class_name}}Index innerRef={component}/>
    </HashRouter>);
   const testInstance = testRenderer.root;
 
-  const list = testInstance.findByType({{class_name}}IndexList);
-  const index = testInstance.findByType({{class_name}}Index);
+  const list = testInstance.findByType({{class_name}}IndexList); 
 
-  index.instance.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
-  index.instance.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
+  component.current.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
+  component.current.toggleSort({target: { dataset: {field: '{{field.name}}'}}});
 
   expect(list.props['{{name | pluralize}}']).toHaveLength(3);
 
@@ -149,16 +150,17 @@ it("{{class_name}}Index#componentWillMount adds a new model and re-sorts the dat
     callback(state)
   })
 
-  let clone = new {{class_name}}(state[0]);
+  const component = React.createRef();
+
+  const clone = new {{class_name}}(state[0]);
   clone.id = state.length + 1;
 
   const testRenderer = TestRenderer.create( <HashRouter>
-     <{{class_name}}Index />
+     <{{class_name}}Index innerRef={component}/>
    </HashRouter>);
   const testInstance = testRenderer.root;
-  const index = testInstance.findByType({{class_name}}Index);
 
-  index.instance.toggleSort({target: { dataset: {field: 'id'}}});
+  component.current.toggleSort({target: { dataset: {field: 'id'}}});
 
   store.getState()["{{name}}"].push(clone);
 

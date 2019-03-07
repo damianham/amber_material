@@ -203,7 +203,7 @@ class {{class_name}}IndexListComponent extends React.Component {
 
 {{class_name}}IndexListComponent.propTypes = {
   theme: PropTypes.object.isRequired,
-  posts: PropTypes.array.isRequired,
+  {{name | pluralize}}: PropTypes.array.isRequired,
   delegate: PropTypes.object.isRequired
 };
 
@@ -305,7 +305,7 @@ class {{class_name}}IndexItemComponent extends React.Component {
 
 {{class_name}}IndexItemComponent.propTypes = {
   theme: PropTypes.object.isRequired,
-  post: PropTypes.object.isRequired,
+  {{name}}: PropTypes.object.isRequired,
   delegate: PropTypes.object.isRequired,
   styles: PropTypes.object.isRequired
 };
