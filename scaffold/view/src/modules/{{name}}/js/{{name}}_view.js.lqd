@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
 
 import {EventBus} from '../../../lib/js/eventBus';
 import {bestTitleForClass} from '../../../lib/js/utils';
@@ -166,4 +167,10 @@ export class {{class_name}}View extends React.Component {
 
     )
   }
+}
+
+{{class_name}}View.proptypes = {
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 }

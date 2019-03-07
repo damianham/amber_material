@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
 
 import {EventBus} from '../../../lib/js/eventBus';
 import {store} from '../../../lib/js/store';
@@ -43,7 +44,7 @@ export class {{class_name}}New extends React.Component {
     })
   }
 
-  render(props, state) {
+  render() {
     return (
       <div>
         <div className="btn btn-primary btn-xs {{name}}-new-back-button new-back-button"
@@ -57,4 +58,9 @@ export class {{class_name}}New extends React.Component {
       </div>
     )
   }
+}
+
+{{class_name}}New.proptypes = {
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 }

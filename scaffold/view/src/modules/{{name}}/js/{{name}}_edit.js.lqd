@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
 
 import {EventBus} from '../../../lib/js/eventBus';
 import {store} from '../../../lib/js/store';
@@ -11,7 +12,7 @@ export class {{class_name}}Edit extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.props.location.state
+    this.state = Object.assign({}, this.props.location.state)
   }
 
   onBack() {
@@ -33,7 +34,7 @@ export class {{class_name}}Edit extends React.Component {
       })
   }
 
-  render(props, state) {
+  render() {
     return (
       <div>
         <div className="btn btn-primary btn-xs {{name}}-edit-back-button edit-back-button"
@@ -47,4 +48,9 @@ export class {{class_name}}Edit extends React.Component {
       </div>
     )
   }
+}
+
+{{class_name}}Edit.proptypes = {
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired
 }

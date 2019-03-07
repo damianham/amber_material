@@ -152,4 +152,8 @@ class {{class_name}}Form extends React.Component {
   }
 }
 
+{{class_name}}Form.proptypes = {
+  {{name}}: PropTypes.object.isRequired
+}
+
 export default {{class_name}}Form;

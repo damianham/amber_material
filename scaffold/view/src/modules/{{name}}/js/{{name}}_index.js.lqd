@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
+import { withTheme } from '@material-ui/core/styles';
 
 import {EventBus} from '../../../lib/js/eventBus';
 import {bestTitleForClass} from '../../../lib/js/utils';
@@ -9,7 +10,7 @@ import {store} from '../../../lib/js/store';
 
 import { {{class_name}} } from './{{name}}';
 
-export class {{class_name}}Index extends React.Component {
+class {{class_name}}IndexComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -116,11 +117,40 @@ export class {{class_name}}Index extends React.Component {
   }
 }
 
-export default {{class_name}}Index;
 
-export class {{class_name}}IndexList extends React.Component {
+{{class_name}}IndexComponent.propTypes = {
+  theme: PropTypes.object.isRequired
+};
+
+export default withTheme()({{class_name}}IndexComponent);
+
+// export default {{class_name}}Index;
+
+class {{class_name}}IndexListComponent extends React.Component {
   constructor(props) {
     super(props)
+
+    const { theme } = props;
+
+    this.styles = {
+      primaryText: {
+        backgroundColor: theme.palette.background.default,
+        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+        color: theme.palette.text.primary,
+      },
+      primaryColor: {
+        backgroundColor: theme.palette.primary.main,
+        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+        //color: theme.palette.common.white,
+      },
+      button: {
+        backgroundColor: theme.palette.secondary.main,
+        color: theme.palette.text.secondary
+      },
+      links: {
+        color: theme.palette.secondary.main
+      }
+    };
 
   }
 
@@ -134,7 +164,7 @@ export class {{class_name}}IndexList extends React.Component {
           </div>
           <div className="col-sm-1">
             <div className="{{name}}-index-new-button index-new-button btn btn-secondary btn-xs">
-              <Link to="/{{name | pluralize}}/new">New</Link>
+              <Link style={this.styles.button} to="/{{name | pluralize}}/new">New</Link>
             </div>
           </div>
         </div>
@@ -159,7 +189,7 @@ export class {{class_name}}IndexList extends React.Component {
               { this.props.{{name | pluralize}} &&
                 this.props.{{name | pluralize}}.map((instance,index) => {
                   return (
-                    <{{class_name}}IndexItem key={index} {{name}}={instance} delegate={this.props.delegate} />
+                    <{{class_name}}IndexItem key={index} {{name}}={instance} delegate={this.props.delegate} styles={this.styles} />
                   )
                 })
               }
@@ -171,11 +201,19 @@ export class {{class_name}}IndexList extends React.Component {
   }
 }
 
-export class {{class_name}}IndexItem extends React.Component {
+{{class_name}}IndexListComponent.propTypes = {
+  theme: PropTypes.object.isRequired,
+  posts: PropTypes.object.isRequired,
+  delegate: PropTypes.object.isRequired
+};
+
+export const {{class_name}}IndexList = withTheme()({{class_name}}IndexListComponent);
+
+class {{class_name}}IndexItemComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = props.{{name}}
+    this.styles = props.styles;
   }
 
   delete(id, event) {
@@ -207,7 +245,7 @@ export class {{class_name}}IndexItem extends React.Component {
         {% if field.name != "user" -%}
         {% if field.type == "reference" -%}
         <td title="{{name}}-{{field.name}}" className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
-          <Link role="{{name}}-{{field.name}}-link" to={
+          <Link style={styles.link} role="{{name}}-{{field.name}}-link" to={
             {
               pathname: "{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
               state:  {
@@ -224,7 +262,7 @@ export class {{class_name}}IndexItem extends React.Component {
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
-        <Link className="{{name}}-index-actions-edit index-actions-edit"
+        <Link style={styles.link} className="{{name}}-index-actions-edit index-actions-edit"
           role="{{name}}-edit"
           to={
           {
@@ -234,14 +272,14 @@ export class {{class_name}}IndexItem extends React.Component {
 
         }><i className="material-icons">edit</i></Link>
 
-        <span className="{{name}}-index-actions-delete index-actions-delete"
+        <span style={styles.link} className="{{name}}-index-actions-delete index-actions-delete"
           role="{{name}}-delete"
           onClick={this.delete.bind(this, {{name}}.id)}
           >
           <i className="material-icons">delete</i>
         </span>
 
-        <Link className="{{name}}-index-actions-show index-actions-show"
+        <Link style={styles.link} className="{{name}}-index-actions-show index-actions-show"
           role="{{name}}-show"
           to={
           {
@@ -264,3 +302,12 @@ export class {{class_name}}IndexItem extends React.Component {
   }
 
 }
+
+{{class_name}}IndexItemComponent.propTypes = {
+  theme: PropTypes.object.isRequired,
+  post: PropTypes.object.isRequired,
+  delegate: PropTypes.object.isRequired,
+  styles: PropTypes.object.isRequired
+};
+
+export const {{class_name}}IndexItem = withTheme()({{class_name}}IndexItemComponent);
