@@ -1,43 +1,43 @@
-import React from 'react';
-import Resource from '../../../lib/js/resource';
+import React from 'react'
+import Resource from '../../../lib/js/resource'
 
-export * from "./{{name}}_edit";
-export * from "./{{name}}_index";
-export * from "./{{name}}_new";
-export * from "./{{name}}_view";
+export * from "./{{name}}_edit"
+export * from "./{{name}}_index"
+export * from "./{{name}}_new"
+export * from "./{{name}}_view"
 
 export class {{class_name}} extends Resource {
-  constructor( attributes) {
-    super("/{{name | pluralize}}", attributes);
-
+  constructor ( attributes) {
+    super("/{{name | pluralize}}", attributes)
   }
 
   // client side validation
-  save() {
+  save () {
     let errors = [];
 
     {% for field in visible_fields -%}
     {% if field.name != "user" -%}
     {% if field.type == "reference" -%}
     if (this.{{field.name}}_id === '') {
-    {{"  "}}errors.push({field: "{{field.name}}_id", value: this.{{field.name}}_id, message: "is required"})
+    {{"  "}}errors.push({ field: '{{field.name}}_id', value: this.{{field.name}}_id, message: 'is required' })
     }
     {% else -%}
     if (this.{{field.name}} === '') {
-    {{"  "}}errors.push({field: "{{field.name}}", value: this.{{field.name}}, message: "is required"})
+    {{"  "}}errors.push({ field: '{{field.name}}', value: this.{{field.name}}, message: 'is required' })
     }
     {% endif -%}
     {% endif -%}
     {% endfor -%}
 
     if (errors.length > 0) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
+        // eslint-disable-next-line prefer-promise-reject-errors
         reject({
-          statusText: "Could not save {{name}}",
+          statusText: 'Could not save {{name}}',
           responseJSON: {
-            error: "Validation failed. [" + erros.map((err) => {
+            error: 'Validation failed. [' + errors.map((err) => {
               return `Amber::Validators:Error(@param="${err.field}", @value="${err.value}", @message="Field ${err.field} ${err.message}" )`
-            }).join(', ') + "]"
+            }).join(', ') + ']'
           }
         })
       })

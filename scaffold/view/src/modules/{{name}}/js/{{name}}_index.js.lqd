@@ -1,18 +1,18 @@
+/* eslint-disable no-trailing-spaces */
+import React from 'react'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { withTheme } from '@material-ui/core/styles'
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from "prop-types";
-import { withTheme } from '@material-ui/core/styles';
+import { EventBus } from '../../../lib/js/eventBus'
+import { bestTitleForClass } from '../../../lib/js/utils'
+import { store } from '../../../lib/js/store'
 
-import {EventBus} from '../../../lib/js/eventBus';
-import {bestTitleForClass} from '../../../lib/js/utils';
-import {store} from '../../../lib/js/store';
-
-import { {{class_name}} } from './{{name}}';
+import { {{class_name}} } from './{{name}}'
 
 class {{class_name}}IndexComponent extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = {
       list: [],
@@ -22,50 +22,48 @@ class {{class_name}}IndexComponent extends React.Component {
     this.toggleSort = this.toggleSort.bind(this)
   }
 
-  toggleSort(event) {
+  toggleSort (event) {
     this.sort(event)
   }
 
-  sort(event) {
-
-    if (event && typeof event === 'String') {
+  sort (event) {
+    if (event && typeof event === 'string') {
       // we were given the column to sort on as a string
-      if(this.state.sort_column === event) {
+      if (this.state.sort_column === event) {
         this.state.sort_direction = this.state.sort_direction === 'up' ? 'down' : 'up'
       }
       this.state.sort_column = event
     } else if (event && event.target) {
       // the sort column to sort on is the result of a click
-      if(this.state.sort_column === event.target.dataset.field) {
+      if (this.state.sort_column === event.target.dataset.field) {
         this.state.sort_direction = this.state.sort_direction === 'up' ? 'down' : 'up'
       }
       this.state.sort_column = event.target.dataset.field
     }
 
-    let vm = this;
+    let vm = this
 
-    let sorted = store.getState()["{{name}}"].slice().sort((a,b) => {
-      let a_val = a[vm.state.sort_column];
-      let b_val = b[vm.state.sort_column];
+    let sorted = store.getState()['{{name}}'].slice().sort((a, b) => {
+      let aVal = a[vm.state.sort_column]
+      let bVal = b[vm.state.sort_column]
 
-      if (a_val == b_val) {
+      if (aVal === bVal) {
         return 0
       }
-      if (a_val < b_val) {
+      if (aVal < bVal) {
         return vm.state.sort_direction === 'up' ? -1 : 1
       } else {
         return vm.state.sort_direction === 'up' ? 1 : -1
       }
-    });
+    })
 
-    this.setState({list: sorted})
+    this.setState({ list: sorted })
   }
 
-  componentWillMount() {
+  componentWillMount () {
+    let vm = this
 
-    let vm = this;
-
-    store.subscribe("{{name}}",  "/{{name | pluralize}}", (data) => {
+    store.subscribe('{{name}}', '/{{name | pluralize}}', (data) => {
       if (data) {
         vm.sort()
       }
@@ -73,18 +71,18 @@ class {{class_name}}IndexComponent extends React.Component {
 
     EventBus.on('new:model:{{name}}', this.newListener = (model) => {
       vm.sort()
-    });
+    })
 
     EventBus.on('update:model:{{name}}', this.updateListener = (model) => {
       vm.sort()
-    });
+    })
 
     EventBus.on('delete:model:{{name}}', this.deleteListener = (model) => {
       vm.sort()
-    });
+    })
 
-    EventBus.on("cmd:delete:{{name}}", this.cmdListener = (id) => {
-      store.delete("{{name}}", id)
+    EventBus.on('cmd:delete:{{name}}', this.cmdListener = (id) => {
+      store.delete('{{name}}', id)
     })
 
     // subscribe to related data
@@ -92,56 +90,53 @@ class {{class_name}}IndexComponent extends React.Component {
   {% if field.type == "reference" -%}
   {% if field.name != "user" -%}
 {{" "}}
-    store.subscribe("{{field.name}}",  "/{{field.name | pluralize}}", (data) => {
+    store.subscribe('{{field.name}}', '/{{field.name | pluralize}}', (data) => {
       if (data) {
         // trigger a re-render
         vm.sort()
       }
-    });
+    })
   {% endif -%}
   {% endif -%}
 {% endfor %}
   }
 
-  componentWillUnmount() {
-    EventBus.off('new:model:{{name}}', this.newListener);
-    EventBus.off('update:model:{{name}}', this.updateListener);
-    EventBus.off('delete:model:{{name}}', this.deleteListener);
-    EventBus.off("cmd:delete:{{name}}", this.cmdListener)
+  componentWillUnmount () {
+    EventBus.off('new:model:{{name}}', this.newListener)
+    EventBus.off('update:model:{{name}}', this.updateListener)
+    EventBus.off('delete:model:{{name}}', this.deleteListener)
+    EventBus.off('cmd:delete:{{name}}', this.cmdListener)
   }
 
-  render() {
+  render () {
     return (
       <{{class_name}}IndexList {{name | pluralize}}={this.state.list} delegate={this}/>
     )
   }
 }
 
-
 {{class_name}}IndexComponent.propTypes = {
   theme: PropTypes.object.isRequired
-};
+}
 
-export const {{class_name}}Index = withTheme()({{class_name}}IndexComponent);
-
-// export default {{class_name}}Index;
+export const {{class_name}}Index = withTheme()({{class_name}}IndexComponent)
 
 class {{class_name}}IndexListComponent extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
-    const { theme } = props;
+    const { theme } = props
 
     this.styles = {
       primaryText: {
         backgroundColor: theme.palette.background.default,
         padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
-        color: theme.palette.text.primary,
+        color: theme.palette.text.primary
       },
       primaryColor: {
         backgroundColor: theme.palette.primary.main,
-        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
-        //color: theme.palette.common.white,
+        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`
+        // color: theme.palette.common.white
       },
       button: {
         backgroundColor: theme.palette.secondary.main,
@@ -150,12 +145,11 @@ class {{class_name}}IndexListComponent extends React.Component {
       links: {
         color: theme.palette.secondary.main
       }
-    };
-
+    }
   }
 
-  render() {
-    let clickHandler = this.props.delegate ? this.props.delegate.toggleSort : () =>{}
+  render () {
+    let clickHandler = this.props.delegate ? this.props.delegate.toggleSort : () => {}
     return (
       <div>
         <div className="row {{name}}-index-title-row index-title-row">
@@ -177,7 +171,7 @@ class {{class_name}}IndexListComponent extends React.Component {
               {% if field.name != "user" %}
                 <th className="{{name}}-index-table-head index-table-head"
                 {% if field.type != "reference" -%}
-                data-field="{{field.name}}" onClick={clickHandler}
+                {{"  "}}data-field="{{field.name}}" onClick={clickHandler}
                 {% endif -%}
                 >{{field.name | capitalize }}</th>
               {% endif -%}
@@ -205,36 +199,32 @@ class {{class_name}}IndexListComponent extends React.Component {
   theme: PropTypes.object.isRequired,
   {{name | pluralize}}: PropTypes.array.isRequired,
   delegate: PropTypes.object.isRequired
-};
+}
 
-export const {{class_name}}IndexList = withTheme()({{class_name}}IndexListComponent);
+export const {{class_name}}IndexList = withTheme()({{class_name}}IndexListComponent)
 
 class {{class_name}}IndexItemComponent extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.styles = props.styles;
+    this.styles = props.styles
   }
 
-  delete(id, event) {
-    event.preventDefault();
+  delete (id, event) {
+    event.preventDefault()
     if (id) {
       if (window.confirm('Are you sure you want to delete this {{name | capitalize}}?')) {
-        EventBus.emit('cmd:delete:{{name}}',  id)
+        EventBus.emit('cmd:delete:{{name}}', id)
       }
     }
   }
 
-  componentDidMount() {
-
-  }
-
-  render() {
-    const {{name}} = this.props.{{name}};
+  render () {
+    const {{name}} = this.props.{{name}}
 {% for field in visible_fields -%}
 {% if field.type == "reference" -%}
 {% if field.name != "user" -%}
-{{"    "}}const {{field.name}} = store.find("{{field.name}}", {{name}}.{{field.name}}_id);
+{{"    "}}const {{field.name}} = store.find('{{field.name}}', {{name}}.{{field.name}}_id)
 {% endif -%}
 {% endif -%}
 {% endfor -%}
@@ -247,14 +237,15 @@ class {{class_name}}IndexItemComponent extends React.Component {
         <td title="{{name}}-{{field.name}}" className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">
           <Link style={this.styles.link} role="{{name}}-{{field.name}}-link" to={
             {
-              pathname: "{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
-              state:  {
+              pathname: '{{field.name | pluralize}}/show/' + {{name}}.{{field.name}}_id,
+              state: {
                 {{field.name}}: {{field.name}} || {}
-                }
+              }
             }
           }>
-          { bestTitleForClass({{field.name}} || {id: {{name}}.{{field.name}}_id}) }</Link>
-          </td>
+            { bestTitleForClass({{field.name}} || { id: {{name}}.{{field.name}}_id }) }
+          </Link>
+        </td>
         {% else -%}
           <td title="{{name}}-{{field.name}}" className="{{name}}-{{field.name}}-index-table-data {{name}}-index-table-data index-table-data">{ {{name}}.{{field.name}} }</td>
         {% endif -%}
@@ -262,45 +253,48 @@ class {{class_name}}IndexItemComponent extends React.Component {
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
 
-        <Link style={this.styles.link} className="{{name}}-index-actions-edit index-actions-edit"
-          role="{{name}}-edit"
-          to={
-          {
-            pathname: "/{{name | pluralize}}/edit/"+ {{name}}.id,
-            state: {{name}}
-          }
+          <Link style={this.styles.link} className="{{name}}-index-actions-edit index-actions-edit"
+            role="{{name}}-edit"
+            to={
+              {
+                pathname: '/{{name | pluralize}}/edit/' + {{name}}.id,
+                state: {{name}}
+              }
+            }>
+            <i className="material-icons">edit</i>
+          </Link>
 
-        }><i className="material-icons">edit</i></Link>
-
-        <span style={this.styles.link} className="{{name}}-index-actions-delete index-actions-delete"
-          role="{{name}}-delete"
-          onClick={this.delete.bind(this, {{name}}.id)}
+          <span style={this.styles.link} className="{{name}}-index-actions-delete index-actions-delete"
+            role="{{name}}-delete"
+            onClick={this.delete.bind(this, {{name}}.id)}
           >
-          <i className="material-icons">delete</i>
-        </span>
+            <i className="material-icons">delete</i>
+          </span>
 
-        <Link style={this.styles.link} className="{{name}}-index-actions-show index-actions-show"
-          role="{{name}}-show"
-          to={
-          {
-            pathname: "/{{name | pluralize}}/show/"+ {{name}}.id,
-            state: {
-              {% for field in visible_fields -%}
-              {% if field.type == "reference" -%}
-              {% if field.name != "user" %}
-              {{field.name}}: {{field.name}},
-              {% endif -%}
-              {% endif -%}
-              {% endfor %}
-              {{name}}: {{name}}
+          <Link style={this.styles.link} className="{{name}}-index-actions-show index-actions-show"
+            role="{{name}}-show"
+            to={
+              {
+                pathname: '/{{name | pluralize}}/show/' + {{name}}.id,
+                state: {
+                  {% for field in visible_fields -%}
+                  {% if field.type == "reference" -%}
+                  {% if field.name != "user" -%}
+                  {{field.name}}: {{field.name}},
+                  {% endif -%}
+                  {% endif -%}
+                  {% endfor %}
+                  {{name}}: {{name}}
+                }
+              }
             }
-          }
-        }><i className="material-icons">arrow_forward_ios</i></Link>
+          >
+            <i className="material-icons">arrow_forward_ios</i>
+          </Link>
         </td>
       </tr>
     )
   }
-
 }
 
 {{class_name}}IndexItemComponent.propTypes = {
@@ -308,6 +302,6 @@ class {{class_name}}IndexItemComponent extends React.Component {
   {{name}}: PropTypes.object.isRequired,
   delegate: PropTypes.object.isRequired,
   styles: PropTypes.object.isRequired
-};
+}
 
-export const {{class_name}}IndexItem = withTheme()({{class_name}}IndexItemComponent);
+export const {{class_name}}IndexItem = withTheme()({{class_name}}IndexItemComponent)

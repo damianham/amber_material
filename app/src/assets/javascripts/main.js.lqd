@@ -1,11 +1,15 @@
-import 'bootstrap';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './app';
-import jQuery from 'jquery';
-window.$ = window.jQuery = jQuery;
+import 'bootstrap'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './app'
+import jQuery from 'jquery'
 
-import toastr from './toastr';
+import {HashRouter} from 'react-router-dom'
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
+import toastr from './toastr'
+
+window.$ = window.jQuery = jQuery
+
 toastr.options = {
   'closeButton': true,
   'debug': false,
@@ -21,38 +25,35 @@ toastr.options = {
   'showEasing': 'swing',
   'hideEasing': 'linear',
   'showMethod': 'fadeIn',
-  'hideMethod': 'fadeOut',
+  'hideMethod': 'fadeOut'
 }
-window.toastr = toastr;
-
-import {HashRouter} from 'react-router-dom';
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+window.toastr = toastr
 
 const theme = createMuiTheme({
   typography: {
-    useNextVariants: true,
+    useNextVariants: true
   },
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: '#f4994b',  // Amber framework primary colour
+      main: '#f4994b' // Amber framework primary colour
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
     secondary: {
       // light: will be calculated to contrast with palette.secondary.main
-      main: '#546e7a',
+      main: '#546e7a'
       // dark: will be calculated from palette.secondary.main,
       // contrastText: will be calculated to contrast with palette.secondary.main
-    },
+    }
     // error: will use the default color
   },
   status: {
-    danger: '#d32f2f',
+    danger: '#d32f2f'
   },
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const element = document.getElementById('materialapp_app');
   if (element) {
     ReactDOM.render((

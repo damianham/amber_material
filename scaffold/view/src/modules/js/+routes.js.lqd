@@ -1,6 +1,6 @@
 
-import { {{class_name}}Index, {{class_name}}Edit, {{class_name}}View, {{class_name}}New } from './index';
-routes.push({path: '/{{name | pluralize}}, exact: true, type: 'index', name: '{{display_name | pluralize}}', main: {{class_name}}Index, icon: 'View'});
-routes.push({path: '/{{name | pluralize}}/edit/:id', type: 'edit', name: '{{display_name | pluralize}}', main: {{class_name}}Edit});
-routes.push({path: '/{{name | pluralize}}/show/:id', type: 'show', name: '{{display_name | pluralize}}', main: {{class_name}}View});
-routes.push({path: '/{{name | pluralize}}/new', exact: true, type: 'new', name: '{{display_name | pluralize}}', main: {{class_name}}New});
+import { {{class_name}}Index, {{class_name}}Edit, {{class_name}}View, {{class_name}}New } from './index'
+routes.push({path: '/{{name | pluralize}}', exact: true, type: 'index', name: '{{display_name | pluralize}}', main: {{class_name}}Index, icon: 'View'})
+routes.push({path: '/{{name | pluralize}}/edit/:id', type: 'edit', name: '{{display_name | pluralize}}', main: {{class_name}}Edit})
+routes.push({path: '/{{name | pluralize}}/show/:id', type: 'show', name: '{{display_name | pluralize}}', main: {{class_name}}View})
+routes.push({path: '/{{name | pluralize}}/new', exact: true, type: 'new', name: '{{display_name | pluralize}}', main: {{class_name}}New})

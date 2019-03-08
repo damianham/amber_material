@@ -4,6 +4,7 @@ import { store } from '../js/store'
 import jquery from 'jquery'
 
 jest.mock('jquery')
+const $ = jquery
 window.$ = jquery
 window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh'
 beforeEach(() => jest.resetModules())

@@ -1,50 +1,49 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import {EventBus} from '../../../lib/js/eventBus';
-import {store} from '../../../lib/js/store';
+import { EventBus } from '../../../lib/js/eventBus'
+import { store } from '../../../lib/js/store'
 
-import {{class_name}}Form from './{{name}}_form';
+import {{class_name}}Form from './{{name}}_form'
 
 export class {{class_name}}Edit extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = Object.assign({}, this.props.location.state)
   }
 
-  onBack() {
+  onBack () {
     this.props.history.goBack()
   }
 
-  onChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-    EventBus.emit("field:changed:{{name}}", event.target.name, event.target.value)
+  onChange (event) {
+    this.setState({ [event.target.name]: event.target.value })
+    EventBus.emit('field:changed:{{name}}', event.target.name, event.target.value)
   }
 
-  onSubmit(event) {
-    event.preventDefault();
+  onSubmit (event) {
+    event.preventDefault()
 
-    store.update("{{name}}", this.state.id, this.state)
+    store.update('{{name}}', this.state.id, this.state)
       .then(this.onBack.bind(this))
       .catch((error, statusText) => {
-        store.handleErrors("Update", "{{name}}", statusText, error);
-      });
+        store.handleErrors('Update', '{{name}}', statusText, error)
+      })
   }
 
-  render() {
+  render () {
     return (
       <div>
         <div className="btn btn-primary btn-xs {{name}}-edit-back-button edit-back-button"
           onClick={this.onBack.bind(this)}
-          >
-           Back
+        >
+          Back
         </div>
         <{{class_name}}Form {{name}}={this.state}
-        onSubmit={this.onSubmit.bind(this)}
-        onChange={this.onChange.bind(this)}/>
+          onSubmit={this.onSubmit.bind(this)}
+          onChange={this.onChange.bind(this)}/>
       </div>
     )
   }

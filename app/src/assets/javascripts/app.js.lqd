@@ -43,58 +43,58 @@ const icons = {
   'Inbox': InboxIcon,
   'Mail': MailIcon,
   'Person': PersonIcon,
-  'View': ViewModuleIcon,
-};
+  'View': ViewModuleIcon
+}
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const styles = (theme) => ({
   root: {
-    display: 'flex',
+    display: 'flex'
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   menuButton: {
     marginLeft: 12,
-    marginRight: 36,
+    marginRight: 36
   },
   hide: {
-    display: 'none',
+    display: 'none'
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap'
   },
   drawerOpen: {
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
   },
   drawerClose: {
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     overflowX: 'hidden',
     width: theme.spacing.unit * 7 + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing.unit * 9 + 1,
+      width: theme.spacing.unit * 9 + 1
     },
   },
   toolbar: {
@@ -102,27 +102,27 @@ const styles = (theme) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
-    ...theme.mixins.toolbar,
+    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing.unit * 3,
-  },
-});
+    padding: theme.spacing.unit * 3
+  }
+})
 
 class ListItemLink extends React.Component {
-  constructor(props, state) {
-    super(props, state);
+   constructor (props, state) {
+    super(props, state)
 
-    this.renderLink = function(itemProps) {
+    this.renderLink = function (itemProps) {
       return (
         <Link to={this.props.to} {...itemProps} />
-      );
-    }.bind(this);
+      )
+    }.bind(this)
   }
 
-  render() {
-    const {icon, primary} = this.props;
+  render () {
+    const { icon, primary } = this.props
     return (
       <li>
         <ListItem button component={this.renderLink}>
@@ -130,98 +130,98 @@ class ListItemLink extends React.Component {
           <ListItemText primary={primary} />
         </ListItem>
       </li>
-    );
+    )
   }
 }
 
 ListItemLink.propTypes = {
   icon: PropTypes.node.isRequired,
   primary: PropTypes.node.isRequired,
-  to: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired
 };
 
 class App extends React.Component {
-  constructor(props, state) {
-    super(props, state);
+   constructor (props, state) {
+    super(props, state)
 
     this.state = {
-      open: false,
-    };
+      open: false
+    }
   }
 
-  handleDrawerOpen() {
-    this.setState({open: true});
+  handleDrawerOpen () {
+    this.setState({ open: true })
   }
 
-  handleDrawerClose() {
-    this.setState({open: false});
+  handleDrawerClose () {
+    this.setState({ open: false })
   }
 
   authenticateWithToken(token) {
-    let vm = this;
-    let $ = window.$;
+    const vm = this;
+    const $ = window.$;
 
     $.ajax(
-        {
-          url: '/authenticateWithToken?token=' + token,
-          method: 'GET',
-          dataType: 'json',
-        })
-        .done((data) => {
-          window.csrf_token = data.csrf;
-          Auth.authenticateUser(data.token, data.user);
-          vm.setState({current_user: data.user});
-        })
-        .fail((data) => {
-          console.log('error authenticating user with token', token, data)
-          Auth.deauthenticateUser();
-          window.location = '/signin';
-        })
+      {
+        url: '/authenticateWithToken?token=' + token,
+        method: 'GET',
+        dataType: 'json',
+      })
+      .done((data) => {
+        window.csrf_token = data.csrf
+        Auth.authenticateUser(data.token, data.user)
+        vm.setState({ current_user: data.user })
+      })
+      .fail((data) => {
+        console.log('error authenticating user with token', token, data)
+        Auth.deauthenticateUser()
+        window.location = '/signin'
+      })
   }
 
   authenticateWithRequest() {
-    let vm = this;
-    let $ = window.$;
+    const vm = this;
+    const $ = window.$;
 
     $.ajax(
-        {
-          url: '/me',
-          method: 'GET',
-          dataType: 'json',
-        })
-        .done((data) => {
-          window.csrf_token = data.csrf;
-          Auth.authenticateUser(data.token, data.user);
-          vm.setState({ current_user: data.user });
-        })
-        .fail((data) => {
-          console.log('error getting user', data);
-          Auth.deauthenticateUser();
-          window.location = '/signin';
-        })
+      {
+        url: '/me',
+        method: 'GET',
+        dataType: 'json'
+      })
+      .done((data) => {
+        window.csrf_token = data.csrf
+        Auth.authenticateUser(data.token, data.user)
+        vm.setState({ current_user: data.user })
+      })
+      .fail((data) => {
+        console.log('error getting user', data)
+        Auth.deauthenticateUser()
+        window.location = '/signin'
+      })
   }
 
   componentWillMount() {
     if (Auth.isUserAuthenticated()) {
-      this.authenticateWithToken(Auth.getToken());
+      this.authenticateWithToken(Auth.getToken())
     } else {
-      this.authenticateWithRequest();
+      this.authenticateWithRequest()
     }
   }
 
   isAuthenticated() {
     return Auth.isUserAuthenticated() &&
       this.state &&
-      typeof this.state.current_user !== 'undefined';
+      typeof this.state.current_user !== 'undefined'
   }
 
   signOut() {
-    Auth.deauthenticateUser();
-    window.location = '/signout';
+    Auth.deauthenticateUser()
+    window.location = '/signout'
   }
 
   render() {
-    const {classes, theme} = this.props;
+    const {classes, theme} = this.props
 
     return (
       <div className={classes.root}>
@@ -229,7 +229,7 @@ class App extends React.Component {
         <AppBar
           position="fixed"
           className={classNames(classes.appBar, {
-            [classes.appBarShift]: this.state.open,
+            [classes.appBarShift]: this.state.open
           })}
         >
           <Toolbar disableGutters={!this.state.open}>
@@ -238,7 +238,7 @@ class App extends React.Component {
               aria-label="Open drawer"
               onClick={this.handleDrawerOpen.bind(this)}
               className={classNames(classes.menuButton, {
-                [classes.hide]: this.state.open,
+                [classes.hide]: this.state.open
               })}
             >
               <MenuIcon />
@@ -252,13 +252,13 @@ class App extends React.Component {
           variant="permanent"
           className={classNames(classes.drawer, {
             [classes.drawerOpen]: this.state.open,
-            [classes.drawerClose]: !this.state.open,
+            [classes.drawerClose]: !this.state.open
           })}
           classes={ {
             paper: classNames({
               [classes.drawerOpen]: this.state.open,
-              [classes.drawerClose]: !this.state.open,
-            }),
+              [classes.drawerClose]: !this.state.open
+            })
           }}
           open={this.state.open}
         >
@@ -269,8 +269,8 @@ class App extends React.Component {
           </div>
           <Divider />
           <List>
-            { routes.filter(route => route.type === 'index').map((route, index) => {
-              let RouteIcon = icons[route.icon];
+            { routes.filter((route) => route.type === 'index').map((route, index) => {
+              const RouteIcon = icons[route.icon];
               return <ListItemLink exact key={route.path} to={route.path} primary={route.name} icon={<RouteIcon />} />
             })
             }
@@ -293,27 +293,27 @@ class App extends React.Component {
                     <ListItemIcon>{<ExitToApp />}</ListItemIcon>
                     <ListItemText primary="Sign In" />
                   </ListItem>
-                  </a>
+                </a>
               </li>
               )
             }
             { this.isAuthenticated() ? (
               <li>
-                <a  href='/profile'>
+                <a href='/profile'>
                   <ListItem button >
                     <ListItemIcon>{<PersonIcon />}</ListItemIcon>
                     <ListItemText primary="Profile" />
                   </ListItem>
-                  </a>
+                </a>
               </li>
               ) : (
               <li>
-                <a  href='/signup'>
+                <a href='/signup'>
                   <ListItem button >
                     <ListItemIcon>{<PersonAddIcon />}</ListItemIcon>
                     <ListItemText primary="Sign Up" />
                   </ListItem>
-                  </a>
+                </a>
               </li>
               )
             }
@@ -348,7 +348,7 @@ class App extends React.Component {
 
 App.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(App);
+export default withStyles(styles, {withTheme: true})(App);

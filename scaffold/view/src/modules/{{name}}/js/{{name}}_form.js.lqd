@@ -1,149 +1,143 @@
+/* eslint-disable no-trailing-spaces */
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from "prop-types";
-
-import {optionsForClass} from '../../../lib/js/utils';
-import {EventBus} from '../../../lib/js/eventBus';
-import {store} from '../../../lib/js/store';
+import { optionsForClass } from '../../../lib/js/utils'
+import { EventBus } from '../../../lib/js/eventBus'
+import { store } from '../../../lib/js/store'
+import $ from 'jquery'
 
 class {{class_name}}Form extends React.Component {
-  constructor(props) {
-    super(props);
-
-  }
-
-  componentWillMount() {
-    EventBus.on("validation:failed:{{name}}", this.updateListener = (msg) => {
+  componentWillMount () {
+    EventBus.on('validation:failed:{{name}}', this.updateListener = (msg) => {
       // get the field name and highlight the field, format of the msg is
       // <fieldname> <error message>
-      let fieldname = msg.split(' ')[0];
-      let field = `#{{name}}-${fieldname}-form-data`;
-      let error = `#{{name}}-${fieldname}-form-error`;
+      let fieldname = msg.split(' ')[0]
+      let field = `#{{name}}-${fieldname}-form-data`
+      let error = `#{{name}}-${fieldname}-form-error`
 
-      $(field).addClass('has-error');
+      $(field).addClass('has-error')
 
       $(error).show().text(msg)
-    });
+    })
 
-    EventBus.on("field:changed:{{name}}", this.changeListener = (fieldname, value) => {
-      let field = `#{{name}}-${fieldname}-form-data`;
-      let error = `#{{name}}-${fieldname}-form-error`;
+    EventBus.on('field:changed:{{name}}', this.changeListener = (fieldname, value) => {
+      let field = `#{{name}}-${fieldname}-form-data`
+      let error = `#{{name}}-${fieldname}-form-error`
 
-      $(field).removeClass('has-error');
+      $(field).removeClass('has-error')
 
       $(error).hide()
     })
   }
 
-  componentWillUnmount() {
-    EventBus.off("validation:failed:{{name}}", this.updateListener);
-    EventBus.off("field:changed:{{name}}", this.changeListener)
+  componentWillUnmount () {
+    EventBus.off('validation:failed:{{name}}', this.updateListener)
+    EventBus.off('field:changed:{{name}}', this.changeListener)
   }
 
-  render() {
-
+  render () {
     return (
 
-      <div className="{{name}}-form-div form-div">
-        <div className="row {{name}}-form-title-row form-title-row">
-          <div className="col-sm-11">
-            <h2 className="{{name}}-form-title form-title">{{display_name}}</h2>
+      <div className='{{name}}-form-div form-div'>
+        <div className='row {{name}}-form-title-row form-title-row'>
+          <div className='col-sm-11'>
+            <h2 className='{{name}}-form-title form-title'>{{display_name}}</h2>
           </div>
         </div>
 
         <form onSubmit={this.props.onSubmit}>
-        {% for field in visible_fields %}
+        {% for field in visible_fields -%}
         {% if field.name != "user" %}
-          <div className="form-group">
-          <label htmlFor="{{name}}-{{field.name}}-form-data" id="{{name}}-{{field.name}}">{{field.name | capitalize}}
-            <span className="form-data-error" id="{{name}}-{{field.name}}-form-error"
-            role="{{name}}-{{field.name}}-form-error" />
-          </label>
-          {% if field.type == "text" -%}
-          <textarea
-            role="{{name}}-{{field.name}}"
-            rows={10}
-            name="{{field.name}}"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}-form-data"
-            value={ this.props.{{name}}.{{field.name}} }
-            onChange={this.props.onChange} />
+          <div className='form-group'>
+            <label htmlFor='{{name}}-{{field.name}}-form-data' id='{{name}}-{{field.name}}'>{{field.name | capitalize}}
+              <span className='form-data-error' id='{{name}}-{{field.name}}-form-error'
+                role='{{name}}-{{field.name}}-form-error' />
+            </label>
+            {% if field.type == "text" -%}
+            <textarea
+              role='{{name}}-{{field.name}}'
+              rows={10}
+              name='{{field.name}}'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}-form-data'
+              value={ this.props.{{name}}.{{field.name}} }
+              onChange={this.props.onChange} />
           {% elsif field.type == "boolean" -%}
-          <input type="checkbox"
-            role="{{name}}-{{field.name}}"
-            name="{{field.name}}"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}-form-data"
-            value={ this.props.{{name}}.{{field.name}} }
-            onChange={this.props.onChange}
-          />
+            <input type='checkbox'
+              role='{{name}}-{{field.name}}'
+              name='{{field.name}}'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}-form-data'
+              value={ this.props.{{name}}.{{field.name}} }
+              onChange={this.props.onChange}
+            />
           {% elsif field.type == "reference" -%}
-          <select
-            role="{{field.name}}-select"
-            name="{{field.name}}_id"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}_id-form-data"
-            value={ this.props.{{name}}.{{field.name}}_id }
-            onChange={this.props.onChange}
-          >
-            <option value='' key='none'>Select {{field.name}}</option>
-          { optionsForClass(store, "{{field.name}}").map((opt) => {
-              return (
-                <option value={opt.value} key={opt.value}>{opt.label}</option>
-              )
-            })
-          }
-          </select>
+            <select
+              role='{{field.name}}-select'
+              name='{{field.name}}_id'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}_id-form-data'
+              value={ this.props.{{name}}.{{field.name}}_id }
+              onChange={this.props.onChange}
+            >
+              <option value='' key='none'>Select {{field.name}}</option>
+              { optionsForClass(store, '{{field.name}}').map((opt) => {
+                return (
+                  <option value={opt.value} key={opt.value}>{opt.label}</option>
+                )
+              })
+              }
+            </select>
           {% elsif field.cr_type == "Int32" or field.cr_type == "Int64" -%}
-          <input
-            role="{{name}}-{{field.name}}"
-            name="{{field.name}}"
-            type="number"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}-form-data"
-            value={ this.props.{{name}}.{{field.name}} }
-            onChange={this.props.onChange} />
+            <input
+              role='{{name}}-{{field.name}}'
+              name='{{field.name}}'
+              type='number'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}-form-data'
+              value={ this.props.{{name}}.{{field.name}} }
+              onChange={this.props.onChange} />
           {% elsif field.cr_type == "Float32" or field.cr_type == "Float64" -%}
-          <input
-            role="{{name}}-{{field.name}}"
-            name="{{field.name}}"
-            type="number"
-            step="any"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}-form-data"
-            value={ this.props.{{name}}.{{field.name}} }
-            onChange={this.props.onChange} />
+            <input
+              role='{{name}}-{{field.name}}'
+              name='{{field.name}}'
+              type='number'
+              step='any'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}-form-data'
+              value={ this.props.{{name}}.{{field.name}} }
+              onChange={this.props.onChange} />
           {% elsif field.type == "password" -%}
-          <input
-            role="{{name}}-{{field.name}}"
-            name="{{field.name}}"
-            type="password"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}-form-data"
-            value={ this.props.{{name}}.{{field.name}} }
-            onChange={this.props.onChange} />
+            <input
+              role='{{name}}-{{field.name}}'
+              name='{{field.name}}'
+              type='password'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}-form-data'
+              value={ this.props.{{name}}.{{field.name}} }
+              onChange={this.props.onChange} />
           {% else -%}
-          <input
-            role="{{name}}-{{field.name}}"
-            name="{{field.name}}"
-            type="text"
-            aria-labelledby="{{name}}-{{field.name}}"
-            className="form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data"
-            id="{{name}}-{{field.name}}-form-data"
-            value={ this.props.{{name}}.{{field.name}} }
-            onChange={this.props.onChange} />
+            <input
+              role='{{name}}-{{field.name}}'
+              name='{{field.name}}'
+              type='text'
+              aria-labelledby='{{name}}-{{field.name}}'
+              className='form-control {{name}}-{{field.name}}-form-data {{name}}-form-data form-data'
+              id='{{name}}-{{field.name}}-form-data'
+              value={ this.props.{{name}}.{{field.name}} }
+              onChange={this.props.onChange} />
           {% endif -%}
           </div>
-        {% endif %}
+        {% endif -%}
         {% endfor %}
-          <button type="submit" className="btn btn-success btn-lg {{name}}-form-submit form-submit">
+          <button type='submit' className='btn btn-success btn-lg {{name}}-form-submit form-submit'>
             SAVE
           </button>
         </form>
@@ -156,4 +150,4 @@ class {{class_name}}Form extends React.Component {
   {{name}}: PropTypes.object.isRequired
 }
 
-export default {{class_name}}Form;
+export default {{class_name}}Form

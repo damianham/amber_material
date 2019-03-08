@@ -1,7 +1,8 @@
+/* eslint-disable comma-style */
 
-import {randomString,randomValue} from '../../__fixtures__/example_data';
-import {store} from '../../../lib/js/store';
-import { {{class_name}} } from '../js/{{name}}';
+import {randomString,randomValue} from '../../__fixtures__/example_data'
+import {store} from '../../../lib/js/store'
+import { {{class_name}} } from '../js/{{name}}'
 
 export const {{name | pluralize}}_data = [
   new {{class_name}}({
@@ -9,11 +10,11 @@ export const {{name | pluralize}}_data = [
     {% for field in visible_fields -%}
     {% if field.name != "user" -%}
     {% if field.type == "reference" -%}
-    , {{field.name}}_id: randomValue("{{field.cr_type}}")
+    , {{field.name}}_id: randomValue('{{field.cr_type}}')
     {% elsif field.type == "boolean" -%}
     , {{field.name}}: '0'
     {% else -%}
-    , {{field.name}}: randomValue("{{field.cr_type}}", 20)
+    , {{field.name}}: randomValue('{{field.cr_type}}', 20)
     {% endif -%}
     {% endif -%}
     {% endfor %}
@@ -23,11 +24,11 @@ export const {{name | pluralize}}_data = [
     {% for field in visible_fields -%}
     {% if field.name != "user" -%}
     {% if field.type == "reference" -%}
-    , {{field.name}}_id: randomValue("{{field.cr_type}}")
+    , {{field.name}}_id: randomValue('{{field.cr_type}}')
     {% elsif field.type == "boolean" -%}
     , {{field.name}}: '0'
     {% else -%}
-    , {{field.name}}: randomValue("{{field.cr_type}}", 20)
+    , {{field.name}}: randomValue('{{field.cr_type}}', 20)
     {% endif -%}
     {% endif -%}
     {% endfor %}
@@ -37,28 +38,27 @@ export const {{name | pluralize}}_data = [
     {% for field in visible_fields -%}
     {% if field.name != "user" -%}
     {% if field.type == "reference" -%}
-    , {{field.name}}_id: randomValue("{{field.cr_type}}")
+    , {{field.name}}_id: randomValue('{{field.cr_type}}')
     {% elsif field.type == "boolean" -%}
     , {{field.name}}: '0'
     {% else -%}
-    , {{field.name}}: randomValue("{{field.cr_type}}", 20)
+    , {{field.name}}: randomValue('{{field.cr_type}}', 20)
     {% endif -%}
     {% endif -%}
     {% endfor %}
   })
+]
 
-];
-
-store.getState()["{{name}}"] = {{name | pluralize}}_data;
+store.getState()['{{name}}'] = {{name | pluralize}}_data
 
 {% for field in visible_fields -%}
 {% if field.type == "reference" -%}
 {% if field.name != "user" %}
-store.getState()["{{field.name}}"] = [
-  {id:1, name : randomString(20)},
-  {id:2, name: randomString(20)},
-  {id:3, name: randomString(20)}
-  ];
+store.getState()['{{field.name}}'] = [
+  { id:1, name : randomString(20) },
+  { id:2, name: randomString(20) },
+  { id:3, name: randomString(20) }
+]
 {% endif -%}
 {% endif -%}
 {% endfor %}

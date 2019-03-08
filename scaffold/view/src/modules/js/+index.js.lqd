@@ -1,1 +1,1 @@
-export * from '../{{name}}/js/{{name}};
+export * from '../{{name}}/js/{{name}}'

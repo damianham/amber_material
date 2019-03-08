@@ -1,17 +1,17 @@
+/* eslint-disable no-trailing-spaces */
+import React from 'react'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from "prop-types";
+import {EventBus} from '../../../lib/js/eventBus'
+import {bestTitleForClass} from '../../../lib/js/utils'
+import {store} from '../../../lib/js/store'
 
-import {EventBus} from '../../../lib/js/eventBus';
-import {bestTitleForClass} from '../../../lib/js/utils';
-import {store} from '../../../lib/js/store';
-
-import { {{class_name}} } from './{{name}}';
+import { {{class_name}} } from './{{name}}'
 
 export class {{class_name}}View extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = this.props.location.state || {}
   }
@@ -21,11 +21,11 @@ export class {{class_name}}View extends React.Component {
   }
 
   componentWillMount() {
-    let vm = this;
+    const vm = this
 
     if (typeof this.state.{{name}} === 'undefined') {
       // load the resource for the param ID
-      this.state.{{name}} = store.find( "{{name}}", this.props.match.params.id)
+      this.state.{{name}} = store.find( '{{name}}', this.props.match.params.id)
     }
 
     {% for field in visible_fields -%}
@@ -33,7 +33,7 @@ export class {{class_name}}View extends React.Component {
     {% if field.name != "user" %}
     if (this.state.{{name}} && typeof this.state.{{field.name}} === 'undefined') {
       // load the resource for the param ID
-      this.state.{{field.name}} = store.find( "{{field.name}}", this.state.{{name}}.{{field.name}}_id)
+      this.state.{{field.name}} = store.find( '{{field.name}}', this.state.{{name}}.{{field.name}}_id)
     }
     {% endif -%}
     {% endif -%}
@@ -78,92 +78,91 @@ export class {{class_name}}View extends React.Component {
         store.handleErrors('Query', 'comment', statusText, error);
       })
     */
-
   }
 
-  render() {
-    const {{name}} = this.state.{{name}} || {};
-    const related = this.state.related || [];
+  render () {
+    const {{name}} = this.state.{{name}} || {}
+    const related = this.state.related || []
 
     {% for field in visible_fields -%}
     {% if field.type == "reference" -%}
     {% if field.name != "user" %}
-    const {{field.name}} =  this.state.{{field.name}} || {};
+    const {{field.name}} = this.state.{{field.name}} || {};
     {% endif -%}
     {% endif -%}
     {% endfor %}
 
     return (
-    <div className="table-responsive {{name}}-view-table view-table">
-      <div className="btn btn-primary btn-xs"
-        onClick={this.onBack.bind(this)}
+      <div className="table-responsive {{name}}-view-table view-table">
+        <div className="btn btn-primary btn-xs"
+          onClick={this.onBack.bind(this)}
         >
-        Back
-      </div>
-      <table className="table table-striped">
-        <tbody>
-          {% for field in visible_fields %}
-          {% if field.name != "user" %}
-          <tr>
-            <th className="{{name}}-view-table-head view-table-head">{{ field.name | capitalize }}</th>
-            {% if field.type == "reference" %}
-            <td className="{{name}}-view-table-data view-table-data">
-              <Link to={
-                {
-                  pathname: "/{{field.name | pluralize}}/show/" +{{name}}.{{field.name}}_id,
-                  state: {
-                    {{field.name}}: {{field.name}},
-                    {{name}}: {{name}}
-                  }
-                }
-              }>{ bestTitleForClass({{field.name}} || {id: {{name}}.{{field.name}}_id })}</Link>
-              </td>
-            {% else %}
-            <td className="{{name}}-view-table-data view-table-data">{ {{name}}.{{field.name}} }</td>
-            {% endif %}
-          </tr>
-          {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-
-      { related.length > 0 &&
-        <div className="{{name}}-related-table related-table">
-          <h3>RELATED - change me</h3>
-          <table className="table table-striped">
-            <tbody>
-              {
-                related.map((obj) => {
-                  /*
-                    we could link to the related object with
-                    <td className="{{name}}-related-table-data related-table-data view-table-data">
-                      <Link to={
-                        {
-                          // change plural_related to the plural related model name
-                          pathname: "/plural_related/show/"+ obj.id,
-                          state: {
-                            related: obj,  // change related to the related model name
-                            {{name}}: {{name}}
-                          }
-                        }
-                      }>{ bestTitleForClass(obj) }</Link>
-                    </td>
-                  */
-                  return (
-                    <tr key={obj.id}>
-                      <td className="{{name}}-related-table-data related-table-data view-table-data">{ bestTitleForClass(obj) }</td>
-
-                    </tr>
-                  )
-                })
-              }
-            </tbody>
-          </table>
+          Back
         </div>
+        <table className="table table-striped">
+          <tbody>
+            {% for field in visible_fields -%}
+            {% if field.name != "user" -%}
+            <tr>
+              <th className="{{name}}-view-table-head view-table-head">{{ field.name | capitalize }}</th>
+              {% if field.type == "reference" -%}
+              <td className="{{name}}-view-table-data view-table-data">
+                <Link to={
+                  {
+                    pathname: '/{{field.name | pluralize}}/show/' + {{name}}.{{field.name}}_id,
+                    state: {
+                      {{field.name}}: {{field.name}},
+                      {{name}}: {{name}}
+                    }
+                  }
+                }>{ bestTitleForClass({{field.name}} || { id: {{name}}.{{field.name}}_id })}</Link>
+              </td>
+              {% else -%}
+              <td className="{{name}}-view-table-data view-table-data">{ {{name}}.{{field.name}} }</td>
+              {%- endif %}
+            </tr>
+            {% endif -%}
+            {% endfor %}
+          </tbody>
+        </table>
 
-      }
+        { related.length > 0 &&
+          <div className="{{name}}-related-table related-table">
+            <h3>RELATED - change me</h3>
+            <table className="table table-striped">
+              <tbody>
+                {
+                  related.map((obj) => {
+                    /*
+                      we could link to the related object with
+                      <td className="{{name}}-related-table-data related-table-data view-table-data">
+                        <Link to={
+                          {
+                            // change plural_related to the plural related model name
+                            pathname: "/plural_related/show/"+ obj.id,
+                            state: {
+                              related: obj,  // change related to the related model name
+                              {{name}}: {{name}}
+                            }
+                          }
+                        }>{ bestTitleForClass(obj) }</Link>
+                      </td>
+                    */
+                    return (
+                      <tr key={obj.id}>
+                        <td className="{{name}}-related-table-data related-table-data view-table-data">{ bestTitleForClass(obj) }</td>
 
-    </div>
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+          </div>
+
+        }
+
+      </div>
 
     )
   }
