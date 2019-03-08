@@ -1,13 +1,12 @@
 
-import jquery from 'jquery';
+import Resource from '../js/resource'
+import { store } from '../js/store'
+import jquery from 'jquery'
 
-jest.mock('jquery');
-window.$ = jquery;
-window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh';
-beforeEach(() => jest.resetModules());
-
-import Resource from '../js/resource';
-import {store} from '../js/store'
+jest.mock('jquery')
+window.$ = jquery
+window.csrf_token = 'skdjhasdjhaksjdhaksjhdaksjh'
+beforeEach(() => jest.resetModules())
 
 it('gets undefined for a non existent record set', () => {
   expect(store.getState()['xyz']).toEqual(undefined)
@@ -19,9 +18,9 @@ it('returns false when a record set is not loaded', () => {
 
 it('returns true when a record set is loaded', () => {
   const endpoint = '/products'
-  const products = [new Resource(endpoint,{id:1, name: 'Widget'}),
-                    new Resource(endpoint,{id: 2, name: 'Wimble'})];
-  const resp = {data: products};
+  const products = [new Resource(endpoint, { id: 1, name: 'Widget' }),
+    new Resource(endpoint, { id: 2, name: 'Wimble' })]
+  const resp = { data: products }
 
   jquery.ajax.mockImplementation(() => Promise.resolve(resp))
 
@@ -32,9 +31,9 @@ it('returns true when a record set is loaded', () => {
 
 it('gets a list of records for a loaded record set', () => {
   const endpoint = '/products'
-  const products = [new Resource(endpoint,{id:1, name: 'Widget'}),
-                    new Resource(endpoint,{id: 2, name: 'Wimble'})];
-  const resp = {data: products};
+  const products = [new Resource(endpoint, { id: 1, name: 'Widget' }),
+    new Resource(endpoint, { id: 2, name: 'Wimble' })]
+  const resp = { data: products }
 
   jquery.ajax.mockImplementation(() => Promise.resolve(resp))
 
@@ -48,14 +47,14 @@ it('gets a list of records for a loaded record set', () => {
     method: 'GET',
     url: '/products',
     dataType: 'json'
-  });
+  })
 })
 
 it('finds a record in a record set', () => {
   const endpoint = '/products'
-  const products = [new Resource(endpoint,{id:1, name: 'Widget'}),
-                    new Resource(endpoint,{id: 2, name: 'Wimble'})];
-  const resp = {data: products};
+  const products = [new Resource(endpoint, { id: 1, name: 'Widget' }),
+    new Resource(endpoint, { id: 2, name: 'Wimble' })]
+  const resp = { data: products }
 
   jquery.ajax.mockImplementation(() => Promise.resolve(resp))
 
@@ -66,10 +65,10 @@ it('finds a record in a record set', () => {
 
 it('updates a record in a record set', () => {
   const endpoint = '/products'
-  const products = [new Resource(endpoint,{id:1, name: 'Widget'}),
-                    new Resource(endpoint,{id: 2, name: 'Wimble'})];
-  const updated = new Resource(endpoint,{id:1, name: 'Womble'});
-  const resp = {data: products};
+  const products = [new Resource(endpoint, { id: 1, name: 'Widget' }),
+    new Resource(endpoint, { id: 2, name: 'Wimble' })]
+  const updated = new Resource(endpoint, { id: 1, name: 'Womble' })
+  const resp = { data: products }
 
   jquery.ajax.mockImplementation(() => Promise.resolve(resp))
 
@@ -81,9 +80,9 @@ it('updates a record in a record set', () => {
 
 it('deletes a record in a record set', () => {
   const endpoint = '/products'
-  const products = [new Resource(endpoint,{id:1, name: 'Widget'}),
-                    new Resource(endpoint,{id: 2, name: 'Wimble'})];
-  const resp = {data: products};
+  const products = [new Resource(endpoint, { id: 1, name: 'Widget' }),
+    new Resource(endpoint, { id: 2, name: 'Wimble' })]
+  const resp = { data: products }
 
   jquery.ajax.mockImplementation(() => Promise.resolve(resp))
 

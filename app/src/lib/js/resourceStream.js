@@ -1,10 +1,10 @@
-'use strict';
+'use strict'
 
-import Amber from 'amber';
-const eventEmitter = require('event-emitter');
+import Amber from 'amber'
 
-import Resource from './resource';
+import Resource from './resource'
 
+const eventEmitter = require('event-emitter')
 /*
   // example usage
   componentWillMount() {
@@ -45,76 +45,76 @@ import Resource from './resource';
 
 */
 class ResourceStream {
-  constructor(modelName, endpoint) {
-    this.model_name = modelName;
-    this.endpoint = endpoint;
-    this.resource = new Resource(endpoint);
-    this.models = {};
+  constructor (modelName, endpoint) {
+    this.model_name = modelName
+    this.endpoint = endpoint
+    this.resource = new Resource(endpoint)
+    this.models = {}
 
-    this.subscribe();
+    this.subscribe()
   }
 
-  subscribe() {
+  subscribe () {
     // subscribe to model updates
     // use the EventBus to publish changes to models
 
-    const vm = this;
+    const vm = this
 
-    vm.socket = new Amber.Socket('/model');
+    vm.socket = new Amber.Socket('/model')
     vm.socket.connect() // returns a promise
-        .then(() => {
-          // console.log('connecting to model stream for', model_name);
-          const channel = vm.socket.channel(vm.model_name);
-          channel.join();
+      .then(() => {
+        // console.log('connecting to model stream for', model_name);
+        const channel = vm.socket.channel(vm.model_name)
+        channel.join()
 
-          channel.on('update', (message) => {
-            // handle updated message here
-            // console.log('updated model message', message)
-            vm.emit('update:model', message);
-          });
+        channel.on('update', (message) => {
+          // handle updated message here
+          // console.log('updated model message', message)
+          vm.emit('update:model', message)
+        })
 
-          channel.on('new', (message) => {
-            // handle new message here
-            // console.log('new model message', message)
-            vm.emit('new:model', message);
-          });
+        channel.on('new', (message) => {
+          // handle new message here
+          // console.log('new model message', message)
+          vm.emit('new:model', message)
+        })
 
-          channel.on('delete', (message) => {
-            // handle delete message here
-            // console.log('delete model message', message)
-            vm.emit('delete:model', message);
-          });
-        });
+        channel.on('delete', (message) => {
+          // handle delete message here
+          // console.log('delete model message', message)
+          vm.emit('delete:model', message)
+        })
+      })
   }
 
-  refresh() {
+  refresh () {
     // refresh all records
 
   }
 
-  all() {
-    return this.resource.all();
+  all () {
+    return this.resource.all()
   }
 
-  get(id) {
-    return this.resource.get(id);
+  get (id) {
+    return this.resource.get(id)
   }
 
-  add(instance) {
-    return this.resource.save_instance(instance);
+  add (instance) {
+    return this.resource.save_instance(instance)
   }
 
-  destroy(instance) {
-    return this.resource.destroy_instance(instance);
+  destroy (instance) {
+    return this.resource.destroy_instance(instance)
   }
 
-  close() {
+  close () {
     if (this.socket) {
-      this.socket.disconnect();
-      delete this.socket;
+      this.socket.disconnect()
+      delete this.socket
     }
   }
 }
 
-eventEmitter(ResourceStream.prototype);
-export default ResourceStream;
+eventEmitter(ResourceStream.prototype)
+export default ResourceStream

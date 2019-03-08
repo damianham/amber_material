@@ -39,9 +39,9 @@ export class {{class_name}}New extends React.Component {
     event.preventDefault();
     let {{name}} = new {{class_name}}(this.state);
     {{name}}.save().then(this.onBack.bind(this))
-    .catch((error) => {
-      store.handleErrors("Add", "{{name}}", error.statusText, error.responseJSON)
-    })
+    .catch((error, statusText) => {
+      store.handleErrors("Add", "{{name}}", statusText, error);
+    });
   }
 
   render() {

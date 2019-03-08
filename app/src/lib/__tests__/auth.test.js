@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
-import Auth from '../js/auth';
+import Auth from '../js/auth'
 
 it('saves authentication data', () => {
-  let user = {
+  const user = {
     id: 1,
     name: 'fake-name'
   }
@@ -13,7 +13,7 @@ it('saves authentication data', () => {
 })
 
 it('removes authentication data', () => {
-  let user = {
+  const user = {
     id: 1,
     name: 'fake-name'
   }
@@ -27,7 +27,7 @@ it('removes authentication data', () => {
 })
 
 it('gets the token', () => {
-  let user = {
+  const user = {
     id: 1,
     name: 'fake-name'
   }
@@ -37,7 +37,7 @@ it('gets the token', () => {
 })
 
 it('gets the user', () => {
-  let user = {
+  const user = {
     id: 1,
     name: 'fake-name'
   }
@@ -46,9 +46,8 @@ it('gets the user', () => {
   expect(Auth.getUser()).toEqual(user)
 })
 
-
 it('removes the token', () => {
-  let user = {
+  const user = {
     id: 1,
     name: 'fake-name'
   }
@@ -60,7 +59,7 @@ it('removes the token', () => {
 })
 
 it('removes the user', () => {
-  let user = {
+  const user = {
     id: 1,
     name: 'fake-name'
   }

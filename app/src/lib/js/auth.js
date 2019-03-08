@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 class Auth {
   /**
@@ -7,9 +7,9 @@ class Auth {
    * @param {string} token
    * @param {string} user
    */
-  static authenticateUser(token, user) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user) );
+  static authenticateUser (token, user) {
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(user))
   }
 
   /**
@@ -18,17 +18,17 @@ class Auth {
    *
    * @return {boolean}
    */
-  static isUserAuthenticated() {
-    return localStorage.getItem('token') !== null;
+  static isUserAuthenticated () {
+    return localStorage.getItem('token') !== null
   }
 
   /**
    * Deauthenticate a user. Remove a token from Local Storage.
    *
    */
-  static deauthenticateUser() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  static deauthenticateUser () {
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
   }
 
   /**
@@ -37,13 +37,13 @@ class Auth {
    * @returns {string}
    */
 
-  static getToken() {
-    return localStorage.getItem('token');
+  static getToken () {
+    return localStorage.getItem('token')
   }
 
-  static getUser() {
-    return JSON.parse(localStorage.getItem('user') || '{}');
+  static getUser () {
+    return JSON.parse(localStorage.getItem('user') || '{}')
   }
 }
 
-export default Auth;
+export default Auth

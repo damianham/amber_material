@@ -1,5 +1,5 @@
-'use strict';
+'use strict'
 
-import EventEmitter from 'event-emitter';
+import EventEmitter from 'event-emitter'
 
-export const EventBus = new EventEmitter();
+export const EventBus = new EventEmitter()
