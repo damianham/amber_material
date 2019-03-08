@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter } from 'react-router-dom';
+import {HashRouter} from 'react-router-dom';
 import App from '../app';
 
 import renderer from 'react-test-renderer';
@@ -9,6 +9,6 @@ it("renders the App", () => {
     <App />
   </HashRouter>)
 
-  let tree = component.toJSON();
+  const tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 })

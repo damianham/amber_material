@@ -1,7 +1,7 @@
 'use strict';
 
 import Amber from 'amber';
-const EventEmitter = require('event-emitter');
+const eventEmitter = require('event-emitter');
 
 import Resource from './resource';
 
@@ -44,50 +44,47 @@ import Resource from './resource';
   }
 
 */
-class ResourceStream  {
-  constructor(model_name, endpoint) {
-
-    this.model_name = model_name;
+class ResourceStream {
+  constructor(modelName, endpoint) {
+    this.model_name = modelName;
     this.endpoint = endpoint;
     this.resource = new Resource(endpoint);
     this.models = {};
 
-    this.subscribe()
+    this.subscribe();
   }
 
   subscribe() {
-
     // subscribe to model updates
     // use the EventBus to publish changes to models
 
-    let vm = this;
+    const vm = this;
 
     vm.socket = new Amber.Socket('/model');
     vm.socket.connect() // returns a promise
-      .then(() => {
-        // console.log('connecting to model stream for', model_name);
-        let channel = vm.socket.channel(vm.model_name);
-        channel.join();
+        .then(() => {
+          // console.log('connecting to model stream for', model_name);
+          const channel = vm.socket.channel(vm.model_name);
+          channel.join();
 
-        channel.on('update', (message) => {
-          // handle updated message here
-          //console.log('updated model message', message)
-          vm.emit('update:model', message)
+          channel.on('update', (message) => {
+            // handle updated message here
+            // console.log('updated model message', message)
+            vm.emit('update:model', message);
+          });
+
+          channel.on('new', (message) => {
+            // handle new message here
+            // console.log('new model message', message)
+            vm.emit('new:model', message);
+          });
+
+          channel.on('delete', (message) => {
+            // handle delete message here
+            // console.log('delete model message', message)
+            vm.emit('delete:model', message);
+          });
         });
-
-        channel.on('new', (message) => {
-          // handle new message here
-          //console.log('new model message', message)
-          vm.emit('new:model', message)
-        });
-
-        channel.on('delete', (message) => {
-          // handle delete message here
-          //console.log('delete model message', message)
-          vm.emit('delete:model', message)
-        });
-
-      })
   }
 
   refresh() {
@@ -96,29 +93,28 @@ class ResourceStream  {
   }
 
   all() {
-    return this.resource.all()
+    return this.resource.all();
   }
 
   get(id) {
-    return this.resource.get(id)
+    return this.resource.get(id);
   }
 
   add(instance) {
-    return this.resource.save_instance(instance)
+    return this.resource.save_instance(instance);
   }
 
   destroy(instance) {
-    return this.resource.destroy_instance(instance)
+    return this.resource.destroy_instance(instance);
   }
 
   close() {
     if (this.socket) {
       this.socket.disconnect();
-      delete this.socket
+      delete this.socket;
     }
   }
-
 }
 
-EventEmitter(ResourceStream.prototype);
+eventEmitter(ResourceStream.prototype);
 export default ResourceStream;

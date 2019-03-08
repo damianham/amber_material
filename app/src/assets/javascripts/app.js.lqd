@@ -1,15 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 import {
   Link,
-  NavLink,
   Route,
   Switch
 } from 'react-router-dom';
 
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -27,7 +26,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import ExitToApp from '@material-ui/icons/ExitToApp'
+import ExitToApp from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import PersonIcon from '@material-ui/icons/Person';
@@ -44,12 +43,12 @@ const icons = {
   'Inbox': InboxIcon,
   'Mail': MailIcon,
   'Person': PersonIcon,
-  'View': ViewModuleIcon
+  'View': ViewModuleIcon,
 };
 
 const drawerWidth = 240;
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     display: 'flex',
   },
@@ -118,12 +117,12 @@ class ListItemLink extends React.Component {
     this.renderLink = function(itemProps) {
       return (
         <Link to={this.props.to} {...itemProps} />
-      )
-    }.bind(this)
+      );
+    }.bind(this);
   }
 
   render() {
-    const { icon, primary } = this.props;
+    const {icon, primary} = this.props;
     return (
       <li>
         <ListItem button component={this.renderLink}>
@@ -151,11 +150,11 @@ class App extends React.Component {
   }
 
   handleDrawerOpen() {
-    this.setState({ open: true });
+    this.setState({open: true});
   }
 
   handleDrawerClose() {
-    this.setState({ open: false });
+    this.setState({open: false});
   }
 
   authenticateWithToken(token) {
@@ -163,21 +162,21 @@ class App extends React.Component {
     let $ = window.$;
 
     $.ajax(
-      {
-        url: "/authenticateWithToken?token=" + token,
-        method: 'GET',
-        dataType: 'json'
-      })
-      .done(function (data) {
-        window.csrf_token = data.csrf;
-        Auth.authenticateUser(data.token, data.user);
-        vm.setState({ current_user: data.user });
-      })
-      .fail(function (data) {
-        console.log('error authenticating user with token', token, data)
-        Auth.deauthenticateUser();
-        window.location = "/signin";
-      })
+        {
+          url: '/authenticateWithToken?token=' + token,
+          method: 'GET',
+          dataType: 'json',
+        })
+        .done((data) => {
+          window.csrf_token = data.csrf;
+          Auth.authenticateUser(data.token, data.user);
+          vm.setState({current_user: data.user});
+        })
+        .fail((data) => {
+          console.log('error authenticating user with token', token, data)
+          Auth.deauthenticateUser();
+          window.location = '/signin';
+        })
   }
 
   authenticateWithRequest() {
@@ -185,21 +184,21 @@ class App extends React.Component {
     let $ = window.$;
 
     $.ajax(
-      {
-        url: "/me",
-        method: 'GET',
-        dataType: 'json'
-      })
-      .done(function (data) {
-        window.csrf_token = data.csrf;
-        Auth.authenticateUser(data.token, data.user);
-        vm.setState({ current_user: data.user });
-      })
-      .fail(function (data) {
-        console.log('error getting user', data);
-        Auth.deauthenticateUser();
-        window.location = "/signin";
-      })
+        {
+          url: '/me',
+          method: 'GET',
+          dataType: 'json',
+        })
+        .done((data) => {
+          window.csrf_token = data.csrf;
+          Auth.authenticateUser(data.token, data.user);
+          vm.setState({ current_user: data.user });
+        })
+        .fail((data) => {
+          console.log('error getting user', data);
+          Auth.deauthenticateUser();
+          window.location = '/signin';
+        })
   }
 
   componentWillMount() {
@@ -211,140 +210,139 @@ class App extends React.Component {
   }
 
   isAuthenticated() {
-    return Auth.isUserAuthenticated() && this.state && typeof this.state.current_user !== 'undefined'
+    return Auth.isUserAuthenticated() &&
+      this.state &&
+      typeof this.state.current_user !== 'undefined';
   }
 
   signOut() {
     Auth.deauthenticateUser();
-    window.location = "/signout";
+    window.location = '/signout';
   }
 
   render() {
-    const { classes, theme } = this.props;
+    const {classes, theme} = this.props;
 
-      return (
-        <div className={classes.root}>
-          <CssBaseline />
-          <AppBar
-            position="fixed"
-            className={classNames(classes.appBar, {
-              [classes.appBarShift]: this.state.open,
-            })}
-          >
-            <Toolbar disableGutters={!this.state.open}>
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.handleDrawerOpen.bind(this)}
-                className={classNames(classes.menuButton, {
-                  [classes.hide]: this.state.open,
-                })}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" color="inherit" noWrap>
-                {{name | capitalize}}
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            variant="permanent"
-            className={classNames(classes.drawer, {
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={classNames(classes.appBar, {
+            [classes.appBarShift]: this.state.open,
+          })}
+        >
+          <Toolbar disableGutters={!this.state.open}>
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={this.handleDrawerOpen.bind(this)}
+              className={classNames(classes.menuButton, {
+                [classes.hide]: this.state.open,
+              })}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" color="inherit" noWrap>
+              {{name | capitalize}}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          className={classNames(classes.drawer, {
+            [classes.drawerOpen]: this.state.open,
+            [classes.drawerClose]: !this.state.open,
+          })}
+          classes={ {
+            paper: classNames({
               [classes.drawerOpen]: this.state.open,
               [classes.drawerClose]: !this.state.open,
-            })}
-            classes={ {
-              paper: classNames({
-                [classes.drawerOpen]: this.state.open,
-                [classes.drawerClose]: !this.state.open,
-              }),
-            }}
-            open={this.state.open}
-          >
-            <div className={classes.toolbar}>
-              <IconButton onClick={this.handleDrawerClose.bind(this)}>
-                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-              </IconButton>
-            </div>
-            <Divider />
-            <List>
-
+            }),
+          }}
+          open={this.state.open}
+        >
+          <div className={classes.toolbar}>
+            <IconButton onClick={this.handleDrawerClose.bind(this)}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
             { routes.filter(route => route.type === 'index').map((route, index) => {
-                let RouteIcon = icons[route.icon];
-                return <ListItemLink exact key={route.path} to={route.path} primary={route.name} icon={<RouteIcon />} />
-              })
+              let RouteIcon = icons[route.icon];
+              return <ListItemLink exact key={route.path} to={route.path} primary={route.name} icon={<RouteIcon />} />
+            })
             }
-            </List>
-            <Divider />
-            <List>
+          </List>
+          <Divider />
+          <List>
             { this.isAuthenticated() ? (
-                <li>
-                  <a href='/signout'>
+              <li>
+                <a href='/signout'>
                   <ListItem button >
                     <ListItemIcon>{<ExitToApp />}</ListItemIcon>
                     <ListItemText primary="Sign Out" />
                   </ListItem>
-                  </a>
-                </li>
+                </a>
+              </li>
               ) : (
-                <li>
-                  <a href='/signin'>
-                    <ListItem button >
-                      <ListItemIcon>{<ExitToApp />}</ListItemIcon>
-                      <ListItemText primary="Sign In" />
-                    </ListItem>
-                    </a>
-                </li>
+              <li>
+                <a href='/signin'>
+                  <ListItem button >
+                    <ListItemIcon>{<ExitToApp />}</ListItemIcon>
+                    <ListItemText primary="Sign In" />
+                  </ListItem>
+                  </a>
+              </li>
               )
             }
             { this.isAuthenticated() ? (
-
-                <li>
-                  <a  href='/profile'>
-                    <ListItem button >
-                      <ListItemIcon>{<PersonIcon />}</ListItemIcon>
-                      <ListItemText primary="Profile" />
-                    </ListItem>
-                    </a>
-                </li>
+              <li>
+                <a  href='/profile'>
+                  <ListItem button >
+                    <ListItemIcon>{<PersonIcon />}</ListItemIcon>
+                    <ListItemText primary="Profile" />
+                  </ListItem>
+                  </a>
+              </li>
               ) : (
-
-                <li>
-                  <a  href='/signup'>
-                    <ListItem button >
-                      <ListItemIcon>{<PersonAddIcon />}</ListItemIcon>
-                      <ListItemText primary="Sign Up" />
-                    </ListItem>
-                    </a>
-                </li>
+              <li>
+                <a  href='/signup'>
+                  <ListItem button >
+                    <ListItemIcon>{<PersonAddIcon />}</ListItemIcon>
+                    <ListItemText primary="Sign Up" />
+                  </ListItem>
+                  </a>
+              </li>
               )
             }
-            </List>
-          </Drawer>
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
+          </List>
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
 
-              <div className="container">
-                <div className="row">
-                  <div className="col-sm-12 main">
-                    <Switch>
-                     {routes.map((route, index) => (
-                       // Render the main route
-                       <Route
-                         key={index}
-                         path={route.path}
-                         exact={route.exact}
-                         component={route.main}
-                       />
-                     ))}
-                    </Switch>
-                  </div>
-                </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-sm-12 main">
+                <Switch>
+                  {routes.map((route, index) => (
+                    // Render the main route
+                    <Route
+                      key={index}
+                      path={route.path}
+                      exact={route.exact}
+                      component={route.main}
+                    />
+                  ))}
+                </Switch>
               </div>
+            </div>
+          </div>
 
-          </main>
-        </div>
-      );
+        </main>
+      </div>
+    );
   }
 }
 

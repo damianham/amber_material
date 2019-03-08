@@ -1,34 +1,32 @@
 import 'bootstrap';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
-
-import jQuery from "jquery";
+import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
 import toastr from './toastr';
 toastr.options = {
-  "closeButton": true,
-  "debug": false,
-  "newestOnTop": false,
-  "progressBar": true,
-  "positionClass": "toast-top-center",
-  "preventDuplicates": false,
-  "onclick": null,
-  "showDuration": "300",
-  "hideDuration": "1000",
-  "timeOut": "5000",
-  "extendedTimeOut": "1000",
-  "showEasing": "swing",
-  "hideEasing": "linear",
-  "showMethod": "fadeIn",
-  "hideMethod": "fadeOut"
+  'closeButton': true,
+  'debug': false,
+  'newestOnTop': false,
+  'progressBar': true,
+  'positionClass': 'toast-top-center',
+  'preventDuplicates': false,
+  'onclick': null,
+  'showDuration': '300',
+  'hideDuration': '1000',
+  'timeOut': '5000',
+  'extendedTimeOut': '1000',
+  'showEasing': 'swing',
+  'hideEasing': 'linear',
+  'showMethod': 'fadeIn',
+  'hideMethod': 'fadeOut',
 }
 window.toastr = toastr;
 
-import { HashRouter } from 'react-router-dom';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import {HashRouter} from 'react-router-dom';
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   typography: {
@@ -55,16 +53,15 @@ const theme = createMuiTheme({
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-
-  let element = document.getElementById("{{name}}_app");
+  const element = document.getElementById('materialapp_app');
   if (element) {
-		ReactDOM.render((
+    ReactDOM.render((
       <HashRouter>
         <MuiThemeProvider theme={theme}>
-			     <App />
+          <App />
         </MuiThemeProvider>
       </HashRouter>),
-		  element
-		);
+    element
+    );
   }
 });
