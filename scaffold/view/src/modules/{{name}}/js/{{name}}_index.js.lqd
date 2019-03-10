@@ -256,45 +256,47 @@ class {{class_name}}IndexItemComponent extends React.Component {
         {% endif -%}
         {% endfor %}
         <td className="{{name}}-index-actions-column index-actions-column">
-
-          <Link style={this.styles.link} className="{{name}}-index-actions-edit index-actions-edit"
-            role="{{name}}-edit"
-            to={
-              {
-                pathname: '/{{name | pluralize}}/edit/' + {{name}}.id,
-                state: {{name}}
-              }
-            }>
-            <i className="material-icons">edit</i>
-          </Link>
-
-          <span style={this.styles.link} className="{{name}}-index-actions-delete index-actions-delete"
-            role="{{name}}-delete"
-            onClick={this.delete.bind(this, {{name}}.id)}
-          >
-            <i className="material-icons">delete</i>
-          </span>
-
-          <Link style={this.styles.link} className="{{name}}-index-actions-show index-actions-show"
-            role="{{name}}-show"
-            to={
-              {
-                pathname: '/{{name | pluralize}}/show/' + {{name}}.id,
-                state: {
-                  {% for field in visible_fields -%}
-                  {% if field.type == "reference" -%}
-                  {% if field.name != "user" -%}
-                  {{field.name}}: {{field.name}},
-                  {% endif -%}
-                  {% endif -%}
-                  {% endfor %}
-                  {{name}}: {{name}}
+          <div className="row">
+            <div className="col">
+              <Link className="{{name}}-index-actions-edit index-actions-edit"
+                role="{{name}}-edit"
+                to={
+                  {
+                    pathname: '/{{name | pluralize}}/edit/' + {{name}}.id,
+                    state: {{name}}
+                  }
                 }
-              }
-            }
-          >
-            <i className="material-icons">arrow_forward_ios</i>
-          </Link>
+              ><i className="material-icons">edit</i></Link>
+            </div>
+            <div className="col">
+              <span className="{{name}}-index-actions-delete index-actions-delete"
+                role="{{name}}-delete"
+                onClick={this.delete.bind(this, {{name}}.id)}
+              >
+                <i className="material-icons">delete</i>
+              </span>
+            </div>
+            <div className="col">
+              <Link className="{{name}}-index-actions-show index-actions-show"
+                role="{{name}}-show"
+                to={
+                  {
+                    pathname: '/{{name | pluralize}}/show/' + {{name}}.id,
+                    state: {
+                      {% for field in visible_fields -%}
+                      {% if field.type == "reference" -%}
+                      {% if field.name != "user" %}
+                      {{field.name}}: {{field.name}},
+                      {% endif -%}
+                      {% endif -%}
+                      {% endfor %}
+                      {{name}}: {{name}}
+                    }
+                  }
+                }
+              ><i className="material-icons">arrow_forward_ios</i></Link>
+            </div>
+          </div>
         </td>
       </tr>
     )
