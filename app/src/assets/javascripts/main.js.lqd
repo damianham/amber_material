@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import jQuery from 'jquery'
 
-import {HashRouter} from 'react-router-dom'
-import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles'
+import { HashRouter } from 'react-router-dom'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import toastr from './toastr'
 
 window.$ = window.jQuery = jQuery
@@ -50,11 +50,11 @@ const theme = createMuiTheme({
   },
   status: {
     danger: '#d32f2f'
-  },
-});
+  }
+})
 
 document.addEventListener('DOMContentLoaded', function () {
-  const element = document.getElementById('materialapp_app');
+  const element = document.getElementById('{{name}}_app')
   if (element) {
     ReactDOM.render((
       <HashRouter>
@@ -63,6 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
         </MuiThemeProvider>
       </HashRouter>),
     element
-    );
+    )
   }
-});
+})
