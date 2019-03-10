@@ -106,7 +106,7 @@ export class {{class_name}}View extends React.Component {
             <tr>
               <th className="{{name}}-view-table-head view-table-head">{{ field.name | capitalize }}</th>
               {% if field.type == "reference" -%}
-              <td className="{{name}}-view-table-data view-table-data">
+              <td title="{{name}}-{{field.name}}" className="{{name}}-view-table-data view-table-data">
                 <Link to={
                   {
                     pathname: '/{{field.name | pluralize}}/show/' + {{name}}.{{field.name}}_id,
@@ -118,7 +118,7 @@ export class {{class_name}}View extends React.Component {
                 }>{ bestTitleForClass({{field.name}} || { id: {{name}}.{{field.name}}_id })}</Link>
               </td>
               {% else -%}
-              <td className="{{name}}-view-table-data view-table-data">{ {{name}}.{{field.name}} }</td>
+              <td title="{{name}}-{{field.name}}" className="{{name}}-view-table-data view-table-data">{ {{name}}.{{field.name}} }</td>
               {%- endif %}
             </tr>
             {% endif -%}
