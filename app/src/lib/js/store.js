@@ -22,14 +22,14 @@ class Store {
     this.state[klazz] = []
     const vm = this
 
-    new Resource(endpoint).all().done((resp) => {
+    new Resource(endpoint).all().then((resp) => {
       if (resp.data) {
         resp.data.forEach((entry) => {
           vm.state[klazz].push(new Resource(endpoint, entry))
         })
         done(vm.state[klazz])
       }
-    }).fail((error, statusText) => {
+    }).catch((error, statusText) => {
       console.log('store load resources failed with', statusText)
       vm.handleErrors('Load', klazz, statusText, error)
     })
@@ -118,7 +118,7 @@ class Store {
     })
 
     // fetch all records for this model
-    stream.all().done((data) => {
+    stream.all().then((data) => {
       if (data) {
         data.forEach((entry) => {
           vm.state[klazz].push(new Resource(endpoint, entry))
@@ -126,7 +126,7 @@ class Store {
         EventBus.emit('loaded:models:' + klazz, vm.state[klazz])
         done(vm.state[klazz])
       }
-    }).fail((error, statusText) => {
+    }).catch((error, statusText) => {
       console.log('load error', error)
       vm.handleErrors('Load', klazz, statusText, error)
     })
@@ -173,9 +173,9 @@ class Store {
       if (model) {
         this.state[klazz] = this.state[klazz].filter((item, j) => item.id !== parseInt(id))
 
-        model.destroy().done(() => {
+        model.destroy().then(() => {
           EventBus.emit('delete:model:' + klazz, model)
-        }).fail((error, statusText) => {
+        }).catch((error, statusText) => {
           vm.handleErrors('Delete', klazz, statusText, error)
         })
       }
