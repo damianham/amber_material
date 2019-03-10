@@ -58,6 +58,13 @@
     "setupFiles": ["<rootDir>/src/lib/js/jest.setup.js"],
     "moduleNameMapper": {
       "^amber$": "<rootDir>/lib/amber/assets/js/amber.min"
-    }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/lib/amber/",
+      "!<rootDir>/src/assets/javascripts/main.js",
+      "!<rootDir>/src/assets/javascripts/toastr.js"
+    ]
   }
 }
