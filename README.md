@@ -15,9 +15,12 @@ significant ways;
   organise your code.  Principle of Proximity - yay!
 - To support rendering views within components in **src/modules**, controllers use the
   **render_module** macro from the shard damianham/amber_render_module rather than the standard **render** macro.
-- When a registered user has signed in to the web application the SPA (Single Page Application)
+- The SPA (Single Page Application)
   presents the UI and the Amber application becomes an API application with data transfer
-  from/to the SPA and the Amber application in JSON format rather than the UI being rendered by the Amber templating engine. This behaviour is easily modifiable in the index method of the HomeController.
+  from/to the SPA and the Amber application in JSON format rather than the UI being rendered by the Amber templating engine. If an authentication pipe is part of the web pipeline (config/routes.cr)
+  then API requests will fail and the SPA will redirect the user to Sign in.
+  This behaviour is easily modifiable in src/assets/javascripts/app.js and also by adding paths to PUBLIC_PATHS
+  in src/pipes/authenticate.cr and/or src/pipes/authenticateJWT.cr .
 
 Enjoy!
 
@@ -57,21 +60,19 @@ amber g scaffold Product title:string description:text category:reference user:r
 amber g scaffold Comment body:text product:reference user:reference
 ```
 
-The React SPA is only displayed when the user is logged in, otherwise the views are
-rendered by the Amber template rendering engine.  This recipe has a feature to support streaming data changes via websockets.  Changes to database models on the backend are instantly reflected in the SPA for all connected clients. You can make the SPA active for all users by changing the index method in
-```
-src/controllers/home_controller.cr
-```
-Thus; for a guest the home page is rendered from src/views/home/index.slang (or .ecr if you elect to use ECR template engine).
-For an authenticated user the home screen is part of the SPA and is contained in the Home component at;
+This recipe has a feature to support streaming data changes via websockets.  Changes to database models on the backend are instantly reflected in the SPA for all connected clients.
+
+The home screen is part of the SPA and is contained in the Home component at;
 ```
 src/views/home/js/home.js
 ```
 The Home component is the component that renders for the '/' route.
-The SPA Includes a sidebar component and a main display component. The layout for the SPA is defined in
+The layout for the SPA is defined in
 ```
 src/assets/javascripts/app.js
 ```
+
+### Scaffolding Components
 The scaffold generator will generate code modules for components in
 ```
 src/modules/<component_name>
