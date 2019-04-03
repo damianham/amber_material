@@ -18,8 +18,8 @@ targets:
 dependencies:
   amber:
     github: amberframework/amber
-    branch: master
-    #version: {{ amber_version }}
+    #branch: master
+    version: {{ amber_version }}
 
 {% if model == "crecto" %}
   crecto:
