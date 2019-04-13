@@ -41,8 +41,7 @@ class AuthenticateJWT < Amber::Pipe::Base
     #
     # Example, if only a few private paths exist
     # return false if ["/secret", "/super/secret", "/private"].includes?(path)
-    if User.find(user_id)
-      REGEX_PATHS.count { |r| r.match(path) } > 0
-    end
+
+    REGEX_PATHS.count { |r| r.match(path) } > 0
   end
 end
