@@ -5,17 +5,21 @@ end
 class AuthenticateJWT < Amber::Pipe::Base
   PUBLIC_PATHS = ["/", "/signin", "/session", "/signup", "/registration", "/me"]
 
-  # add the names of the app modules
+  # add the regular expressions of paths that have public access
+  # e.g. add paths to view instances of certain models or all paths
+  # within the support tree
   REGEX_PATHS = [
     %r(/categories(/\d+)?$),
     %r(/products(/\d+)?$),
     %r(/comments(/\d+)?$),
     %r(/some_model_name(/\d+)?$),
+    %r(/support/.*$/),
   ]
 
   def call(context)
-    if context.params["token"]?
-      payload, header = JWT.decode(context.params["token"], Amber.settings.secret_key_base, "HS256")
+    token = context.params["token"]? || context.request.headers["x-jwt-token"]?
+    if token
+      payload, header = JWT.decode(token, Amber.settings.secret_key_base, "HS256")
       user = User.find_by(email: payload["email"].to_s) unless payload["email"]?.nil?
     elsif user_id = context.session["user_id"]?
       user = User.find user_id
