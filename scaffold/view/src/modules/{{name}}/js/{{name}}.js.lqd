@@ -36,7 +36,7 @@ export class {{class_name}} extends Resource {
           statusText: 'Could not save {{name}}',
           responseJSON: {
             error: 'Validation failed. [' + errors.map((err) => {
-              return `Amber::Validators:Error(@param="${err.field}", @value="${err.value}", @message="Field ${err.field} ${err.message}" )`
+              return `Amber::Validators::Error(@param="${err.field}", @value="${err.value}", @message="Field ${err.field} ${err.message}" )`
             }).join(', ') + ']'
           }
         })
