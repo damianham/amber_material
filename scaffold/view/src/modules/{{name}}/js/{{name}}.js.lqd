@@ -1,19 +1,19 @@
 import React from 'react'
 import Resource from '../../../lib/js/resource'
 
-export * from "./{{name}}_edit"
-export * from "./{{name}}_index"
-export * from "./{{name}}_new"
-export * from "./{{name}}_view"
+export * from './{{name}}_edit'
+export * from './{{name}}_index'
+export * from './{{name}}_new'
+export * from './{{name}}_view'
 
 export class {{class_name}} extends Resource {
-  constructor ( attributes) {
-    super("/{{name | pluralize}}", attributes)
+  constructor (attributes) {
+    super('/{{name | pluralize}}', attributes)
   }
 
   // client side validation
   save () {
-    let errors = [];
+    let errors = []
 
     {% for field in visible_fields -%}
     {% if field.name != "user" -%}
@@ -33,7 +33,7 @@ export class {{class_name}} extends Resource {
       return new Promise(function (resolve, reject) {
         // eslint-disable-next-line prefer-promise-reject-errors
         reject({
-          statusText: 'Could not save {{name}}',
+          message: 'Could not save {{name}}',
           responseJSON: {
             error: 'Validation failed. [' + errors.map((err) => {
               return `Amber::Validators::Error(@param="${err.field}", @value="${err.value}", @message="Field ${err.field} ${err.message}" )`
@@ -44,5 +44,4 @@ export class {{class_name}} extends Resource {
     }
     return super.save()
   }
-
 }

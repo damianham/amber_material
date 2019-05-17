@@ -29,7 +29,7 @@ export class {{class_name}}Edit extends React.Component {
     store.update('{{name}}', this.state.id, this.state)
       .then(this.onBack.bind(this))
       .catch((response, statusText, error) => {
-        store.handleErrors('Update', '{{name}}', error, response.responseJSON)
+        store.handleErrors('Update', '{{name}}', error || response.message, response.responseJSON)
       })
   }
 

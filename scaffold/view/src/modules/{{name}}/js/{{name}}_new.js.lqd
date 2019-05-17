@@ -40,7 +40,7 @@ export class {{class_name}}New extends React.Component {
     let {{name}} = new {{class_name}}(this.state)
     {{name}}.save().then(this.onBack.bind(this))
     .catch((response, statusText, error) => {
-      store.handleErrors('Add', '{{name}}', error, response.responseJSON)
+      store.handleErrors('Add', '{{name}}', error || response.message, response.responseJSON)
     });
   }
 

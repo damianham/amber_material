@@ -55,7 +55,7 @@ export class {{class_name}}View extends React.Component {
 
       if (typeof related.catch === 'function') {
         related.catch((response, statusText, error) => {
-          store.handleErrors("Show", "related", error, response.responseJSON);
+          store.handleErrors("Show", "related", error || response.message, response.responseJSON);
         })
       } else {
         // we got an array of records with matching {{name}}_id
@@ -75,7 +75,7 @@ export class {{class_name}}View extends React.Component {
         }
       }).catch((response, statusText, error) => {
         console.log('store load resources failed with', error);
-        store.handleErrors('Query', 'comment', error, response.responseJSON);
+        store.handleErrors('Query', 'comment', error || response.message, response.responseJSON);
       })
     */
   }
