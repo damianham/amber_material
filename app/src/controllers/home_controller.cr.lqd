@@ -7,7 +7,7 @@ class HomeController < ApplicationController
 
   def token_sign_in_helper
     if token = params["token"]?
-      payload, header = JWT.decode(params["token"], Amber.settings.secret_key_base, "HS256")
+      payload, header = JWT.decode(params["token"], Amber.settings.secret_key_base, JWT::Algorithm::HS256)
       email = payload["email"].to_s
 {{"      "}}{% if model == "granite" -%}
       user = User.find_by(email: email)
@@ -36,17 +36,17 @@ class HomeController < ApplicationController
       user = Repo.get(User, user_id)
 {% endif -%}
 {{"    "}}if user
-      token = JWT.encode({id: user.id, email: user.email}, Amber.settings.secret_key_base, "HS256")
+      token = JWT.encode({id: user.id, email: user.email}, Amber.settings.secret_key_base, JWT::Algorithm::HS256)
       user_hash = {id: user.id, email: user.email}
       {user: user_hash, token: token, csrf: csrf_token}.to_json
     else
-      context.response.respond_with_error("Bad Request", 400)
+      context.response.respond_with_status(400, "Bad Request")
     end
   end
 
   def authenticate_jwt
     if params["token"]
-      payload, header = JWT.decode(params["token"], Amber.settings.secret_key_base, "HS256")
+      payload, header = JWT.decode(params["token"], Amber.settings.secret_key_base, JWT::Algorithm::HS256)
       email = payload["email"].to_s
 {{"      "}}{% if model == "granite" -%}
       user = User.find_by(email: email)
@@ -59,10 +59,10 @@ class HomeController < ApplicationController
       session[:user_id] = user.id
       # create a new token for this session
       user_hash = {id: user.id, email: user.email}
-      token = JWT.encode(user_hash, Amber.settings.secret_key_base, "HS256")
+      token = JWT.encode(user_hash, Amber.settings.secret_key_base, JWT::Algorithm::HS256)
       {user: user_hash, token: token, csrf: csrf_token}.to_json
     else
-      context.response.respond_with_error("Bad Request", 400)
+      context.response.respond_with_status(400, "Bad Request")
     end
   end
 end

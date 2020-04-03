@@ -1,6 +1,6 @@
 class {{class_name}} < Granite::Base
-  adapter {{database}}
-  table_name {{table_name}}
+  connection {{database}}
+  table {{table_name}}
 
   after_create :on_created
   after_update :on_updated
@@ -11,11 +11,11 @@ class {{class_name}} < Granite::Base
 {{"  "}}belongs_to :{{field.name}}
 {% endif -%}
 {% endfor %}
-  # id : Int64 primary key is created for you
+  column id : Int64, primary: true
 {% for field in fields -%}
 {% if field.type != "reference" -%}
 {% if field.hidden == false -%}
-{{"  "}}field {{field.name}} : {{field.cr_type}}
+{{"  "}}column {{field.name}} : {{field.cr_type}}
 {% endif -%}
 {% endif -%}
 {% endfor -%}

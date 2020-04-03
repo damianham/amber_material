@@ -26,6 +26,19 @@ services:
     - nodes:/app/node_modules
     - shards:/app/lib
 
+  test:
+    build: .
+    image: {{ name }}
+    command: bash -c '{{ wait_for }}amber db migrate && crystal spec'
+    environment:
+      - DATABASE_URL:{{ db_url }}/{{database_name_base}}_test{%- if database == "sqlite" -%}.db{% endif %}
+    links:
+      - db
+    volumes:
+    - .:/app
+    - nodes:/app/node_modules
+    - shards:/app/lib
+    
   migrate:
     build: .
     image: {{ name }}

@@ -1,12 +1,11 @@
-FROM amberframework/amber:v{{ amber_version }}
+FROM crystallang/crystal:{{ crystal_version }}
 
+# Install Dependencies
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential software-properties-common libpq-dev libsqlite3-dev libmysqlclient-dev libreadline-dev git curl nano vim sqlite3
+# Install Node
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get install -y nodejs
+ENV PATH /app/bin:$PATH
 WORKDIR /app
-
-COPY shard.* /app/
-RUN shards install
-
-COPY . /app
-
-RUN rm -rf /app/node_modules
-
-CMD amber watch

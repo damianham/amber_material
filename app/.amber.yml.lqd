@@ -12,6 +12,8 @@ watch:
     build_commands:
       - mkdir -p bin
       - crystal build ./src/{{ name }}.cr -o bin/{{ name }}
+      - yarn install
+      - yarn build
     run_commands:
       - bin/{{ name }}
     include:
@@ -34,6 +36,6 @@ watch:
       - ./spec/**/*.cr
   npm:
     build_commands:
-      - npm install --loglevel=error
+      - echo watching assets
     run_commands:
       - npm run watch
