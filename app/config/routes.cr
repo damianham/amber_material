@@ -11,8 +11,6 @@ Amber::Server.configure do |app|
     plug Amber::Pipe::Flash.new
     plug Amber::Pipe::CSRF.new
 
-    plug CurrentUser.new
-
     # enable this pipe for JWT support however you need a User model
     # 'amber g auth User' will create a User model and signin/signup routes
     # it will also add 'plug Authenticate.new' which you should disable
